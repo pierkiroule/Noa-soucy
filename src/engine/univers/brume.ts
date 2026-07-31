@@ -1,6 +1,14 @@
 import type { PoetryUniverse } from '../univers'
 
 export const brume: PoetryUniverse = {
+  id: 'brume',
+  affinities: {
+    blur: 5,
+    doubt: 4,
+    loop: 3,
+    trap: 2,
+    darken: 2,
+  },
   intros: [
     "Il existe des jours où les contours se mélangent.",
     "Parfois, le chemin reste là sans vouloir se montrer.",
