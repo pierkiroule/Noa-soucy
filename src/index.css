@@ -135,109 +135,72 @@ button {
   inset: 150px 0 82px;
   overflow: hidden;
   touch-action: manipulation;
+  --orbit-radius: min(37vw, 32vh, 310px);
 }
 
-.graph-links,
-.graph-nodes {
+.tag-orbit {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.graph-links {
-  pointer-events: none;
-}
-
-.graph-nodes {
-  pointer-events: none;
-}
-
-.graph-links line {
-  stroke: rgba(198, 209, 255, 0.1);
-  stroke-width: 1;
-  transition:
-    stroke 220ms ease,
-    stroke-width 220ms ease;
-}
-
-.graph-links line.active-link {
-  stroke: rgba(191, 232, 255, 0.55);
-  stroke-width: 1.6;
+  z-index: 4;
+  top: 48%;
+  left: 50%;
 }
 
 .tag-bubble {
   position: absolute;
-  min-width: 92px;
-  max-width: 126px;
-  min-height: 46px;
+  width: clamp(82px, 11vw, 118px);
+  min-height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  padding: 8px 11px;
+  gap: 5px;
+  padding: 7px 8px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 999px;
   color: rgba(255, 255, 255, 0.88);
   cursor: pointer;
-  pointer-events: auto;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(14px);
+  background: rgba(17, 17, 30, 0.68);
   transform:
     translate(-50%, -50%)
-    scale(1);
+    rotate(var(--tag-angle))
+    translateX(var(--orbit-radius))
+    rotate(var(--tag-angle-inverse));
   transform-origin: center;
   transition:
-    transform 180ms ease,
     border-color 180ms ease,
     background 180ms ease,
-    box-shadow 180ms ease;
-  will-change:
-    left,
-    top,
-    transform;
+    box-shadow 180ms ease,
+    filter 180ms ease;
+  animation: tag-arrival 600ms both;
+  animation-delay: calc(var(--tag-index) * 35ms);
 }
 
-.tag-trace {
-  background:
-    rgba(110, 84, 104, 0.42);
+.tag-impact {
+  border-color: rgba(255, 169, 112, 0.26);
 }
 
-.tag-territory {
-  background:
-    rgba(62, 91, 112, 0.42);
+.tag-mental {
+  border-color: rgba(171, 162, 255, 0.25);
 }
 
-.tag-resource {
-  background:
-    rgba(83, 103, 74, 0.42);
+.tag-movement {
+  border-color: rgba(121, 218, 185, 0.26);
 }
 
 .tag-bubble:hover {
-  transform:
-    translate(-50%, -50%)
-    scale(1.05);
+  filter: brightness(1.35);
 }
 
 .tag-bubble:active {
-  transform:
-    translate(-50%, -50%)
-    scale(0.96);
+  filter: brightness(0.9);
 }
 
 .tag-bubble.is-selected {
-  z-index: 4;
-  transform:
-    translate(-50%, -50%)
-    scale(1.1);
-  border-color:
-    rgba(200, 236, 255, 0.8);
-  background:
-    rgba(113, 151, 173, 0.62);
+  border-color: rgba(255, 226, 157, 0.92);
+  background: rgba(130, 81, 53, 0.76);
   box-shadow:
-    0 0 0 4px
-      rgba(126, 211, 255, 0.07),
-    0 0 25px
-      rgba(109, 202, 255, 0.28);
+    0 0 0 3px rgba(255, 181, 89, 0.08),
+    0 0 28px rgba(255, 143, 69, 0.3);
 }
 
 .tag-symbol {
@@ -248,10 +211,162 @@ button {
 
 .tag-label {
   overflow: hidden;
-  font-size: 0.77rem;
+  font-size: clamp(0.62rem, 1.6vw, 0.75rem);
   line-height: 1.1;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.resonance-flower {
+  position: absolute;
+  z-index: 2;
+  top: 48%;
+  left: 50%;
+  width: clamp(138px, 22vw, 220px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  --bloom: 0;
+  --petal-color: #ef7f3d;
+  --petal-light: #ffc368;
+}
+
+.resonance-1 { --bloom: 1; }
+.resonance-2 { --bloom: 2; }
+.resonance-3 { --bloom: 3; }
+
+.flower-aura {
+  position: absolute;
+  inset: -26%;
+  border-radius: 50%;
+  opacity: calc(0.2 + var(--bloom) * 0.13);
+  background:
+    radial-gradient(circle, rgba(255, 167, 71, 0.3), transparent 62%);
+  filter: blur(calc(15px - var(--bloom) * 2px));
+  animation: flower-breathe calc(7s - var(--bloom) * 0.8s) ease-in-out infinite;
+}
+
+.petal-field,
+.flower-heart {
+  position: absolute;
+  inset: 0;
+}
+
+.petal-field {
+  animation: flower-turn calc(38s - var(--bloom) * 7s) linear infinite;
+}
+
+.flower-petal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(14% + var(--bloom) * 1.4%);
+  height: calc(43% + var(--bloom) * 2%);
+  border-radius: 70% 22% 72% 25%;
+  opacity: calc(0.38 + var(--bloom) * 0.18);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 221, 132, 0.92),
+      var(--petal-color) 58%,
+      rgba(132, 42, 32, 0.18)
+    );
+  box-shadow:
+    inset 2px 0 rgba(255, 240, 188, 0.28),
+    0 0 calc(5px + var(--bloom) * 3px) rgba(255, 128, 59, 0.16);
+  transform-origin: 50% 92%;
+  transform:
+    translate(-50%, -92%)
+    rotate(var(--petal-angle))
+    translateY(calc(-8% - var(--bloom) * 3%))
+    scaleY(calc(0.72 + var(--bloom) * 0.1));
+  animation: petal-ripple calc(4.8s - var(--bloom) * 0.45s) ease-in-out infinite;
+  animation-delay: calc(var(--petal-index) * -140ms);
+}
+
+.flower-petal:nth-child(3n) {
+  width: 18%;
+  height: 35%;
+  filter: hue-rotate(calc(var(--mental-energy) * 16deg));
+}
+
+.flower-petal:nth-child(even) {
+  filter:
+    hue-rotate(calc((var(--mental-energy) - var(--impact-energy)) * 12deg))
+    saturate(calc(1 + var(--movement-energy) * 0.16));
+}
+
+.flower-heart {
+  inset: 31%;
+  display: grid;
+  place-items: center;
+  border-radius: 48% 52% 46% 54%;
+  background:
+    repeating-radial-gradient(
+      circle at 44% 42%,
+      #ffcd67 0 3px,
+      #9c4a25 4px 6px
+    );
+  box-shadow:
+    0 0 calc(16px + var(--bloom) * 7px) rgba(255, 159, 62, 0.45);
+  animation: flower-heartbeat calc(5s - var(--bloom) * 0.75s) ease-in-out infinite;
+}
+
+.flower-heart span {
+  width: 20%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ffd978;
+  box-shadow: 0 0 12px #ffba4d;
+}
+
+.resonance-caption {
+  position: absolute;
+  z-index: 3;
+  top: calc(48% + clamp(82px, 13vw, 128px));
+  left: 50%;
+  margin: 0;
+  color: rgba(255, 222, 174, 0.55);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.72rem;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+@keyframes tag-arrival {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes flower-turn {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes flower-breathe {
+  0%, 100% { transform: scale(0.9); opacity: 0.2; }
+  50% { transform: scale(1.12); opacity: 0.62; }
+}
+
+@keyframes petal-ripple {
+  0%, 100% { margin-top: 0; filter: brightness(0.9); }
+  50% { margin-top: calc(-2px - var(--bloom) * 2px); filter: brightness(1.18); }
+}
+
+@keyframes flower-heartbeat {
+  0%, 100% { transform: scale(0.92) rotate(-2deg); }
+  50% { transform: scale(calc(1 + var(--bloom) * 0.035)) rotate(2deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tag-bubble,
+  .flower-aura,
+  .petal-field,
+  .flower-petal,
+  .flower-heart {
+    animation: none;
+  }
 }
 
 .action-zone {

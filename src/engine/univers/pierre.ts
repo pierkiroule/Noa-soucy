@@ -2,6 +2,16 @@ import type { PoetryUniverse } from '../univers'
 
 export const pierre: PoetryUniverse = {
 
+id: 'pierre',
+
+affinities: {
+  heavy: 5,
+  block: 4,
+  freeze: 3,
+  last: 3,
+  hurt: 1,
+},
+
 intros: [
 
 "Il existe des jours où tout paraît plus lourd.",

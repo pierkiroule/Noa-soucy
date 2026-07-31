@@ -1,42 +1,50 @@
-import type { GraphNode } from '../types'
+import type { CSSProperties } from 'react'
+import type { TagDefinition } from '../types'
 
 interface TagBubbleProps {
-  node: GraphNode
+  tag: TagDefinition
+  index: number
+  total: number
+  selected: boolean
   onToggle: (id: string) => void
 }
 
+type OrbitStyle = CSSProperties & {
+  '--tag-angle': string
+  '--tag-angle-inverse': string
+  '--tag-index': number
+}
+
 export function TagBubble({
-  node,
+  tag,
+  index,
+  total,
+  selected,
   onToggle,
 }: TagBubbleProps) {
-  const x = node.x ?? 0
-  const y = node.y ?? 0
+  const style: OrbitStyle = {
+    '--tag-angle': `${index * (360 / total) - 90}deg`,
+    '--tag-angle-inverse': `${90 - index * (360 / total)}deg`,
+    '--tag-index': index,
+  }
 
   return (
     <button
       type="button"
       className={[
         'tag-bubble',
-        `tag-${node.category}`,
-        node.selected ? 'is-selected' : '',
+        `tag-${tag.category}`,
+        selected ? 'is-selected' : '',
       ]
         .filter(Boolean)
         .join(' ')}
-      style={{
-        left: `${x}px`,
-        top: `${y}px`,
-      }}
-      onClick={() => onToggle(node.id)}
-      aria-pressed={node.selected}
-      aria-label={node.label}
+      style={style}
+      onClick={() => onToggle(tag.id)}
+      aria-pressed={selected}
+      aria-label={tag.label}
     >
-      <span className="tag-symbol">
-        {node.symbol}
-      </span>
-
-      <span className="tag-label">
-        {node.label}
-      </span>
+      <span className="tag-symbol">{tag.symbol}</span>
+      <span className="tag-label">{tag.label}</span>
     </button>
   )
 }

@@ -11,22 +11,6 @@ export interface TagDefinition {
   meanings: string[]
 }
 
-export interface GraphNode extends TagDefinition {
-  x?: number
-  y?: number
-  vx?: number
-  vy?: number
-  fx?: number | null
-  fy?: number | null
-  selected: boolean
-}
-
-export interface GraphLink {
-  source: string | GraphNode
-  target: string | GraphNode
-  strength?: number
-}
-
 export interface PoemEntry {
   id: string
   tagIds: string[]
