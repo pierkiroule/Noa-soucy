@@ -44,7 +44,6 @@ export function TagBubble({
       aria-label={tag.label}
     >
       <span className="tag-symbol">{tag.symbol}</span>
-      <span className="tag-label">{tag.label}</span>
     </button>
   )
 }
