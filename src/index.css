@@ -1,0 +1,571 @@
+:root {
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color: rgba(255, 255, 255, 0.95);
+  background: #0a0b15;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100svh;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 50% 15%,
+      rgba(94, 83, 152, 0.22),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 15% 85%,
+      rgba(77, 124, 132, 0.14),
+      transparent 32%
+    ),
+    #0a0b15;
+}
+
+button {
+  font: inherit;
+}
+
+.app-shell {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+}
+
+.top-bar {
+  position: absolute;
+  z-index: 20;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 17px 18px;
+  pointer-events: none;
+}
+
+.top-bar > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.top-bar strong {
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+}
+
+.top-bar span {
+  max-width: 260px;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.7rem;
+}
+
+.poem-count {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.72rem;
+}
+
+.graph-area {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+}
+
+.graph-instruction {
+  position: absolute;
+  z-index: 10;
+  top: 80px;
+  left: 50%;
+  width: min(92%, 540px);
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.graph-instruction p {
+  margin: 0 0 5px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.82rem;
+}
+
+.graph-instruction h2 {
+  margin: 0;
+  font-size: clamp(
+    1.15rem,
+    5vw,
+    1.7rem
+  );
+  font-weight: 560;
+  line-height: 1.18;
+}
+
+.graph-instruction span {
+  display: block;
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.76rem;
+}
+
+.graph-stage {
+  position: absolute;
+  inset: 150px 0 82px;
+  overflow: hidden;
+  touch-action: manipulation;
+}
+
+.graph-links,
+.graph-nodes {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.graph-links {
+  pointer-events: none;
+}
+
+.graph-nodes {
+  pointer-events: none;
+}
+
+.graph-links line {
+  stroke: rgba(198, 209, 255, 0.1);
+  stroke-width: 1;
+  transition:
+    stroke 220ms ease,
+    stroke-width 220ms ease;
+}
+
+.graph-links line.active-link {
+  stroke: rgba(191, 232, 255, 0.55);
+  stroke-width: 1.6;
+}
+
+.tag-bubble {
+  position: absolute;
+  min-width: 92px;
+  max-width: 126px;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.88);
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(10px);
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+  transform-origin: center;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+  will-change:
+    left,
+    top,
+    transform;
+}
+
+.tag-trace {
+  background:
+    rgba(110, 84, 104, 0.42);
+}
+
+.tag-territory {
+  background:
+    rgba(62, 91, 112, 0.42);
+}
+
+.tag-resource {
+  background:
+    rgba(83, 103, 74, 0.42);
+}
+
+.tag-bubble:hover {
+  transform:
+    translate(-50%, -50%)
+    scale(1.05);
+}
+
+.tag-bubble:active {
+  transform:
+    translate(-50%, -50%)
+    scale(0.96);
+}
+
+.tag-bubble.is-selected {
+  z-index: 4;
+  transform:
+    translate(-50%, -50%)
+    scale(1.1);
+  border-color:
+    rgba(200, 236, 255, 0.8);
+  background:
+    rgba(113, 151, 173, 0.62);
+  box-shadow:
+    0 0 0 4px
+      rgba(126, 211, 255, 0.07),
+    0 0 25px
+      rgba(109, 202, 255, 0.28);
+}
+
+.tag-symbol {
+  flex: 0 0 auto;
+  color: rgba(228, 238, 255, 0.8);
+  font-size: 0.9rem;
+}
+
+.tag-label {
+  overflow: hidden;
+  font-size: 0.77rem;
+  line-height: 1.1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.action-zone {
+  position: absolute;
+  z-index: 30;
+  bottom: 20px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transform: translateX(-50%);
+}
+
+.action-zone span {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.76rem;
+}
+
+.scrountch-button,
+.primary-button,
+.secondary-button {
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.scrountch-button {
+  padding: 14px 22px;
+  background: rgba(241, 246, 255, 0.96);
+  color: #171824;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  box-shadow:
+    0 8px 26px
+      rgba(180, 220, 255, 0.2);
+}
+
+.scrountch-button:disabled {
+  opacity: 0.5;
+}
+
+.intro-overlay,
+.poem-overlay,
+.transformation-overlay {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.intro-overlay {
+  padding: 24px;
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(68, 70, 126, 0.35),
+      transparent 50%
+    ),
+    rgba(7, 8, 17, 0.98);
+  text-align: center;
+}
+
+.noa-mark {
+  margin-bottom: 12px;
+  font-size: 3rem;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: rgba(207, 221, 255, 0.65);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.intro-overlay h1 {
+  margin: 0;
+  font-size: clamp(
+    1.65rem,
+    7vw,
+    2.8rem
+  );
+  font-weight: 550;
+  line-height: 1.14;
+}
+
+.intro-copy {
+  margin: 20px 0 27px;
+  color: rgba(255, 255, 255, 0.62);
+  line-height: 1.65;
+}
+
+.primary-button {
+  padding: 14px 22px;
+  background: white;
+  color: #151624;
+  font-weight: 700;
+}
+
+.transformation-overlay {
+  background:
+    rgba(6, 7, 16, 0.86);
+  pointer-events: none;
+}
+
+.transformation-overlay p {
+  position: absolute;
+  margin: 0;
+  font-size: clamp(
+    2rem,
+    11vw,
+    5rem
+  );
+  font-weight: 850;
+  letter-spacing: 0.04em;
+}
+
+.transformation-bubble {
+  width: 120px;
+  height: 120px;
+  border:
+    1px solid
+    rgba(211, 235, 255, 0.65);
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      rgba(255, 255, 255, 0.48),
+      rgba(108, 177, 221, 0.14) 46%,
+      rgba(74, 67, 142, 0.08)
+    );
+  box-shadow:
+    0 0 60px
+      rgba(126, 207, 255, 0.3),
+    inset 0 0 35px
+      rgba(255, 255, 255, 0.17);
+}
+
+.poem-overlay {
+  padding: 20px;
+  background:
+    rgba(5, 7, 16, 0.9);
+  backdrop-filter: blur(12px);
+}
+
+.poem-bubble {
+  width: min(92vw, 480px);
+  min-height: 390px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 30px;
+  border:
+    1px solid
+    rgba(216, 235, 255, 0.23);
+  border-radius:
+    45% 55% 52% 48% /
+    52% 43% 57% 48%;
+  background:
+    radial-gradient(
+      circle at 40% 25%,
+      rgba(211, 236, 255, 0.14),
+      transparent 55%
+    ),
+    rgba(34, 40, 78, 0.52);
+  box-shadow:
+    0 0 65px
+      rgba(105, 163, 222, 0.16),
+    inset 0 0 42px
+      rgba(255, 255, 255, 0.05);
+  text-align: center;
+}
+
+.poem-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 7px;
+  margin-bottom: 22px;
+}
+
+.poem-tags span {
+  padding: 5px 9px;
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.13);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.72rem;
+}
+
+.poem-text {
+  margin: 0;
+  white-space: pre-line;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+  font-size: clamp(
+    1.08rem,
+    4.7vw,
+    1.34rem
+  );
+  line-height: 1.7;
+}
+
+.secondary-button {
+  margin-top: 27px;
+  padding: 11px 17px;
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.16);
+  background:
+    rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+@media (max-width: 520px) {
+  .top-bar span {
+    display: none;
+  }
+
+  .graph-stage {
+    inset: 160px 0 84px;
+  }
+
+  .tag-bubble {
+    min-width: 82px;
+    max-width: 110px;
+    min-height: 42px;
+    padding: 7px 9px;
+  }
+
+  .tag-label {
+    font-size: 0.7rem;
+  }
+
+  .action-zone {
+    width: calc(100% - 28px);
+    justify-content: center;
+  }
+}
+
+@media (
+  prefers-reduced-motion: reduce
+) {
+  *,
+  *::before,
+  *::after {
+    animation-duration:
+      0.01ms !important;
+    animation-iteration-count:
+      1 !important;
+    transition-duration:
+      0.01ms !important;
+  }
+}
+
+.tag-impact {
+  background:
+    rgba(116, 76, 76, 0.46);
+}
+
+.tag-mental {
+  background:
+    rgba(70, 89, 126, 0.46);
+}
+
+.tag-movement {
+  background:
+    rgba(76, 111, 91, 0.46);
+}
+
+.tag-symbol {
+  flex: 0 0 auto;
+  font-size: 1.18rem;
+  line-height: 1;
+}
+
+.tag-label {
+  font-size: 0.72rem;
+}
+
+/* Correction des tags tronqués */
+.tag-bubble {
+  min-width: 96px;
+  max-width: 150px;
+  min-height: 46px;
+  height: auto;
+  padding: 9px 12px;
+  align-items: center;
+}
+
+.tag-label {
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+  line-height: 1.15;
+  text-align: center;
+  word-break: normal;
+}
+
+@media (max-width: 520px) {
+  .tag-bubble {
+    min-width: 88px;
+    max-width: 130px;
+    min-height: 44px;
+    padding: 8px 10px;
+  }
+
+  .tag-label {
+    font-size: 0.69rem;
+  }
+}
