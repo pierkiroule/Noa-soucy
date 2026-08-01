@@ -33,10 +33,10 @@ export interface PoemEntry {
   tags: string[]
   poem: string
   createdAt: string
+  universe: string
+  visualSeed: number
 }
 
 export type TransformationStage =
   | 'idle'
-  | 'resonance'
-  | 'bloom'
-  | 'reveal'
+  | 'blooming'

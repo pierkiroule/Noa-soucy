@@ -6,10 +6,12 @@ import type { TransformationStage } from '../types'
 
 interface TransformationOverlayProps {
   stage: TransformationStage
+  tags: string[]
 }
 
 export function TransformationOverlay({
   stage,
+  tags,
 }: TransformationOverlayProps) {
   return (
     <AnimatePresence>
@@ -20,18 +22,24 @@ export function TransformationOverlay({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
+          <div className="bloom-resonances">
+            {tags.map((tag, index) => (
+              <motion.span
+                key={tag}
+                initial={{ x: (index - 1) * 80, opacity: 0.5 }}
+                animate={{ x: 0, opacity: 0 }}
+                transition={{ duration: 1.2, ease: 'easeInOut' }}
+              >
+                {tag.split(' ')[0]}
+              </motion.span>
+            ))}
+          </div>
+
           <motion.div
-            className="transformation-bubble"
-            initial={{ scale: 0.3 }}
-            animate={{
-              scale:
-                stage === 'resonance'
-                  ? [0.4, 1.1, 0.65]
-                  : stage === 'bloom'
-                    ? [0.75, 1.05, 0.9, 1.1]
-                    : [0.7, 1.7],
-            }}
-            transition={{ duration: 1 }}
+            className="bloom-form"
+            initial={{ scale: 0.2, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1.5, ease: 'easeOut' }}
           />
 
           <motion.p
@@ -45,9 +53,7 @@ export function TransformationOverlay({
               y: 0,
             }}
           >
-            Noa est entré en résonance avec votre souci.
-            <br />
-            Une création fleurit•°.
+            De votre souci fleurit•°.
           </motion.p>
         </motion.div>
       )}

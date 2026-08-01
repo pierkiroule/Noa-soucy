@@ -22,12 +22,12 @@ export function IntroOverlay({
         De mon souci fleurit•°.
       </h1>
 
-      <p className="intro-copy">
-        Prenez un instant pour entrer en contact avec votre souci.
+      <p className="opening-poem">
+        Coquille remplie de terre.
         <br />
-        Il n&apos;est pas nécessaire de le raconter.
+        J’y dépose mon souci.
         <br />
-        Laissez-le simplement être présent.
+        Le printemps répond.
       </p>
 
       <button
@@ -35,7 +35,7 @@ export function IntroOverlay({
         className="primary-button"
         onClick={onEnter}
       >
-        Commencer
+        Entrer
       </button>
     </motion.section>
   )
