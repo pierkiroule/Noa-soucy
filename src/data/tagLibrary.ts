@@ -40,30 +40,6 @@ export const tagLibrary: TagDefinition[] = [
     ],
   },
   {
-    id: 'empty',
-    label: 'Ça vide',
-    symbol: '🕳️',
-    category: 'impact',
-    meanings: [
-      'creux',
-      'absence',
-      'fatigue',
-      'silence',
-    ],
-  },
-  {
-    id: 'shake',
-    label: 'Ça secoue',
-    symbol: '⚡',
-    category: 'impact',
-    meanings: [
-      'orage',
-      'frisson',
-      'mouvement',
-      'instabilité',
-    ],
-  },
-  {
     id: 'freeze',
     label: 'Ça fige',
     symbol: '🧊',
@@ -103,30 +79,6 @@ export const tagLibrary: TagDefinition[] = [
     ],
   },
   {
-    id: 'block',
-    label: 'Ça bloque',
-    symbol: '🚧',
-    category: 'mental',
-    meanings: [
-      'obstacle',
-      'fermeture',
-      'seuil',
-      'immobilité',
-    ],
-  },
-  {
-    id: 'trap',
-    label: 'Ça coince',
-    symbol: '🕸️',
-    category: 'mental',
-    meanings: [
-      'nœud',
-      'piège',
-      'retenue',
-      'enchevêtrement',
-    ],
-  },
-  {
     id: 'invade',
     label: 'Ça envahit',
     symbol: '🌪️',
@@ -136,18 +88,6 @@ export const tagLibrary: TagDefinition[] = [
       'occupation',
       'bruit',
       'ampleur',
-    ],
-  },
-  {
-    id: 'darken',
-    label: 'Ça assombrit',
-    symbol: '🌧️',
-    category: 'mental',
-    meanings: [
-      'nuit',
-      'ombre',
-      'pluie',
-      'retrait',
     ],
   },
 
@@ -187,18 +127,6 @@ export const tagLibrary: TagDefinition[] = [
       'nuit',
       'île',
       'silence',
-    ],
-  },
-  {
-    id: 'doubt',
-    label: 'Ça fait douter',
-    symbol: '❓',
-    category: 'movement',
-    meanings: [
-      'question',
-      'hésitation',
-      'carrefour',
-      'incertitude',
     ],
   },
   {

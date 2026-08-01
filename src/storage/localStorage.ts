@@ -28,7 +28,7 @@ export function savePoems(poems: PoemEntry[]): void {
     )
   } catch {
     console.warn(
-      'Impossible d’enregistrer les poèmes localement.',
+      'Impossible de conserver les créations dans le jardin.',
     )
   }
 }

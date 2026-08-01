@@ -74,13 +74,13 @@ function App() {
       return
     }
 
-    setStage('scrountch')
+    setStage('resonance')
     await wait(850)
 
-    setStage('bloup')
+    setStage('bloom')
     await wait(1300)
 
-    setStage('pchiiit')
+    setStage('reveal')
     await wait(850)
 
     const entry: PoemEntry = {
@@ -95,20 +95,24 @@ function App() {
       createdAt: new Date().toISOString(),
     }
 
-    const nextPoems = [
-      ...poems,
-      entry,
-    ]
-
-    setPoems(nextPoems)
-    savePoems(nextPoems)
     setCurrentPoem(entry)
     setStage('idle')
   }
 
-  function closePoem() {
+  function startNewCreation() {
     setCurrentPoem(null)
     setSelectedIds([])
+  }
+
+  function keepCreation() {
+    if (!currentPoem) {
+      return
+    }
+
+    const nextPoems = [...poems, currentPoem]
+    setPoems(nextPoems)
+    savePoems(nextPoems)
+    startNewCreation()
   }
 
   return (
@@ -120,14 +124,13 @@ function App() {
           </strong>
 
           <span>
-            La petite noix qui transforme
-            nos soucis en poésie.
+            De mon souci fleurit•°.
           </span>
         </div>
 
         <div className="poem-count">
           {poems.length > 0
-            ? `${poems.length} poésie${poems.length > 1 ? 's' : ''}`
+            ? `${poems.length} création${poems.length > 1 ? 's' : ''} dans mon jardin`
             : ''}
         </div>
       </header>
@@ -135,16 +138,15 @@ function App() {
       <section className="graph-area">
         <div className="graph-instruction">
           <p>
-            Entre en contact avec ton souci.
+            Noa vous invite à écouter les résonances de votre souci.
           </p>
 
           <h2>
-            Qu’est-ce que ce souci fait résonner en toi ?
+            Choisissez jusqu&apos;à trois résonances.
           </h2>
 
           <span>
-            Choisis jusqu’à {MAX_SELECTION} tags.
-            Tu n’as rien à raconter.
+            Touchez les émojis qui vous semblent les plus justes.
           </span>
         </div>
 
@@ -163,11 +165,11 @@ function App() {
 
             <button
               type="button"
-              className="scrountch-button"
+              className="bloom-button"
               onClick={runTransformation}
               disabled={stage !== 'idle'}
             >
-              SCROUNTCH !
+              Laisser fleurir
             </button>
           </div>
         )}
@@ -190,7 +192,8 @@ function App() {
           <PoemBubble
             poem={currentPoem.poem}
             tags={currentPoem.tags}
-            onClose={closePoem}
+            onKeep={keepCreation}
+            onNew={startNewCreation}
           />
         )}
       </AnimatePresence>

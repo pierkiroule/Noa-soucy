@@ -3,13 +3,15 @@ import { motion } from 'framer-motion'
 interface PoemBubbleProps {
   poem: string
   tags: string[]
-  onClose: () => void
+  onKeep: () => void
+  onNew: () => void
 }
 
 export function PoemBubble({
   poem,
   tags,
-  onClose,
+  onKeep,
+  onNew,
 }: PoemBubbleProps) {
   return (
     <motion.section
@@ -35,7 +37,7 @@ export function PoemBubble({
         }}
       >
         <p className="eyebrow">
-          Une poésie a émergé
+          Création
         </p>
 
         <div className="poem-tags">
@@ -50,13 +52,28 @@ export function PoemBubble({
           {poem}
         </p>
 
-        <button
-          type="button"
-          className="secondary-button"
-          onClick={onClose}
-        >
-          Laisser flotter
-        </button>
+        <div className="creation-message">
+          <p>Merci.</p>
+          <p>Prenez le temps de laisser cette création résonner.</p>
+        </div>
+
+        <div className="creation-actions">
+          <button
+            type="button"
+            className="primary-button"
+            onClick={onKeep}
+          >
+            Conserver dans mon jardin
+          </button>
+
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={onNew}
+          >
+            Nouvelle création
+          </button>
+        </div>
       </motion.div>
     </motion.section>
   )

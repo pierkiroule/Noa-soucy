@@ -8,15 +8,6 @@ interface TransformationOverlayProps {
   stage: TransformationStage
 }
 
-const labels: Record<
-  Exclude<TransformationStage, 'idle'>,
-  string
-> = {
-  scrountch: 'SCROUNTCH !',
-  bloup: 'BLOUP… BLOUP…',
-  pchiiit: 'PCHIIIIT !',
-}
-
 export function TransformationOverlay({
   stage,
 }: TransformationOverlayProps) {
@@ -34,9 +25,9 @@ export function TransformationOverlay({
             initial={{ scale: 0.3 }}
             animate={{
               scale:
-                stage === 'scrountch'
+                stage === 'resonance'
                   ? [0.4, 1.1, 0.65]
-                  : stage === 'bloup'
+                  : stage === 'bloom'
                     ? [0.75, 1.05, 0.9, 1.1]
                     : [0.7, 1.7],
             }}
@@ -54,7 +45,9 @@ export function TransformationOverlay({
               y: 0,
             }}
           >
-            {labels[stage]}
+            Noa est entré en résonance avec votre souci.
+            <br />
+            Une création fleurit•°.
           </motion.p>
         </motion.div>
       )}

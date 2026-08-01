@@ -270,7 +270,7 @@ button {
   font-size: 0.76rem;
 }
 
-.scrountch-button,
+.bloom-button,
 .primary-button,
 .secondary-button {
   border: 0;
@@ -278,7 +278,29 @@ button {
   cursor: pointer;
 }
 
-.scrountch-button {
+.creation-message {
+  margin-top: 28px;
+  color: rgba(255, 255, 255, 0.68);
+  line-height: 1.5;
+}
+
+.creation-message p {
+  margin: 4px 0;
+}
+
+.creation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.creation-actions .secondary-button {
+  margin-top: 0;
+}
+
+.bloom-button {
   padding: 14px 22px;
   background: rgba(241, 246, 255, 0.96);
   color: #171824;
@@ -289,7 +311,7 @@ button {
       rgba(180, 220, 255, 0.2);
 }
 
-.scrountch-button:disabled {
+.bloom-button:disabled {
   opacity: 0.5;
 }
 

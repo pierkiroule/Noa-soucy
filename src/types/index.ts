@@ -37,6 +37,6 @@ export interface PoemEntry {
 
 export type TransformationStage =
   | 'idle'
-  | 'scrountch'
-  | 'bloup'
-  | 'pchiiit'
+  | 'resonance'
+  | 'bloom'
+  | 'reveal'
