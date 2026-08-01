@@ -12,9 +12,25 @@ export function loadPoems(): PoemEntry[] {
 
     const parsed: unknown = JSON.parse(raw)
 
-    return Array.isArray(parsed)
-      ? (parsed as PoemEntry[])
-      : []
+    if (!Array.isArray(parsed)) {
+      return []
+    }
+
+    return (parsed as Partial<PoemEntry>[])
+      .filter((entry): entry is Partial<PoemEntry> & Pick<PoemEntry, 'id' | 'poem' | 'createdAt'> =>
+        typeof entry.id === 'string' &&
+        typeof entry.poem === 'string' &&
+        typeof entry.createdAt === 'string',
+      )
+      .map((entry) => ({
+        id: entry.id,
+        poem: entry.poem,
+        createdAt: entry.createdAt,
+        tagIds: entry.tagIds ?? [],
+        tags: entry.tags ?? [],
+        universe: entry.universe ?? 'graine',
+        visualSeed: entry.visualSeed ?? 0.5,
+      }))
   } catch {
     return []
   }
@@ -28,7 +44,7 @@ export function savePoems(poems: PoemEntry[]): void {
     )
   } catch {
     console.warn(
-      'Impossible d’enregistrer les poèmes localement.',
+      'Impossible de conserver les créations dans le jardin.',
     )
   }
 }
