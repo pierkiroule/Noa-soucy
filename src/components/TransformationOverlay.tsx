@@ -12,9 +12,8 @@ const labels: Record<
   Exclude<TransformationStage, 'idle'>,
   string
 > = {
-  scrountch: 'SCROUNTCH !',
-  bloup: 'BLOUP… BLOUP…',
-  pchiiit: 'PCHIIIIT !',
+  resonance: 'Noa est entré en résonance avec votre souci.',
+  flowering: 'Une création fleurit•°.',
 }
 
 export function TransformationOverlay({
@@ -34,11 +33,9 @@ export function TransformationOverlay({
             initial={{ scale: 0.3 }}
             animate={{
               scale:
-                stage === 'scrountch'
+                stage === 'resonance'
                   ? [0.4, 1.1, 0.65]
-                  : stage === 'bloup'
-                    ? [0.75, 1.05, 0.9, 1.1]
-                    : [0.7, 1.7],
+                  : [0.75, 1.05, 0.9, 1.1],
             }}
             transition={{ duration: 1 }}
           />

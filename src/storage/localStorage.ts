@@ -1,8 +1,8 @@
-import type { PoemEntry } from '../types'
+import type { CreationEntry } from '../types'
 
-const STORAGE_KEY = 'noa-souci-poems'
+const STORAGE_KEY = 'noa-souci-creations'
 
-export function loadPoems(): PoemEntry[] {
+export function loadCreations(): CreationEntry[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
 
@@ -13,26 +13,26 @@ export function loadPoems(): PoemEntry[] {
     const parsed: unknown = JSON.parse(raw)
 
     return Array.isArray(parsed)
-      ? (parsed as PoemEntry[])
+      ? (parsed as CreationEntry[])
       : []
   } catch {
     return []
   }
 }
 
-export function savePoems(poems: PoemEntry[]): void {
+export function saveCreations(creations: CreationEntry[]): void {
   try {
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify(poems),
+      JSON.stringify(creations),
     )
   } catch {
     console.warn(
-      'Impossible d’enregistrer les poèmes localement.',
+      'Impossible de conserver les créations dans le jardin.',
     )
   }
 }
 
-export function clearPoems(): void {
+export function clearCreations(): void {
   localStorage.removeItem(STORAGE_KEY)
 }

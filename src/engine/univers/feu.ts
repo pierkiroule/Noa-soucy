@@ -31,14 +31,14 @@ export const feu: PoetryUniverse = {
     'Il existe une tendresse capable de veiller sur le feu sans l’éteindre.',
   ],
   openings: [
-    'Peut-être peux-tu garder la lumière et déposer ce qui consume.',
+    'La lumière demeure tandis que se déposent les cendres.',
     'Quelque chose de neuf cherche peut-être à naître de cette chaleur.',
-    'Tu peux approcher cette braise sans lui donner tout le paysage.',
+    'La braise occupe un point discret dans le paysage.',
     'Et si cette intensité devenait une lampe plutôt qu’un incendie ?',
     'La transformation commence parfois par une flamme que l’on apprend à nommer.',
   ],
   endings: [
-    'Ta lumière n’a pas besoin de te brûler.',
+    'La lumière et la chaleur suivent des chemins distincts.',
     'La braise sait aussi tenir chaud.',
     'Garde l’étincelle, confie les cendres au vent.',
     'Quelque chose en toi éclaire encore.',

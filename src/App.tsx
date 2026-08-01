@@ -4,17 +4,17 @@ import {
 } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { IntroOverlay } from './components/IntroOverlay'
-import { PoemBubble } from './components/PoemBubble'
+import { CreationBubble } from './components/CreationBubble'
 import { TagGraph } from './components/TagGraph'
 import { TransformationOverlay } from './components/TransformationOverlay'
 import { tagLibrary } from './data/tagLibrary'
-import { generatePoem } from './engine/poetryEngine'
+import { generateCreation } from './engine/creationEngine'
 import {
-  loadPoems,
-  savePoems,
+  loadCreations,
+  saveCreations,
 } from './storage/localStorage'
 import type {
-  PoemEntry,
+  CreationEntry,
   TransformationStage,
 } from './types'
 
@@ -30,11 +30,11 @@ function App() {
   const [stage, setStage] =
     useState<TransformationStage>('idle')
 
-  const [poems, setPoems] =
-    useState<PoemEntry[]>(loadPoems)
+  const [creations, setCreations] =
+    useState<CreationEntry[]>(loadCreations)
 
-  const [currentPoem, setCurrentPoem] =
-    useState<PoemEntry | null>(null)
+  const [currentCreation, setCurrentCreation] =
+    useState<CreationEntry | null>(null)
 
   const selectedTags = useMemo(
     () =>
@@ -74,16 +74,13 @@ function App() {
       return
     }
 
-    setStage('scrountch')
-    await wait(850)
+    setStage('resonance')
+    await wait(1500)
 
-    setStage('bloup')
-    await wait(1300)
+    setStage('flowering')
+    await wait(1500)
 
-    setStage('pchiiit')
-    await wait(850)
-
-    const entry: PoemEntry = {
+    const entry: CreationEntry = {
       id: crypto.randomUUID(),
       tagIds: selectedTags.map(
         (tag) => tag.id,
@@ -91,23 +88,32 @@ function App() {
       tags: selectedTags.map(
         (tag) => tag.label,
       ),
-      poem: generatePoem(selectedTags),
+      content: generateCreation(selectedTags),
       createdAt: new Date().toISOString(),
     }
 
-    const nextPoems = [
-      ...poems,
-      entry,
-    ]
-
-    setPoems(nextPoems)
-    savePoems(nextPoems)
-    setCurrentPoem(entry)
+    setCurrentCreation(entry)
     setStage('idle')
   }
 
-  function closePoem() {
-    setCurrentPoem(null)
+  function keepCreation() {
+    if (!currentCreation) {
+      return
+    }
+
+    const alreadyKept = creations.some(
+      (entry) => entry.id === currentCreation.id,
+    )
+
+    if (!alreadyKept) {
+      const nextCreations = [...creations, currentCreation]
+      setCreations(nextCreations)
+      saveCreations(nextCreations)
+    }
+  }
+
+  function startNewCreation() {
+    setCurrentCreation(null)
     setSelectedIds([])
   }
 
@@ -120,31 +126,27 @@ function App() {
           </strong>
 
           <span>
-            La petite noix qui transforme
-            nos soucis en poésie.
+            De nos soucis fleurissent•°.
           </span>
         </div>
 
-        <div className="poem-count">
-          {poems.length > 0
-            ? `${poems.length} poésie${poems.length > 1 ? 's' : ''}`
+        <div className="creation-count">
+          {creations.length > 0
+            ? `${creations.length} création${creations.length > 1 ? 's' : ''} dans le jardin`
             : ''}
         </div>
       </header>
 
       <section className="graph-area">
         <div className="graph-instruction">
-          <p>
-            Entre en contact avec ton souci.
-          </p>
-
           <h2>
-            Qu’est-ce que ce souci fait résonner en toi ?
+            Noa vous invite à écouter les résonances de votre souci.
           </h2>
 
           <span>
-            Choisis jusqu’à {MAX_SELECTION} tags.
-            Tu n’as rien à raconter.
+            Choisissez jusqu&apos;à trois résonances.
+            <br />
+            Touchez les émojis qui vous semblent les plus justes.
           </span>
         </div>
 
@@ -163,11 +165,11 @@ function App() {
 
             <button
               type="button"
-              className="scrountch-button"
+              className="flower-button"
               onClick={runTransformation}
               disabled={stage !== 'idle'}
             >
-              SCROUNTCH !
+              Laisser fleurir
             </button>
           </div>
         )}
@@ -186,11 +188,13 @@ function App() {
       />
 
       <AnimatePresence>
-        {currentPoem && (
-          <PoemBubble
-            poem={currentPoem.poem}
-            tags={currentPoem.tags}
-            onClose={closePoem}
+        {currentCreation && (
+          <CreationBubble
+            content={currentCreation.content}
+            tags={currentCreation.tags}
+            kept={creations.some((entry) => entry.id === currentCreation.id)}
+            onKeep={keepCreation}
+            onNew={startNewCreation}
           />
         )}
       </AnimatePresence>

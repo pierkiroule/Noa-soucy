@@ -104,9 +104,9 @@ endings: [
 
 "Le chemin existe encore.",
 
-"Continue doucement.",
+"Le mouvement revient doucement.",
 
-"Respire. Rien ne presse.",
+"Un souffle passe. Rien ne presse.",
 
 "Le paysage change avant qu'on le remarque.",
 

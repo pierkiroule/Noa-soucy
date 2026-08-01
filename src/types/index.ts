@@ -11,16 +11,15 @@ export interface TagDefinition {
   meanings: string[]
 }
 
-export interface PoemEntry {
+export interface CreationEntry {
   id: string
   tagIds: string[]
   tags: string[]
-  poem: string
+  content: string
   createdAt: string
 }
 
 export type TransformationStage =
   | 'idle'
-  | 'scrountch'
-  | 'bloup'
-  | 'pchiiit'
+  | 'resonance'
+  | 'flowering'

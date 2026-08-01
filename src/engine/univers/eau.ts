@@ -32,7 +32,7 @@ export const eau: PoetryUniverse = {
   ],
   openings: [
     'Peut-être qu’un rivage plus vaste est déjà en train de se dessiner.',
-    'Tu peux chercher la rive, un souffle après l’autre.',
+    'La rive se précise, un souffle après l’autre.',
     'Et si ce trop-plein indiquait simplement le chemin du large ?',
     'Une éclaircie suffit parfois pour que l’eau reflète à nouveau le ciel.',
     'Laisse au courant ce qui peut partir ; garde ce qui nourrit.',

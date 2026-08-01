@@ -1,156 +1,88 @@
 import type { TagDefinition } from '../types'
 
 export const tagLibrary: TagDefinition[] = [
-  // Impacts corporels et émotionnels
-
   {
     id: 'heavy',
     label: 'Ça pèse',
     symbol: '🪨',
     category: 'impact',
-    meanings: [
-      'poids',
-      'pierre',
-      'lenteur',
-      'profondeur',
-    ],
+    meanings: ['poids', 'pierre', 'lenteur', 'profondeur'],
   },
   {
     id: 'burn',
     label: 'Ça brûle',
     symbol: '🔥',
     category: 'impact',
-    meanings: [
-      'feu',
-      'chaleur',
-      'intensité',
-      'braise',
-    ],
+    meanings: ['feu', 'chaleur', 'intensité', 'braise'],
   },
   {
     id: 'overflow',
     label: 'Ça déborde',
     symbol: '🌊',
     category: 'impact',
-    meanings: [
-      'vague',
-      'courant',
-      'débordement',
-      'ampleur',
-    ],
+    meanings: ['vague', 'courant', 'débordement', 'ampleur'],
   },
-  {
-    id: 'shake',
-    label: 'Ça secoue',
-    symbol: '⚡',
-    category: 'impact',
-    meanings: [
-      'orage',
-      'frisson',
-      'mouvement',
-      'instabilité',
-    ],
-  },
-
-  // Effets mentaux
-
   {
     id: 'loop',
     label: 'Ça tourne',
     symbol: '🌀',
     category: 'mental',
-    meanings: [
-      'boucle',
-      'spirale',
-      'retour',
-      'répétition',
-    ],
+    meanings: ['boucle', 'spirale', 'retour', 'répétition'],
   },
   {
     id: 'blur',
     label: 'Ça embrouille',
     symbol: '🌫️',
     category: 'mental',
-    meanings: [
-      'brume',
-      'flou',
-      'hésitation',
-      'contours',
-    ],
+    meanings: ['brume', 'flou', 'hésitation', 'contours'],
   },
   {
-    id: 'block',
-    label: 'Ça bloque',
-    symbol: '🚧',
+    id: 'freeze',
+    label: 'Ça fige',
+    symbol: '🧊',
+    category: 'impact',
+    meanings: ['gel', 'arrêt', 'suspension', 'immobilité'],
+  },
+  {
+    id: 'invade',
+    label: 'Ça envahit',
+    symbol: '🌪️',
     category: 'mental',
-    meanings: [
-      'obstacle',
-      'fermeture',
-      'seuil',
-      'immobilité',
-    ],
-  },
-  {
-    id: 'darken',
-    label: 'Ça assombrit',
-    symbol: '🌧️',
-    category: 'mental',
-    meanings: [
-      'nuit',
-      'ombre',
-      'pluie',
-      'retrait',
-    ],
-  },
-
-  // Mouvements et tensions
-
-  {
-    id: 'change',
-    label: 'Ça appelle un changement',
-    symbol: '🌱',
-    category: 'movement',
-    meanings: [
-      'graine',
-      'pousse',
-      'commencement',
-      'passage',
-    ],
+    meanings: ['tourbillon', 'occupation', 'bruit', 'ampleur'],
   },
   {
     id: 'hurt',
     label: 'Ça fait mal',
     symbol: '💔',
     category: 'movement',
-    meanings: [
-      'fêlure',
-      'fragilité',
-      'cicatrice',
-      'tendresse',
-    ],
+    meanings: ['fêlure', 'fragilité', 'cicatrice', 'tendresse'],
   },
   {
-    id: 'doubt',
-    label: 'Ça fait douter',
-    symbol: '❓',
+    id: 'change',
+    label: 'Ça appelle un changement',
+    symbol: '🌱',
     category: 'movement',
-    meanings: [
-      'question',
-      'hésitation',
-      'carrefour',
-      'incertitude',
-    ],
+    meanings: ['graine', 'pousse', 'commencement', 'passage'],
+  },
+  {
+    id: 'isolate',
+    label: 'Ça isole',
+    symbol: '🌙',
+    category: 'movement',
+    meanings: ['distance', 'nuit', 'île', 'silence'],
+  },
+  {
+    id: 'last',
+    label: 'Ça dure',
+    symbol: '⏳',
+    category: 'mental',
+    meanings: ['temps', 'attente', 'saison', 'patience'],
   },
   {
     id: 'breathe',
-    label: 'Ça cherche de l’air',
+    label: "Ça cherche de l'air",
     symbol: '🫧',
     category: 'movement',
-    meanings: [
-      'souffle',
-      'espace',
-      'ouverture',
-      'légèreté',
-    ],
+    meanings: ['souffle', 'espace', 'ouverture', 'légèreté'],
   },
 ]

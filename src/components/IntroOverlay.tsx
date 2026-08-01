@@ -14,24 +14,20 @@ export function IntroOverlay({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <div className="noa-mark">
-        🌰
-      </div>
-
       <p className="eyebrow">
         NOA SOUCI
       </p>
 
       <h1>
-        La petite noix qui transforme
-        <br />
-        nos soucis en poésie.
+        De nos soucis fleurissent•°.
       </h1>
 
       <p className="intro-copy">
-        Entre en contact avec ton souci.
+        Prenez un instant pour entrer en contact avec votre souci.
         <br />
-        Pas besoin de l’écrire.
+        Il n&apos;est pas nécessaire de le raconter.
+        <br />
+        Laissez-le simplement être présent.
       </p>
 
       <button
@@ -39,7 +35,7 @@ export function IntroOverlay({
         className="primary-button"
         onClick={onEnter}
       >
-        Confier ses traces
+        Commencer
       </button>
     </motion.section>
   )

@@ -84,7 +84,7 @@ button {
   font-size: 0.7rem;
 }
 
-.poem-count {
+.creation-count {
   color: rgba(255, 255, 255, 0.5);
   font-size: 0.72rem;
 }
@@ -414,7 +414,7 @@ button {
   font-size: 0.76rem;
 }
 
-.scrountch-button,
+.flower-button,
 .primary-button,
 .secondary-button {
   border: 0;
@@ -422,23 +422,23 @@ button {
   cursor: pointer;
 }
 
-.scrountch-button {
+.flower-button {
   padding: 14px 22px;
   background: rgba(241, 246, 255, 0.96);
   color: #171824;
-  font-weight: 800;
-  letter-spacing: 0.05em;
+  font-weight: 650;
+  letter-spacing: 0.02em;
   box-shadow:
     0 8px 26px
       rgba(180, 220, 255, 0.2);
 }
 
-.scrountch-button:disabled {
+.flower-button:disabled {
   opacity: 0.5;
 }
 
 .intro-overlay,
-.poem-overlay,
+  .creation-overlay,
 .transformation-overlay {
   position: fixed;
   z-index: 100;
@@ -497,6 +497,11 @@ button {
   font-weight: 700;
 }
 
+.primary-button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
 .transformation-overlay {
   background:
     rgba(6, 7, 16, 0.86);
@@ -505,14 +510,13 @@ button {
 
 .transformation-overlay p {
   position: absolute;
+  width: min(86vw, 560px);
   margin: 0;
-  font-size: clamp(
-    2rem,
-    11vw,
-    5rem
-  );
-  font-weight: 850;
-  letter-spacing: 0.04em;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.15rem, 4vw, 1.65rem);
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
 }
 
 .transformation-bubble {
@@ -536,14 +540,14 @@ button {
       rgba(255, 255, 255, 0.17);
 }
 
-.poem-overlay {
+.creation-overlay {
   padding: 20px;
   background:
     rgba(5, 7, 16, 0.9);
   backdrop-filter: blur(12px);
 }
 
-.poem-bubble {
+.creation-bubble {
   width: min(92vw, 480px);
   min-height: 390px;
   display: flex;
@@ -572,7 +576,7 @@ button {
   text-align: center;
 }
 
-.poem-tags {
+.creation-tags {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -580,7 +584,7 @@ button {
   margin-bottom: 22px;
 }
 
-.poem-tags span {
+.creation-tags span {
   padding: 5px 9px;
   border:
     1px solid
@@ -590,7 +594,7 @@ button {
   font-size: 0.72rem;
 }
 
-.poem-text {
+.creation-text {
   margin: 0;
   white-space: pre-line;
   font-family:
@@ -603,6 +607,36 @@ button {
     1.34rem
   );
   line-height: 1.7;
+}
+
+.creation-afterword {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 24px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.creation-afterword strong {
+  color: rgba(255, 255, 255, 0.88);
+  font-weight: 500;
+}
+
+.creation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 24px;
+}
+
+.creation-actions .primary-button,
+.creation-actions .secondary-button {
+  margin: 0;
+  padding: 11px 16px;
+  font-size: 0.76rem;
 }
 
 .secondary-button {
@@ -626,14 +660,8 @@ button {
   }
 
   .tag-bubble {
-    min-width: 82px;
-    max-width: 110px;
-    min-height: 42px;
-    padding: 7px 9px;
-  }
-
-  .tag-label {
-    font-size: 0.7rem;
+    width: 44px;
+    height: 44px;
   }
 
   .action-zone {
@@ -654,62 +682,5 @@ button {
       1 !important;
     transition-duration:
       0.01ms !important;
-  }
-}
-
-.tag-impact {
-  background:
-    rgba(116, 76, 76, 0.46);
-}
-
-.tag-mental {
-  background:
-    rgba(70, 89, 126, 0.46);
-}
-
-.tag-movement {
-  background:
-    rgba(76, 111, 91, 0.46);
-}
-
-.tag-symbol {
-  flex: 0 0 auto;
-  font-size: 1.18rem;
-  line-height: 1;
-}
-
-.tag-label {
-  font-size: 0.72rem;
-}
-
-/* Correction des tags tronqués */
-.tag-bubble {
-  min-width: 96px;
-  max-width: 150px;
-  min-height: 46px;
-  height: auto;
-  padding: 9px 12px;
-  align-items: center;
-}
-
-.tag-label {
-  overflow: visible;
-  white-space: normal;
-  text-overflow: clip;
-  line-height: 1.15;
-  text-align: center;
-  word-break: normal;
-}
-
-@media (max-width: 520px) {
-  .tag-bubble {
-    min-width: 88px;
-    max-width: 130px;
-    min-height: 44px;
-    padding: 8px 10px;
-  }
-
-  .tag-label {
-    font-size: 0.69rem;
   }
 }

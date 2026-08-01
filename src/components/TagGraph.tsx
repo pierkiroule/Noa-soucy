@@ -81,9 +81,7 @@ export function TagGraph({
       <ResonanceFlower selectedIds={selectedIds} />
 
       <div className="resonance-words" aria-live="polite">
-        {selectedIds.length === 0 ? (
-          <p>Choisis ce qui résonne</p>
-        ) : (
+        {selectedIds.length > 0 && (
           tagLibrary
             .filter((tag) => selectedIds.includes(tag.id))
             .map((tag) => (
