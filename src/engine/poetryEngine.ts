@@ -13,6 +13,12 @@ function scoreUniverse(universe: PoetryUniverse, resonances: TagDefinition[]) {
   )
 }
 
+function dominantUniverse(resonances: TagDefinition[]) {
+  return universes
+    .map((universe, order) => ({ universe, order, score: scoreUniverse(universe, resonances) }))
+    .sort((a, b) => b.score - a.score || a.order - b.order)[0].universe
+}
+
 function pickFresh(fragments: string[]) {
   const fresh = fragments.filter((fragment) => !recentFragments.includes(fragment))
   const fragment = randomItem(fresh.length > 0 ? fresh : fragments)
@@ -30,15 +36,7 @@ export function generateCreation(resonances: TagDefinition[]) {
     throw new Error('Une résonance est nécessaire pour faire fleurir une création.')
   }
 
-  const ranked = universes
-    .map((universe, order) => ({
-      universe,
-      order,
-      score: scoreUniverse(universe, resonances),
-    }))
-    .sort((a, b) => b.score - a.score || a.order - b.order)
-
-  const dominant = ranked[0].universe
+  const dominant = dominantUniverse(resonances)
   const text = [
     pickFresh(dominant.intros),
     pickFresh(dominant.images),
@@ -48,4 +46,29 @@ export function generateCreation(resonances: TagDefinition[]) {
   ].join('\n\n')
 
   return { text, universe: dominant.id }
+}
+
+export function generatePollenSuggestions(resonances: TagDefinition[]) {
+  if (resonances.length === 0) {
+    return { suggestions: [], universe: 'graine' }
+  }
+
+  const dominant = dominantUniverse(resonances)
+  const fragments = [
+    ...dominant.intros,
+    ...dominant.images,
+    ...dominant.developments,
+    ...dominant.openings,
+    ...dominant.endings,
+    `${dominant.intros[0]}\n${dominant.images[1]}`,
+    `${dominant.developments[1]}\n${dominant.endings[0]}`,
+  ]
+
+  return {
+    universe: dominant.id,
+    suggestions: fragments.map((text, index) => ({
+      id: `${dominant.id}-${Date.now()}-${index}`,
+      text,
+    })),
+  }
 }

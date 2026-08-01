@@ -1,25 +1,27 @@
 import { useMemo, useState } from 'react'
-import { AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { ContactOverlay } from './components/ContactOverlay'
 import { Garden } from './components/Garden'
 import { IntroOverlay } from './components/IntroOverlay'
-import { PoemBubble } from './components/PoemBubble'
+import { PollenStudio, type PollenSuggestion } from './components/PollenStudio'
 import { TagGraph } from './components/TagGraph'
-import { TransformationOverlay } from './components/TransformationOverlay'
 import { tagLibrary } from './data/tagLibrary'
-import { generateCreation } from './engine/poetryEngine'
+import { generatePollenSuggestions } from './engine/poetryEngine'
 import { loadPoems, savePoems } from './storage/localStorage'
-import type { PoemEntry, TransformationStage } from './types'
+import type { PoemEntry } from './types'
 
 const MAX_SELECTION = 3
 type ExperienceStep = 'welcome' | 'contact' | 'resonances'
+type CreationStage = 'selection' | 'synthesis' | 'studio'
 
 function App() {
   const [step, setStep] = useState<ExperienceStep>('welcome')
+  const [creationStage, setCreationStage] = useState<CreationStage>('selection')
   const [selectedIds, setSelectedIds] = useState<string[]>([])
-  const [stage, setStage] = useState<TransformationStage>('idle')
+  const [suggestions, setSuggestions] = useState<PollenSuggestion[]>([])
+  const [universe, setUniverse] = useState('graine')
+  const [studioCycle, setStudioCycle] = useState(0)
   const [creations, setCreations] = useState<PoemEntry[]>(loadPoems)
-  const [currentCreation, setCurrentCreation] = useState<PoemEntry | null>(null)
   const [gardenOpen, setGardenOpen] = useState(false)
   const [gardenSelection, setGardenSelection] = useState<PoemEntry | null>(null)
 
@@ -30,83 +32,71 @@ function App() {
 
   function toggleTag(id: string) {
     setSelectedIds((current) => {
-      if (current.includes(id)) {
-        return current.filter((item) => item !== id)
-      }
+      if (current.includes(id)) return current.filter((item) => item !== id)
       return current.length >= MAX_SELECTION ? current : [...current, id]
     })
   }
 
-  function createEntry() {
-    const result = generateCreation(selectedTags)
+  async function beginBloom() {
+    if (selectedTags.length === 0) return
+    setCreationStage('synthesis')
+    await new Promise<void>((resolve) => window.setTimeout(resolve, 1700))
+    const pollen = generatePollenSuggestions(selectedTags)
+    setSuggestions(pollen.suggestions)
+    setUniverse(pollen.universe)
+    setStudioCycle((cycle) => cycle + 1)
+    setCreationStage('studio')
+  }
+
+  function creationEntry(text: string): PoemEntry {
     return {
       id: crypto.randomUUID(),
       tagIds: selectedTags.map((tag) => tag.id),
       tags: selectedTags.map((tag) => `${tag.symbol} ${tag.label}`),
-      poem: result.text,
+      poem: text,
       createdAt: new Date().toISOString(),
-      universe: result.universe,
+      universe,
       visualSeed: Math.random(),
     }
   }
 
-  async function letBloom() {
-    if (selectedTags.length === 0 || stage !== 'idle') {
-      return
-    }
-
-    setStage('blooming')
-    await new Promise<void>((resolve) => window.setTimeout(resolve, 1800))
-    setCurrentCreation(createEntry())
-    setStage('idle')
-  }
-
-  function leaveCreation() {
-    setCurrentCreation(null)
-    setSelectedIds([])
-  }
-
-  function keepCreation() {
-    if (!currentCreation) return
-    const nextCreations = [...creations, currentCreation]
-    setCreations(nextCreations)
-    savePoems(nextCreations)
-    leaveCreation()
+  function keepComposition(text: string) {
+    const next = [...creations, creationEntry(text)]
+    setCreations(next)
+    savePoems(next)
     setGardenOpen(true)
   }
 
-  async function makeAnotherCreation() {
-    setCurrentCreation(null)
-    window.setTimeout(() => void letBloom(), 180)
+  function startNewFlower() {
+    const pollen = generatePollenSuggestions(selectedTags)
+    setSuggestions(pollen.suggestions)
+    setUniverse(pollen.universe)
+    setStudioCycle((cycle) => cycle + 1)
+  }
+
+  function returnToResonances() {
+    setCreationStage('selection')
+    setSuggestions([])
   }
 
   return (
     <main className="app-shell">
       <header className="top-bar">
-        <div>
-          <strong>NOA souci</strong>
-          <span>De mon souci fleurissent...•°</span>
-        </div>
-        <button type="button" className="garden-link" onClick={() => setGardenOpen(true)}>
-          Mon jardin{creations.length > 0 ? ` · ${creations.length}` : ''}
-        </button>
+        <div><strong>NOA souci</strong><span>De mon souci fleurissent...•°</span></div>
+        <button type="button" className="garden-link" onClick={() => setGardenOpen(true)}>Mon jardin{creations.length > 0 ? ` · ${creations.length}` : ''}</button>
       </header>
 
       <section className="graph-area">
         <div className="graph-instruction">
-          <p>Noa vous invite à écouter les résonances de votre souci.</p>
-          <h2>Choisissez jusqu’à trois résonances.</h2>
-          <span>Touchez celles qui vous semblent les plus justes.</span>
+          <p>Noa t’invite à écouter les résonances de ton souci.</p>
+          <h2>Choisis jusqu’à trois résonances.</h2>
+          <span>Touche celles qui te semblent les plus justes.</span>
         </div>
-
-        <TagGraph selectedIds={selectedIds} onToggle={toggleTag} />
-
-        {selectedIds.length > 0 && (
+        <TagGraph selectedIds={selectedIds} onToggle={toggleTag} hidden={creationStage !== 'selection'} />
+        {selectedIds.length > 0 && creationStage === 'selection' && (
           <div className="action-zone">
             <span>{selectedIds.length} / {MAX_SELECTION}</span>
-            <button type="button" className="bloom-button" onClick={() => void letBloom()} disabled={stage !== 'idle'}>
-              Laisser fleurir
-            </button>
+            <button type="button" className="bloom-button" onClick={() => void beginBloom()}>Faire émerger</button>
           </div>
         )}
       </section>
@@ -116,25 +106,25 @@ function App() {
         {step === 'contact' && <ContactOverlay key="contact" onContinue={() => setStep('resonances')} />}
       </AnimatePresence>
 
-      <TransformationOverlay stage={stage} tags={selectedTags.map((tag) => `${tag.symbol} ${tag.label}`)} />
-
       <AnimatePresence>
-        {currentCreation && (
-          <PoemBubble
-            poem={currentCreation.poem}
-            tags={currentCreation.tags}
-            onKeep={keepCreation}
-            onLeave={leaveCreation}
-            onNew={() => void makeAnotherCreation()}
+        {creationStage === 'synthesis' && (
+          <motion.section className="synthesis-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <div className="synthesis-ferment" aria-hidden="true">{Array.from({ length: 12 }, (_, index) => <i key={index} />)}</div>
+            <p>Aujourd’hui, ton souci résonne avec ces sensations…</p>
+            <div>{selectedTags.map((tag) => <span key={tag.id}>{tag.symbol} {tag.label}</span>)}</div>
+          </motion.section>
+        )}
+        {creationStage === 'studio' && (
+          <PollenStudio
+            key={studioCycle}
+            suggestions={suggestions}
+            onKeep={keepComposition}
+            onCycle={startNewFlower}
+            onBack={returnToResonances}
           />
         )}
         {gardenOpen && (
-          <Garden
-            creations={creations}
-            selected={gardenSelection}
-            onSelect={setGardenSelection}
-            onClose={() => { setGardenSelection(null); setGardenOpen(false) }}
-          />
+          <Garden creations={creations} selected={gardenSelection} onSelect={setGardenSelection} onClose={() => { setGardenSelection(null); setGardenOpen(false) }} />
         )}
       </AnimatePresence>
     </main>
