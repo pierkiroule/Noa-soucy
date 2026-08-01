@@ -107,6 +107,7 @@ button:focus-visible { outline: 1px solid var(--amber); outline-offset: 4px; }
   background: radial-gradient(ellipse at 50% 100%, rgba(100,76,47,.65), transparent 65%);
 }
 .eyebrow { margin: 0 0 14px; color: rgba(215,164,93,.68); font-size: .65rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; }
+.brand-title { text-transform: none; }
 .intro-overlay h1 { margin: 0; font-family: Newsreader, serif; font-size: clamp(2rem,8vw,3.7rem); font-weight: 300; line-height: 1.1; }
 .opening-poem {
   margin: 34px 0 36px; color: rgba(238,232,219,.68); font-family: Newsreader, serif;

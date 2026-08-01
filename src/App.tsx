@@ -84,8 +84,8 @@ function App() {
     <main className="app-shell">
       <header className="top-bar">
         <div>
-          <strong>NOA SOUCI</strong>
-          <span>De mon souci fleurit•°.</span>
+          <strong>NOA souci</strong>
+          <span>De mon souci fleurissent...•°</span>
         </div>
         <button type="button" className="garden-link" onClick={() => setGardenOpen(true)}>
           Mon jardin{creations.length > 0 ? ` · ${creations.length}` : ''}

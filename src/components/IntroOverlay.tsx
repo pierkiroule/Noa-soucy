@@ -14,12 +14,12 @@ export function IntroOverlay({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <p className="eyebrow">
-        NOA SOUCI
+      <p className="eyebrow brand-title">
+        NOA souci
       </p>
 
       <h1>
-        De mon souci fleurit•°.
+        De mon souci fleurissent...•°
       </h1>
 
       <p className="opening-poem">

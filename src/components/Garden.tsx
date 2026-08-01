@@ -13,7 +13,7 @@ export function Garden({ creations, selected, onSelect, onClose }: GardenProps) 
     <motion.section className="garden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <header className="garden-header">
         <div>
-          <p className="eyebrow">NOA SOUCI</p>
+          <p className="eyebrow brand-title">NOA souci</p>
           <h1>Mon jardin</h1>
           <p>Ici demeurent les créations qui ont fleuri.</p>
         </div>
