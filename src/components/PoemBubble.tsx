@@ -34,8 +34,10 @@ export function PoemBubble({
           damping: 15,
         }}
       >
+        <button type="button" className="modal-close" onClick={onClose} aria-label="Fermer">×</button>
+        <span className="poem-spark" aria-hidden="true">✦</span>
         <p className="eyebrow">
-          Une poésie a émergé
+          Ta poésie a émergé
         </p>
 
         <div className="poem-tags">
@@ -55,7 +57,7 @@ export function PoemBubble({
           className="secondary-button"
           onClick={onClose}
         >
-          Laisser flotter
+          Laisser flotter <span aria-hidden="true">→</span>
         </button>
       </motion.div>
     </motion.section>

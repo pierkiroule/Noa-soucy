@@ -114,52 +114,58 @@ function App() {
   return (
     <main className="app-shell">
       <header className="top-bar">
-        <div>
-          <strong>
-            NOA SOUCI
-          </strong>
-
-          <span>
-            La petite noix qui transforme
-            nos soucis en poésie.
-          </span>
+        <div className="brand-lockup">
+          <span className="brand-mark" aria-hidden="true">N</span>
+          <div>
+            <strong>NOA SOUCI</strong>
+            <span>Transformer ce qui pèse</span>
+          </div>
         </div>
 
         <div className="poem-count">
-          {poems.length > 0
-            ? `${poems.length} poésie${poems.length > 1 ? 's' : ''}`
-            : ''}
+          <span className="poem-count-dot" aria-hidden="true" />
+          {poems.length} création{poems.length > 1 ? 's' : ''}
         </div>
       </header>
 
       <section className="graph-area">
         <div className="graph-instruction">
-          <p>
-            Entre en contact avec ton souci.
-          </p>
+          <p className="step-label"><span>01</span> Ressentir</p>
 
           <h2>
-            Qu’est-ce que ce souci fait résonner en toi ?
+            Qu’est-ce que ce souci<br />fait résonner en toi&nbsp;?
           </h2>
 
           <span>
-            Choisis jusqu’à {MAX_SELECTION} tags.
-            Tu n’as rien à raconter.
+            Choisis jusqu’à {MAX_SELECTION} sensations. Rien à écrire,
+            rien à expliquer.
           </span>
+        </div>
+
+        <div className="category-legend" aria-label="Catégories de sensations">
+          <span><i className="legend-impact" /> Corps</span>
+          <span><i className="legend-mental" /> Pensées</span>
+          <span><i className="legend-movement" /> Élan</span>
         </div>
 
         <TagGraph
           selectedIds={selectedIds}
           onToggle={toggleTag}
+          selectionFull={selectedIds.length >= MAX_SELECTION}
         />
 
         {selectedIds.length > 0 && (
           <div className="action-zone">
-            <span>
-              {selectedIds.length}
-              {' / '}
-              {MAX_SELECTION}
-            </span>
+            <div className="selection-summary">
+              <span className="selection-count">{selectedIds.length}/{MAX_SELECTION}</span>
+              <div className="selected-tags">
+                {selectedTags.map((tag) => (
+                  <button key={tag.id} type="button" onClick={() => toggleTag(tag.id)}>
+                    {tag.label}<span aria-hidden="true">×</span>
+                  </button>
+                ))}
+              </div>
+            </div>
 
             <button
               type="button"
@@ -167,7 +173,8 @@ function App() {
               onClick={runTransformation}
               disabled={stage !== 'idle'}
             >
-              SCROUNTCH !
+              Transformer
+              <span aria-hidden="true">→</span>
             </button>
           </div>
         )}

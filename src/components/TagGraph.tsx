@@ -24,6 +24,7 @@ import { TagBubble } from './TagBubble'
 interface TagGraphProps {
   selectedIds: string[]
   onToggle: (id: string) => void
+  selectionFull: boolean
 }
 
 function createNodes(): GraphNode[] {
@@ -86,6 +87,7 @@ function isGraphNode(
 export function TagGraph({
   selectedIds,
   onToggle,
+  selectionFull,
 }: TagGraphProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -273,6 +275,7 @@ export function TagGraph({
             key={node.id}
             node={node}
             onToggle={onToggle}
+            disabled={selectionFull && !node.selected}
           />
         ))}
       </div>

@@ -56,6 +56,7 @@ export function TransformationOverlay({
           >
             {labels[stage]}
           </motion.p>
+          <span className="transformation-caption">Ton ressenti change doucement de forme</span>
         </motion.div>
       )}
     </AnimatePresence>
