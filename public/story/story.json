@@ -3,129 +3,73 @@
     "id": "nao-souci",
     "title": "NAO SOUCI",
     "subtitle": "La petite noix qui apprit à naviguer sur l’Océan des Soucis",
-    "version": 1
+    "version": 3
   },
   "acts": {
     "act-01-tempete": {
       "id": "act-01-tempete",
       "title": "Le lendemain de la tempête",
-      "text": "Je ne vais pas vous raconter une histoire à la noix.\n\nEnfin si.\n\nMais pas n’importe laquelle. Je l’ai vue de mes propres yeux, le lendemain d’une tempête qui avait secoué l’Océan des Soucis jusqu’au fond de ses poches. Au matin, le vent s’était tu. La mer respirait encore lourdement, avec de longues vagues grises. L’air avait un goût de sel et de bois mouillé.\n\nMon bateau avançait sans bruit parmi les feuilles arrachées, les bouts d’écorce et les plumes collées par l’eau. C’est alors que j’aperçus, dans le creux d’une vague, une toute petite chose brune. Une demi-coquille de noix. Pas plus grande que le milieu de ma paume.\n\nElle montait. Elle descendait. Parfois, elle disparaissait derrière une ride d’eau, puis revenait, brillante sous le soleil neuf.\n\nJ’aurais pu poursuivre ma route. Pourtant je ralentis. Car après certaines tempêtes, la mer garde un silence particulier. Un silence qui n’est pas vide. Ce matin-là, j’eus l’impression qu’elle n’avait pas terminé son histoire."
+      "narrator": "sailor",
+      "text": "Je ne vais pas vous raconter une histoire à la noix.\n\nEnfin si.\n\nMais pas n’importe laquelle. Je l’ai vue de mes propres yeux, le lendemain d’une tempête qui avait secoué l’Océan des Soucis jusqu’au fond de ses poches. Au matin, le vent s’était tu. La mer respirait encore lourdement, avec de longues vagues grises. L’air avait un goût de sel et de bois mouillé.\n\nMon bateau avançait sans bruit parmi les feuilles arrachées, les bouts d’écorce et les plumes collées par l’eau. C’est alors que j’aperçus, dans le creux d’une vague, une toute petite chose brune. Une demi-coquille de noix. Pas plus grande que le milieu de ma paume.\n\nElle montait. Elle descendait. Parfois, elle disparaissait derrière une ride d’eau, puis revenait, brillante sous le soleil neuf.\n\nJ’aurais pu poursuivre ma route. Pourtant je ralentis. Car après certaines tempêtes, la mer garde un silence particulier. Un silence qui n’est pas vide. Ce matin-là, j’eus l’impression qu’elle n’avait pas terminé son histoire.",
+      "media": {
+        "video": "a01-video.mp4",
+        "voice": "a01-voice.mp3",
+        "music": "a01-music.mp3",
+        "ambience": "a01-ambience.mp3",
+        "poster": null
+      }
     },
     "act-02-depots": {
       "id": "act-02-depots",
       "title": "Ce que les vagues déposent",
-      "text": "Je gardai la petite coquille en vue. La mer ne la ménageait pas. Une vague la soulevait, une autre la renversait. Elle roulait dans l’écume, se vidait presque, puis se redressait avec un mince éclat d’eau au fond.\n\nPeu à peu, les vagues y déposèrent leur récolte : un morceau de feuille rousse, deux brindilles, un duvet de mousse. Puis vinrent de la boue, quelques grains de terre et de petites graines que l’on aurait prises pour du sable. Tout cela sentait la forêt mouillée au milieu du grand air salé.\n\nLa demi-noix s’enfonça. Son bord se rapprocha de l’eau. Je la crus perdue plus d’une fois. Mais entre deux vagues, le soleil chauffait sa coque sombre. Il séchait la feuille, allégeait la mousse, fendillait la boue. Ce que la mer ajoutait, la lumière le transformait un peu.\n\nAinsi passa le jour : un dépôt, un roulis, un rayon chaud. Rien n’était stable, et pourtant la coquille flottait encore. Tout juste. Avec, dans son creux, un petit monde en désordre."
+      "narrator": "sailor",
+      "text": "Je gardai la petite coquille en vue. La mer ne la ménageait pas. Une vague la soulevait, une autre la renversait. Elle roulait dans l’écume, se vidait presque, puis se redressait avec un mince éclat d’eau au fond.\n\nPeu à peu, les vagues y déposèrent leur récolte : un morceau de feuille rousse, deux brindilles, un duvet de mousse. Puis vinrent de la boue, quelques grains de terre et de petites graines que l’on aurait prises pour du sable. Tout cela sentait la forêt mouillée au milieu du grand air salé.\n\nLa demi-noix s’enfonça. Son bord se rapprocha de l’eau. Je la crus perdue plus d’une fois. Mais entre deux vagues, le soleil chauffait sa coque sombre. Il séchait la feuille, allégeait la mousse, fendillait la boue. Ce que la mer ajoutait, la lumière le transformait un peu.\n\nAinsi passa le jour : un dépôt, un roulis, un rayon chaud. Rien n’était stable, et pourtant la coquille flottait encore. Tout juste. Avec, dans son creux, un petit monde en désordre.",
+      "media": {
+        "video": "a02-video.mp4",
+        "voice": "a02-voice.mp3",
+        "music": "a02-music.mp3",
+        "ambience": "a02-ambience.mp3",
+        "poster": null
+      }
     },
     "act-03-graine": {
       "id": "act-03-graine",
       "title": "La graine",
-      "variants": [
-        {
-          "id": "graine-graine",
-          "when": {
-            "choiceId": "choice-depot",
-            "includes": [
-              "graine"
-            ]
-          },
-          "text": "Parmi les grains de terre, une graine ronde resta prise dans la mousse. Elle était si petite que je la perdais de vue dès que la coquille s’éloignait.\n\nUne pluie douce passa sur l’Océan. Sans sel, cette fois. La feuille et les débris en gardèrent quelques gouttes. Puis le soleil revint. Il réchauffa la coque sans dessécher son creux, où la boue et les feuilles ramollies devenaient un humus brun.\n\nIl fallut attendre. La graine gonfla, puis son enveloppe se fendit. Une racine blanche descendit, fine comme un fil. Une autre suivit. Elles traversèrent la terre, entourèrent les brindilles et retinrent ce qui, jusque-là, glissait à chaque roulis.\n\nLa coquille tanguait toujours. Seulement, son petit chargement ne se répandait plus. Sous la lumière claire, une tige pâle traversa l’humus. Le lendemain, une jeune pousse verte s’élevait au-dessus du bord."
-        },
-        {
-          "id": "graine-feuille",
-          "when": {
-            "choiceId": "choice-depot",
-            "includes": [
-              "feuille"
-            ]
-          },
-          "text": "La feuille rousse s’était pliée au fond de la coquille. Sous elle, à l’abri du soleil trop vif et des embruns, une graine demeura prise dans la mousse.\n\nUne pluie douce traversa l’Océan. La feuille retint quelques gouttes d’eau sans sel. Les jours passant, elle ramollit, se mêla à la boue et devint un humus brun qui sentait presque le sous-bois. Le soleil en chauffait la surface ; dessous, l’humidité restait fraîche.\n\nLa graine gonfla, puis se fendit. Une racine blanche descendit et se ramifia. Ses fils fins saisirent la terre et s’enroulèrent autour d’une brindille. À chaque balancement, ils empêchaient un peu mieux le petit sol de glisser.\n\nLa coquille restait livrée aux vagues, bien sûr. Mais son contenu tenait ensemble. Quand la feuille se souleva enfin, une jeune pousse verte s’élevait dans sa lumière tamisée."
-        },
-        {
-          "id": "graine-brindille",
-          "when": {
-            "choiceId": "choice-depot",
-            "includes": [
-              "brindille"
-            ]
-          },
-          "text": "Une brindille s’était calée en travers de la coquille. Elle formait un barrage minuscule. Derrière elle s’amassèrent la mousse, la boue, les feuilles défaites et une graine presque invisible.\n\nUne averse douce passa sur l’Océan. L’humus en formation retint quelques gouttes d’eau sans sel. Quand le soleil reparut, il réchauffa ce petit sol humide et fit briller la brindille. La graine gonfla lentement.\n\nSon enveloppe se fendit. Une première racine chercha le fond, rencontra le bois et le contourna. D’autres racines suivirent. Elles prirent appui sur la brindille et nouèrent ensemble la terre et la mousse, comme un filet très fin.\n\nLa coquille roulait encore sous les vagues, mais son petit sol résistait mieux. Puis une tige pâle traversa l’humus. Contre le bois sombre, sous le soleil revenu, une jeune pousse verte s’éleva. Il fallait se pencher pour la voir. Je me penchai.",
-          "isDefault": true
-        }
-      ]
+      "narrator": "sailor",
+      "text": "Au fond de la coquille, les feuilles et la mousse se défirent lentement. Mêlées à la boue, elles formèrent un humus brun, léger, qui gardait une odeur de sous-bois malgré le sel alentour. Une brindille calée en travers retenait ce petit sol.\n\nUne pluie douce passa sur l’Océan. Sans sel, cette fois. L’humus en conserva quelques gouttes. Puis le soleil revint. Il réchauffa la coque sans dessécher son creux. Parmi les grains de terre, une graine presque invisible gonfla, attendit, puis son enveloppe se fendit.\n\nUne racine blanche descendit. D’autres fils apparurent, saisirent la terre et contournèrent le bois. Ils retenaient l’humus quand la coquille penchait, puis le rassemblaient quand une vague la bousculait.\n\nRien n’avait cessé de bouger. Pourtant, dans ce mouvement même, le petit monde tenait mieux qu’avant. Sous la lumière claire, une tige pâle traversa la terre. Le lendemain, une jeune pousse verte s’élevait au-dessus du bord.",
+      "media": {
+        "video": "a03-video.mp4",
+        "voice": "a03-voice.mp3",
+        "music": "a03-music.mp3",
+        "ambience": "a03-ambience.mp3",
+        "poster": null
+      }
     },
     "act-04-fleur": {
       "id": "act-04-fleur",
       "title": "La fleur",
-      "variants": [
-        {
-          "id": "fleur-lumiere",
-          "when": {
-            "choiceId": "choice-croissance",
-            "includes": [
-              "lumiere"
-            ]
-          },
-          "text": "La jeune pousse se courba vers la lumière. Chaque matin, sa tige gagnait un peu de hauteur, puis s’épaississait sous le soleil. En dessous, les racines continuaient leur ouvrage silencieux. Elles retenaient l’humus et buvaient l’eau douce cachée dans la mousse.\n\nDeux feuilles apparurent, étroites et vertes. Puis un bouton rond se forma au sommet. Il resta fermé plusieurs jours, ballotté par le roulis. Un matin calme, il s’ouvrit : une fleur de souci, simple et orangée, éclaira le creux brun de la noix.\n\nUn petit syrphe vint s’y poser. À peine le temps de lisser ses ailes, et il repartit au-dessus de l’eau.\n\nLa coquille offrait de la terre à la fleur. La fleur, avec ses racines, gardait cette terre en place. L’une portait l’autre, au milieu de la mer immense.\n\nAu soir, sa tige souple tenait droit. Feuilles et pétales attendaient le prochain souffle."
-        },
-        {
-          "id": "fleur-pluie",
-          "when": {
-            "choiceId": "choice-croissance",
-            "includes": [
-              "pluie"
-            ]
-          },
-          "text": "La pluie revint par fines gouttes. La mousse et l’humus les gardèrent loin du sel, juste assez longtemps pour que les racines les boivent. La pousse grandit sans hâte. Sa tige se renforçait tandis que ses racines serraient le petit sol.\n\nDeux feuilles vertes se déplièrent. Puis un bouton rond apparut au sommet. Il supporta une averse, plusieurs nuits fraîches et le balancement des vagues. Enfin, sous une éclaircie, il s’ouvrit : une fleur de souci, orangée et simple, au milieu de l’Océan.\n\nUn petit syrphe descendit jusqu’à elle. Il se posa un instant, léger au point de ne presque pas courber la tige, puis disparut.\n\nLa coquille gardait l’humus hors de l’eau. Les racines le maintenaient dans la coquille. Chacune rendait possible la présence de l’autre.\n\nAu soir, sa tige souple tenait droit. Feuilles et pétales attendaient le prochain souffle."
-        },
-        {
-          "id": "fleur-vent",
-          "when": {
-            "choiceId": "choice-croissance",
-            "includes": [
-              "vent"
-            ]
-          },
-          "text": "Le vent pliait la jeune pousse sans la rompre. Après chaque rafale, la tige revenait lentement au-dessus de la coquille. Ce mouvement la rendit plus ferme. Sous la terre, les racines s’étendaient et retenaient l’humus contre le roulis.\n\nDeux feuilles étroites se déplièrent dans l’air salé. Un bouton rond se forma, protégé par ses petites bractées vertes. Puis, un matin où le vent s’était adouci, il s’ouvrit : une fleur de souci, simple et orangée.\n\nUn petit syrphe, porté lui aussi par l’air, y fit une halte. Ses ailes brillèrent une seconde avant qu’il reparte.\n\nLa coquille donnait à la fleur son peu de terre. La fleur, par ses racines, empêchait cette terre de fuir. Elles ne formaient plus tout à fait deux choses séparées.\n\nAu soir, sa tige souple tenait droit. Feuilles et pétales attendaient le prochain souffle.",
-          "isDefault": true
-        }
-      ]
+      "narrator": "sailor",
+      "text": "La jeune pousse grandit entre les averses, le soleil et le vent. Sa tige se pliait avec les vagues, puis revenait doucement. Sous elle, les racines s’étendaient dans l’humus, s’appuyaient sur les brindilles et maintenaient la terre au fond de la coquille.\n\nDeux feuilles étroites apparurent. Plus tard, un bouton rond se forma au sommet. Il resta fermé pendant plusieurs nuits fraîches. La mousse gardait un peu de pluie douce. Le soleil chauffait la tige. Le vent la courbait sans l’arracher.\n\nUn matin clair, les pétales se déplièrent : une fleur de souci, simple et orangée, au milieu de l’Océan. Un petit syrphe passa. Il se posa un instant sur son cœur, puis reprit l’air sans bruit.\n\nLa coquille portait la terre et la fleur. Les racines, en retour, gardaient cette terre rassemblée. Le vivant avait trouvé là juste assez de place. Au soir, la tige souple tenait droit. Feuilles et pétales rencontraient déjà le vent.",
+      "media": {
+        "video": "a04-video.mp4",
+        "voice": "a04-voice.mp3",
+        "music": "a04-music.mp3",
+        "ambience": "a04-ambience.mp3",
+        "poster": null
+      }
     },
     "act-05-navigation": {
       "id": "act-05-navigation",
       "title": "La navigation",
-      "variants": [
-        {
-          "id": "navigation-horizon",
-          "when": {
-            "choiceId": "choice-navigation",
-            "includes": [
-              "horizon"
-            ]
-          },
-          "text": "À l’horizon, le ciel s’éclaircit. Le vent suivait cette longue ligne pâle et rencontrait la fleur de côté. La tige se courba. Les feuilles frémirent. Les pétales prirent l’air comme une voile minuscule.\n\nLes racines, serrées dans l’humus, empêchaient la terre de glisser et donnaient à la tige un appui. Elle était devenue un mât vivant. La coquille avançait encore au gré des vagues, mais le souffle qui poussait ses feuilles la faisait pivoter. Peu à peu, sa pointe se plaça dans une même direction.\n\nUne lame la détourna. La suivante la souleva. Le vent la ramena lentement vers la ligne claire. Elle ne commandait ni l’air ni l’Océan. Sa route restait courbe, pleine d’écarts et de retours. Pourtant sa trace sur l’eau n’était plus tout à fait celle d’une dérive.\n\nC’est ainsi que je la nommai Nao Souci : une petite noix portée par l’Océan des Soucis, avec une fleur pour voile et l’horizon pour repère. Je la vis s’éloigner, fragile, mais désormais orientée."
-        },
-        {
-          "id": "navigation-fleur",
-          "when": {
-            "choiceId": "choice-navigation",
-            "includes": [
-              "fleur"
-            ]
-          },
-          "text": "La fleur indiquait le vent avant même que ma joue le sente. Ses pétales se soulevaient d’un côté, ses feuilles tournaient, et la tige inclinait doucement tout le petit jardin. Elle était le centre vivant de ce fragile équilibre.\n\nSous l’humus, les racines retenaient la terre et donnaient à cette tige un appui solide. Elle était devenue un mât vivant. Quand le vent prenait les feuilles et les pétales, la coquille pivotait. Une vague l’écartait ; le souffle la replaçait peu à peu.\n\nLa demi-noix ne choisissait pas la mer. Elle ne pouvait arrêter le roulis. Parfois, une rafale la couchait presque sur l’eau. Puis les racines retenaient le sol, la tige revenait et les pétales reprenaient l’air. Ces mouvements finissaient par dessiner une direction, fragile et régulière, là où il n’y avait eu que dérive.\n\nAlors je lui donnai un nom : Nao Souci. Une petite noix sur l’Océan des Soucis, portée par la fleur qu’elle abritait et tenue par les racines de cette même fleur. Sa voile orange tremblait, mais sa route se dessinait."
-        },
-        {
-          "id": "navigation-ocean",
-          "when": {
-            "choiceId": "choice-navigation",
-            "includes": [
-              "ocean"
-            ]
-          },
-          "text": "L’Océan lui-même indiquait un passage. Entre deux longues vagues courait un sillon plus calme. Le vent y glissait, accrochant les feuilles et le bord des pétales. La demi-coquille montait sur une crête d’eau, redescendait, puis tournait dans le creux.\n\nLes racines maintenaient l’humus et donnaient à la tige un appui. Cette tige était devenue un mât vivant. Sous le souffle, elle inclinait la coquille juste assez pour la faire pivoter. La vague la poussait, le vent la tournait, puis l’eau la portait plus loin.\n\nLa petite noix ne gouvernait rien. Elle suivait les mouvements de l’eau : leur cadence, leurs détours, les passages brefs entre deux remous. Tantôt de travers, tantôt presque droit. Mais à force de corrections minuscules, sa route prit une forme.\n\nJe la nommai Nao Souci : une petite noix naviguant sur l’Océan des Soucis, avec sa tige pour mât et sa fleur orange pour voile. Elle n’avait pas vaincu la mer. Elle avait trouvé, dans son mouvement, une direction qu’elle pouvait suivre.",
-          "isDefault": true
-        }
-      ]
+      "narrator": "sailor",
+      "text": "Le vent rencontra les feuilles et se glissa sous les pétales. La tige plia, puis revint. Sous elle, les racines retenaient l’humus et donnaient à ce mât vivant un appui au fond de la coquille. De loin, la fleur orange ressemblait à une voile minuscule.\n\nÀ chaque souffle, la demi-noix pivotait un peu. Une vague la repoussait ; une autre la soulevait. Elle ne commandait ni l’air ni l’eau, et sa route n’était jamais droite. Elle suivait les mouvements de l’Océan, leurs cadences et leurs détours. Puis le vent la ramenait vers la ligne claire de l’horizon.\n\nJe suivis longtemps sa trace. Ce n’était plus exactement une dérive. Ce n’était pas non plus la navigation de nos grands bateaux. C’était une autre manière d’avancer, faite de racines, de vent, d’un peu de terre et de corrections minuscules.\n\nVoilà pourquoi je la nommai Nao Souci : la petite noix qui apprenait à naviguer sur l’Océan des Soucis. Elle roulait encore, hésitait encore, mais sa route avait commencé à prendre une direction.",
+      "media": {
+        "video": "a05-video.mp4",
+        "voice": "a05-voice.mp3",
+        "music": "a05-music.mp3",
+        "ambience": "a05-ambience.mp3",
+        "poster": null
+      }
     }
   },
   "choices": {
@@ -138,15 +82,18 @@
       "options": [
         {
           "id": "graine",
-          "label": "Une graine"
+          "label": "Une graine",
+          "resonanceId": "resonance-graine"
         },
         {
           "id": "feuille",
-          "label": "Une feuille"
+          "label": "Une feuille",
+          "resonanceId": "resonance-feuille"
         },
         {
           "id": "brindille",
-          "label": "Une brindille"
+          "label": "Une brindille",
+          "resonanceId": "resonance-brindille"
         }
       ]
     },
@@ -159,15 +106,18 @@
       "options": [
         {
           "id": "lumiere",
-          "label": "La lumière"
+          "label": "La lumière",
+          "resonanceId": "resonance-lumiere"
         },
         {
           "id": "pluie",
-          "label": "La pluie"
+          "label": "La pluie",
+          "resonanceId": "resonance-pluie"
         },
         {
           "id": "vent",
-          "label": "Le vent"
+          "label": "Le vent",
+          "resonanceId": "resonance-vent"
         }
       ]
     },
@@ -180,15 +130,18 @@
       "options": [
         {
           "id": "horizon",
-          "label": "L’horizon"
+          "label": "L’horizon",
+          "resonanceId": "resonance-horizon"
         },
         {
           "id": "fleur",
-          "label": "La fleur"
+          "label": "La fleur",
+          "resonanceId": "resonance-fleur"
         },
         {
           "id": "ocean",
-          "label": "L’Océan"
+          "label": "L’Océan",
+          "resonanceId": "resonance-ocean"
         }
       ]
     }
@@ -197,7 +150,15 @@
     "ending-main": {
       "id": "ending-main",
       "title": "Épilogue",
-      "text": "Je revis Nao Souci trois fois encore. Peut-être quatre. Les vieux marins ne comptent pas toujours très bien les choses rares.\n\nAprès certaines tempêtes, lorsque la mer retrouve son souffle, il arrive qu’une demi-coquille recueille assez de terre, assez d’eau douce et assez de soleil. Le plus souvent, la vague disperse tout. Mais quelquefois, très rarement, les racines tiennent et une fleur de souci s’ouvre au ras de l’eau.\n\nUn soir, Nao passa devant mon étrave. Le soleil descendait derrière l’horizon. Sa tige pliait, ses feuilles frémissaient, et quelques pétales orange prenaient le vent. De loin, on aurait dit une voile minuscule.\n\nJe coupai la mienne pour la regarder poursuivre sa route. Elle roulait encore. Elle dérivait encore un peu. Puis le vent la ramenait vers une ligne que je ne voyais pas.\n\nDepuis, quand l’Océan des Soucis devient silencieux, je regarde longtemps entre les vagues. Il me semble parfois apercevoir un éclat orange qui s’éloigne.\n\nJe ne sais pas jusqu’où va Nao.\n\nLa mer, elle, garde la suite."
+      "text": "Je revis Nao Souci trois fois encore. Peut-être quatre. Les vieux marins ne comptent pas toujours très bien les choses rares.\n\nAprès certaines tempêtes, lorsque la mer retrouve son souffle, il arrive qu’une demi-coquille recueille assez de terre, assez d’eau douce et assez de soleil. Le plus souvent, la vague disperse tout. Mais quelquefois, très rarement, les racines tiennent et une fleur de souci s’ouvre au ras de l’eau.\n\nUn soir, Nao passa devant mon étrave. Le soleil descendait derrière l’horizon. Sa tige pliait, ses feuilles frémissaient, et quelques pétales orange prenaient le vent. De loin, on aurait dit une voile minuscule.\n\nJe coupai la mienne pour la regarder poursuivre sa route. Elle roulait encore. Elle dérivait encore un peu. Puis le vent la ramenait vers une ligne que je ne voyais pas.\n\nDepuis, quand l’Océan des Soucis devient silencieux, je regarde longtemps entre les vagues. Il me semble parfois apercevoir un éclat orange qui s’éloigne.\n\nJe ne sais pas jusqu’où va Nao.\n\nLa mer, elle, garde la suite.",
+      "narrator": "sailor",
+      "media": {
+        "voice": null,
+        "music": null,
+        "ambience": null,
+        "video": null,
+        "poster": null
+      }
     }
   },
   "storyboard": [
@@ -214,12 +175,20 @@
       "module": "choice-depot"
     },
     {
+      "type": "resonance",
+      "fromChoice": "choice-depot"
+    },
+    {
       "type": "act",
       "module": "act-03-graine"
     },
     {
       "type": "choice",
       "module": "choice-croissance"
+    },
+    {
+      "type": "resonance",
+      "fromChoice": "choice-croissance"
     },
     {
       "type": "act",
@@ -230,6 +199,10 @@
       "module": "choice-navigation"
     },
     {
+      "type": "resonance",
+      "fromChoice": "choice-navigation"
+    },
+    {
       "type": "act",
       "module": "act-05-navigation"
     },
@@ -237,5 +210,169 @@
       "type": "ending",
       "module": "ending-main"
     }
-  ]
+  ],
+  "resonances": {
+    "resonance-graine": {
+      "id": "resonance-graine",
+      "title": "Graine",
+      "text": "Certaines graines voyagent longtemps sans bruit. Celle-ci repose dans un pli de mousse, contre la terre sombre. La pluie l’a rendue lisse. Le soleil tiédit sa coque minuscule. Rien ne bouge encore à sa surface. Pourtant, dessous, une fente très fine se prépare, à peine plus claire que l’ombre.",
+      "narrator": "inner-voice",
+      "sourceChoiceId": "choice-depot",
+      "sourceOptionId": "graine",
+      "media": {
+        "voice": "r01-graine-voice.mp3",
+        "ambience": null
+      },
+      "three": {
+        "sceneId": "seed",
+        "audioReactive": true,
+        "palette": "green-soft",
+        "intensity": 0.45
+      }
+    },
+    "resonance-feuille": {
+      "id": "resonance-feuille",
+      "title": "Feuille",
+      "text": "La feuille repose au fond du creux. Ses nervures retiennent des perles d’eau douce. Ses bords brunissent, se replient et se mêlent lentement à la terre. Elle protège ce qui demeure dessous. Dans l’air salé, son odeur de sous-bois persiste encore un instant, chaude et humide.",
+      "narrator": "inner-voice",
+      "sourceChoiceId": "choice-depot",
+      "sourceOptionId": "feuille",
+      "media": {
+        "voice": "r01-feuille-voice.mp3",
+        "ambience": null
+      },
+      "three": {
+        "sceneId": "leaf",
+        "audioReactive": true,
+        "palette": "earth-soft",
+        "intensity": 0.45
+      }
+    },
+    "resonance-brindille": {
+      "id": "resonance-brindille",
+      "title": "Brindille",
+      "text": "La brindille s’est posée en travers de la coquille. Une ligne fine, presque rien. La mousse vient contre elle. La terre cesse de glisser. Sous l’eau qui balance tout, ce petit morceau de bois offre un appui. Il craque parfois au soleil, puis retrouve le silence.",
+      "narrator": "inner-voice",
+      "sourceChoiceId": "choice-depot",
+      "sourceOptionId": "brindille",
+      "media": {
+        "voice": "r01-brindille-voice.mp3",
+        "ambience": null
+      },
+      "three": {
+        "sceneId": "twig",
+        "audioReactive": true,
+        "palette": "walnut-ink",
+        "intensity": 0.45
+      }
+    },
+    "resonance-lumiere": {
+      "id": "resonance-lumiere",
+      "title": "Lumière",
+      "text": "La lumière descend jusqu’au creux de la noix. Elle glisse sur la mousse, chauffe la terre sombre et traverse la jeune feuille. Le vert devient presque transparent. À mesure que le soleil tourne, la tige dessine une courbe lente, tournée vers cette chaleur claire.",
+      "narrator": "inner-voice",
+      "sourceChoiceId": "choice-croissance",
+      "sourceOptionId": "lumiere",
+      "media": {
+        "voice": "r02-lumiere-voice.mp3",
+        "ambience": null
+      },
+      "three": {
+        "sceneId": "light",
+        "audioReactive": true,
+        "palette": "marigold-light",
+        "intensity": 0.45
+      }
+    },
+    "resonance-pluie": {
+      "id": "resonance-pluie",
+      "title": "Pluie",
+      "text": "La pluie douce touche l’Océan d’un bruit léger. Quelques gouttes restent dans la mousse, loin du sel. L’humus les accueille et les garde dans ses plis sombres. L’eau disparaît à la surface, mais demeure autour des racines, fraîche, silencieuse, disponible.",
+      "narrator": "inner-voice",
+      "sourceChoiceId": "choice-croissance",
+      "sourceOptionId": "pluie",
+      "media": {
+        "voice": "r02-pluie-voice.mp3",
+        "ambience": null
+      },
+      "three": {
+        "sceneId": "rain",
+        "audioReactive": true,
+        "palette": "blue-wash",
+        "intensity": 0.45
+      }
+    },
+    "resonance-vent": {
+      "id": "resonance-vent",
+      "title": "Vent",
+      "text": "Le vent ne se voit pas. Une feuille qui tremble suffit à le révéler. La tige se courbe, revient, puis se courbe encore. Autour d’elle, l’air trace des passages invisibles. Le mouvement reste souple. Un souffle après l’autre, la jeune pousse tient dans le roulis.",
+      "narrator": "inner-voice",
+      "sourceChoiceId": "choice-croissance",
+      "sourceOptionId": "vent",
+      "media": {
+        "voice": "r02-vent-voice.mp3",
+        "ambience": null
+      },
+      "three": {
+        "sceneId": "wind",
+        "audioReactive": true,
+        "palette": "ivory-blue",
+        "intensity": 0.45
+      }
+    },
+    "resonance-horizon": {
+      "id": "resonance-horizon",
+      "title": "Horizon",
+      "text": "Au loin, la mer et le ciel se rejoignent en une ligne pâle. Elle disparaît derrière chaque vague, puis revient. Toujours à distance. La petite voile orange se détache un instant devant cette clarté. Le vent passe, et la ligne demeure.",
+      "narrator": "inner-voice",
+      "sourceChoiceId": "choice-navigation",
+      "sourceOptionId": "horizon",
+      "media": {
+        "voice": "r03-horizon-voice.mp3",
+        "ambience": null
+      },
+      "three": {
+        "sceneId": "horizon",
+        "audioReactive": true,
+        "palette": "dawn-line",
+        "intensity": 0.45
+      }
+    },
+    "resonance-fleur": {
+      "id": "resonance-fleur",
+      "title": "Fleur",
+      "text": "La fleur rassemble le petit monde. Sous ses pétales orange, la tige rejoint les racines ; les racines rejoignent la terre ; la terre repose dans la coquille. Quand le vent arrive, tout frémit ensemble. Le cœur sombre reste au centre, entouré d’une couronne de lumière.",
+      "narrator": "inner-voice",
+      "sourceChoiceId": "choice-navigation",
+      "sourceOptionId": "fleur",
+      "media": {
+        "voice": "r03-fleur-voice.mp3",
+        "ambience": null
+      },
+      "three": {
+        "sceneId": "flower",
+        "audioReactive": true,
+        "palette": "marigold-soft",
+        "intensity": 0.45
+      }
+    },
+    "resonance-ocean": {
+      "id": "resonance-ocean",
+      "title": "Océan",
+      "text": "L’Océan avance par longues respirations. Une vague soulève la coquille. Une autre la tourne et la dépose dans un sillon plus calme. À la surface, les reflets se défont sans cesse. Entre deux remous, un passage apparaît, bleu, mouvant, puis se transforme déjà.",
+      "narrator": "inner-voice",
+      "sourceChoiceId": "choice-navigation",
+      "sourceOptionId": "ocean",
+      "media": {
+        "voice": "r03-ocean-voice.mp3",
+        "ambience": null
+      },
+      "three": {
+        "sceneId": "ocean",
+        "audioReactive": true,
+        "palette": "deep-blue-wash",
+        "intensity": 0.45
+      }
+    }
+  }
 }
