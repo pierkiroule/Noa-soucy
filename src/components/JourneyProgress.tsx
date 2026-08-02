@@ -1,1 +1,0 @@
-export function JourneyProgress({current,total}:{current:number;total:number}) { return <div className="journey-progress" aria-label={`Mouvement ${current+1} sur ${total}`}><i style={{width:`${((current+1)/total)*100}%`}}/></div> }
