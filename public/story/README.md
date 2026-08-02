@@ -10,4 +10,4 @@ Quand les vidéos définitives seront disponibles, les déposer sans modifier le
 
 Chaque média dure 12 secondes. La partition bêta dure donc 36 secondes hors pauses projectives, avec des séquences d'effets calées sur des subdivisions de 4 secondes.
 
-Le résolveur teste réellement le chargement et la validité du média. Un fichier absent, vide ou illisible déclenche automatiquement le placeholder correspondant, sans interrompre le conte.
+Le navigateur charge directement chaque vidéo. Un fichier absent ou illisible déclenche automatiquement le placeholder correspondant, sans interrompre le conte. Cela évite de dépendre d'une requête `HEAD`, qui n'est pas prise en charge de façon uniforme par les hébergeurs de fichiers statiques.
