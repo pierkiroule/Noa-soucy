@@ -4,8 +4,10 @@ Le moteur fonctionne sans aucun fichier dans ce dossier. Les trois placeholders 
 
 Quand les vidéos définitives seront disponibles, les déposer sans modifier le code :
 
-- `nao-souci/01-drift.mp4` — **La dérive** ;
-- `nao-souci/02-growth.mp4` — **Le vivant apparaît** ;
-- `nao-souci/03-navigation.mp4` — **La navigation**.
+- `01-drift.mp4` — **La dérive** ;
+- `02-growth.mp4` — **Le vivant apparaît** ;
+- `03-navigation.mp4` — **La navigation**.
+
+Chaque média dure 12 secondes. La partition bêta dure donc 36 secondes hors pauses projectives, avec des séquences d'effets calées sur des subdivisions de 4 secondes.
 
 Le résolveur teste réellement le chargement et la validité du média. Un fichier absent, vide ou illisible déclenche automatiquement le placeholder correspondant, sans interrompre le conte.

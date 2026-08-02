@@ -8,7 +8,7 @@ export type ParameterValue = number | string | boolean
 
 export interface EffectCue { id:string; start:number; duration:number; effect:VisualEffectId; intensity?:number; params?:Record<string,ParameterValue> }
 export interface ActiveEffect extends EffectCue { progress:number; effectiveIntensity:number }
-export interface SceneMedia { video?:string; audio?:string; poster?:string; fallbackSceneId:SceneId }
+export interface SceneMedia { video?:string; audio?:string; poster?:string; fallbackSceneId:SceneId; loopDuration?:number }
 export interface StoryScene { type:'scene'; id:SceneId; title:string; duration:number; text:string; media:SceneMedia; effects:EffectCue[]; transitionIn:TransitionId; transitionOut:TransitionId }
 export interface ProjectiveOption { id:string; label:string; params:Record<string,ParameterValue> }
 export interface StoryPause { type:'pause'; id:PauseId; title:string; question:string; helperText?:string; maxChoices:number; options:ProjectiveOption[]; allowSkip:boolean }
