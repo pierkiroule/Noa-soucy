@@ -1,11 +1,11 @@
-# Médias du conte
+# Médias optionnels du conte
 
-Ce dossier contient les trois emplacements réservés attendus par le lecteur :
+Le moteur fonctionne sans aucun fichier dans ce dossier. Les trois placeholders abstraits sont rendus localement par l'application.
 
-- `01-drift.mp4` — scène 1, **La dérive** ;
-- `02-growth.mp4` — scène 2, **Le vivant apparaît** ;
-- `03-navigation.mp4` — scène 3, **La navigation**.
+Quand les vidéos définitives seront disponibles, les déposer sans modifier le code :
 
-Les fichiers actuellement versionnés sont volontairement vides. Ils peuvent être remplacés directement, en conservant exactement les mêmes noms, lorsque les vidéos définitives seront disponibles.
+- `nao-souci/01-drift.mp4` — **La dérive** ;
+- `nao-souci/02-growth.mp4` — **Le vivant apparaît** ;
+- `nao-souci/03-navigation.mp4` — **La navigation**.
 
-Tant qu'un fichier est vide, absent ou illisible par le navigateur, le lecteur conserve automatiquement la scène abstraite animée en arrière-plan : le parcours reste donc entièrement fonctionnel.
+Le résolveur teste réellement le chargement et la validité du média. Un fichier absent, vide ou illisible déclenche automatiquement le placeholder correspondant, sans interrompre le conte.
