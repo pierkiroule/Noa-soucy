@@ -1,0 +1,2 @@
+interface Props { onNext: () => void; onPrevious?: () => void; nextLabel?: string; disabled?: boolean }
+export function StoryControls({ onNext, onPrevious, nextLabel = 'Continuer', disabled }: Props) { return <nav className="controls" aria-label="Navigation du conte">{onPrevious && <button className="button secondary" onClick={onPrevious}>Retour</button>}<button className="button" disabled={disabled} onClick={onNext}>{nextLabel}</button></nav> }

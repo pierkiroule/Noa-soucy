@@ -1,0 +1,1 @@
+export function ProgressIndicator({ current, total }: { current: number; total: number }) { const progress = total ? Math.round(((current + 1) / total) * 100) : 0; return <div className="progress" aria-label={`Progression : ${progress} %`} role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}><span style={{ width: `${progress}%` }} /></div> }
