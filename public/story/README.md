@@ -4,9 +4,9 @@ Le moteur fonctionne sans aucun fichier dans ce dossier. Les trois placeholders 
 
 Quand les vidéos définitives seront disponibles, les déposer sans modifier le code :
 
-- `01-drift.mp4` — **La dérive** ;
-- `02-growth.mp4` — **Le vivant apparaît** ;
-- `03-navigation.mp4` — **La navigation**.
+- `drift.mp4` — **La dérive** ;
+- `growth.mp4` — **Le vivant apparaît** ;
+- `navigation.mp4` — **La navigation**.
 
 Chaque média dure 12 secondes. La partition bêta dure donc 36 secondes hors pauses projectives, avec des séquences d'effets calées sur des subdivisions de 4 secondes.
 
