@@ -19,6 +19,7 @@ export function StoryPlayer() {
   const [loadError, setLoadError] = useState(false)
   const [started, setStarted] = useState(false)
   const [scoreMode, setScoreMode] = useState(false)
+  const [navigationOpen, setNavigationOpen] = useState(false)
   const [state, setState] = useState<SavedState>(readSaved)
   const [isPlaying, setIsPlaying] = useState(true)
 
@@ -50,6 +51,18 @@ export function StoryPlayer() {
   }
   const start = () => { void loopAudioPlayer.unlock(); setStarted(true) }
   const restart = () => { setState(initialSaved); setStarted(false); setIsPlaying(true); void loopAudioPlayer.stop() }
+  const goToPart = (index: number) => {
+    if (!story || index < 0 || index >= story.blocks.length) return
+    setState(current => ({ ...current, currentBlockIndex: index, currentBreathIndex: 0, activeResonanceId: undefined, completed: false }))
+    setIsPlaying(true)
+    setNavigationOpen(false)
+  }
+  const restartStory = () => {
+    setState(initialSaved)
+    setIsPlaying(true)
+    setNavigationOpen(false)
+    void loopAudioPlayer.stop()
+  }
 
   if (loadError) return <main className="loading"><h1>NAO SOUCI</h1><p>Le conte n’a pas pu être chargé.</p><button onClick={() => location.reload()}>Réessayer</button></main>
   if (!story) return <main className="loading" aria-live="polite">La mer retrouve son souffle…</main>
@@ -62,9 +75,28 @@ export function StoryPlayer() {
     <Brand />
     <button className="sound-toggle" aria-pressed={state.isMuted} onClick={toggleMuted}>{state.isMuted ? 'Son coupé' : 'Son activé'}</button>
     <div className="journey-progress" role="progressbar" aria-label="Progression" aria-valuenow={state.currentBlockIndex + 1} aria-valuemin={1} aria-valuemax={story.blocks.length}><i style={{ width: `${((state.currentBlockIndex + 1) / story.blocks.length) * 100}%` }}/></div>
+    <JourneyNavigation story={story} currentIndex={state.currentBlockIndex} isOpen={navigationOpen} onToggle={() => setNavigationOpen(open => !open)} onGoTo={goToPart} onRestart={restartStory} />
     {mediaBlock && <StoryMediaPlayer key={mediaBlock.id} title={mediaBlock.title} text={mediaBlock.text} videoSrc={storyMediaUrl(mediaBlock.media.video)} audioSrc={storyMediaUrl(mediaBlock.media.music)} variant={mediaBlock.type} breathIndex={state.currentBreathIndex} isPlaying={isPlaying} isMuted={state.isMuted} onBreathChange={setBreath} onPlayingChange={setIsPlaying} onComplete={completeMedia}/>}
     {block?.type === 'question' && !activeResonance && <QuestionScreen title={block.title} text={block.text} choices={block.choices} selected={state.selectedChoices[block.id]} onSelect={selectChoice}/>}
   </main>
+}
+
+function JourneyNavigation({ story, currentIndex, isOpen, onToggle, onGoTo, onRestart }: { story:StoryDocument; currentIndex:number; isOpen:boolean; onToggle:()=>void; onGoTo:(index:number)=>void; onRestart:()=>void }) {
+  const current = story.blocks[currentIndex]
+  return <>
+    <nav className="chapter-nav" aria-label="Navigation entre les parties du conte">
+      <button onClick={() => onGoTo(currentIndex - 1)} disabled={currentIndex === 0} aria-label="Partie précédente"><span aria-hidden="true">←</span><span>Précédent</span></button>
+      <button className="chapter-nav__index" onClick={onToggle} aria-expanded={isOpen} aria-controls="story-contents"><small>Partie {currentIndex + 1} sur {story.blocks.length}</small><strong>{current?.title}</strong></button>
+      <button onClick={() => onGoTo(currentIndex + 1)} disabled={currentIndex === story.blocks.length - 1} aria-label="Partie suivante"><span>Suivant</span><span aria-hidden="true">→</span></button>
+    </nav>
+    {isOpen && <div className="chapter-menu__backdrop" onClick={onToggle}>
+      <aside id="story-contents" className="chapter-menu" role="dialog" aria-modal="true" aria-label="Sommaire du conte" onClick={event => event.stopPropagation()}>
+        <header><div><span className="eyebrow">Le fil du conte</span><h2>Choisir une partie</h2></div><button className="chapter-menu__close" onClick={onToggle} aria-label="Fermer le sommaire">×</button></header>
+        <ol>{story.blocks.map((part, index) => <li key={part.id}><button className={index === currentIndex ? 'is-current' : ''} aria-current={index === currentIndex ? 'step' : undefined} onClick={() => onGoTo(index)}><span>{String(index + 1).padStart(2, '0')}</span><strong>{part.title}</strong>{index === currentIndex && <i>En cours</i>}</button></li>)}</ol>
+        <button className="chapter-menu__restart" onClick={onRestart}><span aria-hidden="true">↺</span> Recommencer au début</button>
+      </aside>
+    </div>}
+  </>
 }
 
 function QuestionScreen({ title, text, choices, selected, onSelect }: { title:string; text:string; choices:StoryChoice[]; selected?:string; onSelect:(choice:StoryChoice)=>void }) {
