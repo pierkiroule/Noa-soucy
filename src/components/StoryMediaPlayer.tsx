@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { loopAudioPlayer } from '../engine/LoopAudioPlayer'
-import { BREATH_FADE_IN_MS, BREATH_FADE_OUT_MS, BREATH_GAP_MS, getBreathHoldDuration, splitTextIntoBreaths } from '../engine/storyText'
+import { splitTextIntoBreaths } from '../engine/storyText'
 import type { StoryMediaVariant } from '../story/storyData'
 
 interface Props {
@@ -9,16 +9,21 @@ interface Props {
   onBreathChange:(index:number)=>void; onPlayingChange:(playing:boolean)=>void; onComplete:()=>void
 }
 
+interface Ripple { id:number; x:number; y:number }
+
 export function StoryMediaPlayer({ title, text, videoSrc, audioSrc, variant, breathIndex, isPlaying, isMuted, onBreathChange, onPlayingChange, onComplete }: Props) {
   const breaths = useMemo(() => splitTextIntoBreaths(text), [text])
   const [videoFailed, setVideoFailed] = useState(false)
-  const [phase, setPhase] = useState<'in'|'hold'|'out'>('in')
-  const [finished, setFinished] = useState(breathIndex >= breaths.length)
+  const [ripples, setRipples] = useState<Ripple[]>([])
   const videoRef = useRef<HTMLVideoElement>(null)
+  const scrollerRef = useRef<HTMLDivElement>(null)
+  const rippleId = useRef(0)
   const safeIndex = Math.min(breathIndex, Math.max(0, breaths.length - 1))
+  const initialIndex = useRef(safeIndex)
+  const finished = safeIndex === breaths.length - 1
 
   useEffect(() => {
-    setVideoFailed(false); setFinished(false); setPhase('in')
+    setVideoFailed(false)
     void loopAudioPlayer.load(audioSrc)
     return () => { void loopAudioPlayer.stop() }
   }, [audioSrc])
@@ -30,20 +35,30 @@ export function StoryMediaPlayer({ title, text, videoSrc, audioSrc, variant, bre
   }, [isPlaying])
 
   useEffect(() => {
-    if (!isPlaying || finished || !breaths[safeIndex]) return
-    setPhase('in')
-    const holdTimer = window.setTimeout(() => setPhase('hold'), BREATH_FADE_IN_MS)
-    const outTimer = window.setTimeout(() => setPhase('out'), BREATH_FADE_IN_MS + getBreathHoldDuration(breaths[safeIndex]))
-    const cycleDuration = BREATH_FADE_IN_MS + getBreathHoldDuration(breaths[safeIndex]) + BREATH_FADE_OUT_MS + BREATH_GAP_MS
-    const nextTimer = window.setTimeout(() => {
-      if (safeIndex === breaths.length - 1) setFinished(true)
-      else onBreathChange(safeIndex + 1)
-    }, cycleDuration + (safeIndex === breaths.length - 1 ? 1750 : 0))
-    return () => { clearTimeout(holdTimer); clearTimeout(outTimer); clearTimeout(nextTimer) }
-  }, [breaths, safeIndex, isPlaying, finished, onBreathChange])
+    const scroller = scrollerRef.current
+    if (scroller) scroller.scrollTo({ left: initialIndex.current * scroller.clientWidth })
+  }, [])
 
   const move = (index: number) => {
-    setFinished(false); setPhase('in'); onBreathChange(Math.max(0, Math.min(breaths.length - 1, index)))
+    const next = Math.max(0, Math.min(breaths.length - 1, index))
+    const scroller = scrollerRef.current
+    if (scroller) scroller.scrollTo({ left: next * scroller.clientWidth, behavior: 'smooth' })
+    onBreathChange(next)
+  }
+
+  const handleScroll = () => {
+    const scroller = scrollerRef.current
+    if (!scroller?.clientWidth) return
+    const index = Math.max(0, Math.min(breaths.length - 1, Math.round(scroller.scrollLeft / scroller.clientWidth)))
+    if (index !== safeIndex) onBreathChange(index)
+  }
+
+  const addRipple = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return
+    const bounds = event.currentTarget.getBoundingClientRect()
+    const ripple = { id: ++rippleId.current, x: event.clientX - bounds.left, y: event.clientY - bounds.top }
+    setRipples(current => [...current, ripple])
+    window.setTimeout(() => setRipples(current => current.filter(item => item.id !== ripple.id)), 1100)
   }
 
   return <section className={`media-player media-player--${variant}`}>
@@ -51,12 +66,16 @@ export function StoryMediaPlayer({ title, text, videoSrc, audioSrc, variant, bre
     {!videoFailed && <video ref={videoRef} className="media-player__video" src={videoSrc} autoPlay loop muted playsInline preload="auto" onError={() => { console.warn(`Vidéo indisponible : ${videoSrc}`); setVideoFailed(true) }} />}
     <div className="media-player__wash" aria-hidden="true" />
     <header className="media-player__title">{title}</header>
-    <div className={`media-player__breath media-player__breath--${phase}`} aria-live="polite">{breaths[safeIndex]}</div>
-    <div className="media-player__counter" aria-hidden="true">{safeIndex + 1} / {breaths.length}</div>
+    <div ref={scrollerRef} className="media-player__text-scroll" onScroll={handleScroll} onPointerDown={addRipple} aria-label={`${title}, texte à faire défiler horizontalement`}>
+      {breaths.map((breath, index) => <div className="media-player__breath" key={`${breath}-${index}`}><p>{breath}</p></div>)}
+    </div>
+    <div className="media-player__ripples" aria-hidden="true">{ripples.map(ripple => <i key={ripple.id} style={{ left: ripple.x, top: ripple.y }}/>)}</div>
+    <div className="media-player__swipe-hint" aria-hidden="true">Glissez pour lire <span>↔</span></div>
+    <div className="media-player__counter" aria-live="polite">{safeIndex + 1} / {breaths.length}</div>
     <nav className="media-player__controls" aria-label="Contrôles de lecture">
       <button onClick={() => move(safeIndex - 1)} disabled={safeIndex === 0}>Précédent</button>
       <button onClick={() => onPlayingChange(!isPlaying)}>{isPlaying ? 'Pause' : 'Reprendre'}</button>
-      <button onClick={() => move(safeIndex + 1)} disabled={safeIndex === breaths.length - 1}>Suivant</button>
+      <button onClick={() => move(safeIndex + 1)} disabled={finished}>Suivant</button>
     </nav>
     {finished && <button className="media-player__continue" onClick={onComplete}>{variant === 'resonance' ? 'Reprendre la traversée' : variant === 'epilogue' ? 'Terminer' : 'Continuer'} <span aria-hidden="true">→</span></button>}
   </section>
