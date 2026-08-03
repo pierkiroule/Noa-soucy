@@ -21,3 +21,15 @@
 .media-player__swipe-hint,.media-player__counter,.media-player__controls{z-index:7}
 
 @media(max-width:600px){.media-player__text-scroll{padding-top:max(104px,calc(env(safe-area-inset-top) + 86px))}.media-player__breath{padding:0 5vw}.media-player__breath p{width:90vw}}
+
+/* The seed resonance is presented as an intimate video bubble with its text as a caption. */
+.media-player--seed-resonance{background:radial-gradient(circle at 50% 35%,#fff 0,#edf1e8 52%,#e2e9e1 100%)}
+.media-player--seed-resonance .media-player__wash{display:none}
+.media-player--seed-resonance .media-player__visual{top:max(92px,calc(env(safe-area-inset-top) + 72px));right:auto;bottom:auto;left:50%;width:clamp(260px,48vmin,440px);height:clamp(260px,48vmin,440px);border:1px solid rgba(255,255,255,.9);border-radius:50%;background:#dfe8df;box-shadow:0 22px 55px rgba(42,68,61,.2),inset 0 0 0 7px rgba(255,255,255,.2);transform:translateX(-50%)}
+.media-player--seed-resonance .media-player__visual .media-player__video{border-radius:inherit}
+.media-player--seed-resonance .media-player__text-scroll{top:calc(max(92px,calc(env(safe-area-inset-top) + 72px)) + clamp(260px,48vmin,440px) + 22px);bottom:max(132px,calc(env(safe-area-inset-bottom) + 112px));height:auto;padding:0 7vw;overflow:hidden;mask-image:none;-webkit-mask-image:none;pointer-events:none}
+.media-player--seed-resonance .media-player__breath{display:flex;min-height:0;height:100%;padding:0;align-items:flex-start;justify-content:center}
+.media-player--seed-resonance .media-player__breath p{width:min(86vw,720px);color:#29423d;font:300 clamp(1rem,2.2vw,1.35rem)/1.4 Newsreader,serif;text-shadow:none}
+.media-player--seed-resonance .media-player__swipe-hint,.media-player--seed-resonance .media-player__counter{display:none}
+
+@media(max-width:600px){.media-player--seed-resonance .media-player__visual{top:max(82px,calc(env(safe-area-inset-top) + 64px));width:clamp(220px,68vw,300px);height:clamp(220px,68vw,300px)}.media-player--seed-resonance .media-player__text-scroll{top:calc(max(82px,calc(env(safe-area-inset-top) + 64px)) + clamp(220px,68vw,300px) + 16px);bottom:max(130px,calc(env(safe-area-inset-bottom) + 110px));padding:0 5vw}.media-player--seed-resonance .media-player__breath p{width:90vw;font-size:clamp(.88rem,3.8vw,1.08rem);line-height:1.3}}
