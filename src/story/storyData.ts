@@ -1,0 +1,30 @@
+export type StoryMediaVariant = 'prologue' | 'act' | 'resonance' | 'epilogue'
+export interface StoryMedia { video:string; music:string }
+export interface StoryMediaBlock { id:string; type:StoryMediaVariant; title:string; text:string; media:StoryMedia }
+export interface StoryChoice { id:string; label:string; resonance:StoryMediaBlock }
+export interface StoryQuestion { id:string; type:'question'; title:string; text:string; choices:StoryChoice[] }
+export type StoryBlock = StoryMediaBlock | StoryQuestion
+export interface StoryDocument { version:number; id:string; title:string; subtitle:string; blocks:StoryBlock[] }
+
+export const storyMediaUrl = (file: string) => `/story/${file}`
+
+export async function loadStory(): Promise<StoryDocument> {
+  const response = await fetch('/story/story.json')
+  if (!response.ok) throw new Error(`Impossible de charger story.json (${response.status})`)
+  return response.json() as Promise<StoryDocument>
+}
+
+export function preloadNextStoryMedia(media?: StoryMedia) {
+  if (!media || typeof document === 'undefined') return () => undefined
+  const video = document.createElement('link')
+  video.rel = 'preload'; video.as = 'video'; video.href = storyMediaUrl(media.video)
+  const audio = document.createElement('link')
+  audio.rel = 'preload'; audio.as = 'audio'; audio.href = storyMediaUrl(media.music)
+  document.head.append(video, audio)
+  return () => { video.remove(); audio.remove() }
+}
+
+export function getNextMedia(blocks: StoryBlock[], index: number): StoryMedia | undefined {
+  const next = blocks[index + 1]
+  return next?.type === 'question' ? undefined : next?.media
+}
