@@ -41,3 +41,10 @@ test('résout les neuf résonances de la partition', () => {
 })
 
 test('une résonance sans configuration de scène reçoit un fallback', () => assert.equal(getResonanceScene(undefined).form, 'waves'))
+
+test('les trois vidéos bêta référencées existent', () => {
+  const completeStory = JSON.parse(readFileSync('public/story/story.json', 'utf8')) as StoryDefinition
+  const videos = Object.values(completeStory.acts).flatMap((act) => act.media?.video ? [act.media.video] : [])
+  assert.deepEqual(videos, ['drift.mp4', 'growth.mp4', 'navigation.mp4'])
+  for (const video of videos) assert.ok(readFileSync(`public/story/${video}`).byteLength > 1_000_000)
+})
