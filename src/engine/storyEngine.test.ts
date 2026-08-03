@@ -53,3 +53,14 @@ test('les trois vidéos bêta référencées existent', () => {
   }
   for (const act of Object.values(completeStory.acts)) if (act.media?.video) assert.equal(act.media.voice, null, 'la bande-son intégrée reste audible sans doublage séparé')
 })
+
+
+test('les actes vidéo sont sans texte et les actes manquants affichent le chantier', () => {
+  const completeStory = JSON.parse(readFileSync('public/story/story.json', 'utf8')) as StoryDefinition
+  for (const act of Object.values(completeStory.acts)) {
+    assert.equal(act.text, act.media?.video ? '' : 'En cours de construction.')
+    assert.equal(act.media?.voice, null)
+    assert.equal(act.media?.music, null)
+    assert.equal(act.media?.ambience, null)
+  }
+})
