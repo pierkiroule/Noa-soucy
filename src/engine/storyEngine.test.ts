@@ -45,7 +45,7 @@ test('une résonance sans configuration de scène reçoit un fallback', () => as
 test('les trois vidéos bêta référencées existent', () => {
   const completeStory = JSON.parse(readFileSync('public/story/story.json', 'utf8')) as StoryDefinition
   const videos = Object.values(completeStory.acts).flatMap((act) => act.media?.video ? [act.media.video] : [])
-  assert.deepEqual(videos, ['drift.mp4', 'growth.mp4', 'navigation.mp4'])
+  assert.deepEqual(videos, ['naovideo1.mp4', 'growth.mp4', 'navigation.mp4'])
   for (const video of videos) {
     const bytes = readFileSync(`public/story/${video}`)
     assert.ok(bytes.byteLength > 1_000_000)

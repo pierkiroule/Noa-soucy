@@ -4,7 +4,7 @@ Le moteur fonctionne sans aucun fichier dans ce dossier. Les trois placeholders 
 
 Quand les vidéos définitives seront disponibles, les déposer sans modifier le code :
 
-- `drift.mp4` — **La dérive** ;
+- `naovideo1.mp4` — **La dérive** ;
 - `growth.mp4` — **Le vivant apparaît** ;
 - `navigation.mp4` — **La navigation**.
 
