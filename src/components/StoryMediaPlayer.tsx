@@ -37,20 +37,28 @@ export function StoryMediaPlayer({ title, text, videoSrc, audioSrc, variant, bre
 
   useEffect(() => {
     const scroller = scrollerRef.current
-    if (scroller) scroller.scrollTo({ top: initialIndex.current * scroller.clientHeight })
-  }, [])
+    if (scroller) {
+      const progress = breaths.length > 1 ? initialIndex.current / (breaths.length - 1) : 0
+      scroller.scrollTo({ top: (scroller.scrollHeight - scroller.clientHeight) * progress })
+    }
+  }, [breaths.length])
 
   const move = (index: number) => {
     const next = Math.max(0, Math.min(breaths.length - 1, index))
     const scroller = scrollerRef.current
-    if (scroller) scroller.scrollTo({ top: next * scroller.clientHeight, behavior: 'smooth' })
+    if (scroller) {
+      const progress = breaths.length > 1 ? next / (breaths.length - 1) : 0
+      scroller.scrollTo({ top: (scroller.scrollHeight - scroller.clientHeight) * progress, behavior: 'smooth' })
+    }
     onBreathChange(next)
   }
 
   const handleScroll = () => {
     const scroller = scrollerRef.current
-    if (!scroller?.clientHeight) return
-    const index = Math.max(0, Math.min(breaths.length - 1, Math.round(scroller.scrollTop / scroller.clientHeight)))
+    if (!scroller) return
+    const scrollableHeight = scroller.scrollHeight - scroller.clientHeight
+    const progress = scrollableHeight > 0 ? scroller.scrollTop / scrollableHeight : 1
+    const index = Math.max(0, Math.min(breaths.length - 1, Math.round(progress * (breaths.length - 1))))
     if (index !== safeIndex) onBreathChange(index)
   }
 
@@ -63,12 +71,14 @@ export function StoryMediaPlayer({ title, text, videoSrc, audioSrc, variant, bre
   }
 
   return <section className={`media-player media-player--${variant}`}>
-    <div className={`media-player__fallback ${videoFailed ? 'is-visible' : ''}`} aria-hidden="true"><i/><i/><i/></div>
-    {!videoFailed && <video ref={videoRef} className={`media-player__video ${videoReady ? 'is-ready' : ''}`} src={videoSrc} autoPlay loop muted playsInline preload="auto" onLoadedData={() => setVideoReady(true)} onCanPlay={event => { setVideoReady(true); if (isPlaying) void event.currentTarget.play().catch(() => console.warn(`Lecture vidéo en attente : ${videoSrc}`)) }} onError={() => { console.warn(`Vidéo indisponible : ${videoSrc}`); setVideoFailed(true) }} />}
     <div className="media-player__wash" aria-hidden="true" />
     <header className="media-player__title">{title}</header>
     <div ref={scrollerRef} className="media-player__text-scroll" onScroll={handleScroll} onPointerDown={addRipple} aria-label={`${title}, texte à faire défiler verticalement`}>
-      {breaths.map((breath, index) => <div className="media-player__breath" key={`${breath}-${index}`}><p>{breath}</p></div>)}
+      <div className="media-player__breath"><p>{text}</p></div>
+    </div>
+    <div className="media-player__visual" aria-label="Illustration vidéo du récit">
+      <div className={`media-player__fallback ${videoFailed ? 'is-visible' : ''}`} aria-hidden="true"><i/><i/><i/></div>
+      {!videoFailed && <video ref={videoRef} className={`media-player__video ${videoReady ? 'is-ready' : ''}`} src={videoSrc} autoPlay loop muted playsInline preload="auto" onLoadedData={() => setVideoReady(true)} onCanPlay={event => { setVideoReady(true); if (isPlaying) void event.currentTarget.play().catch(() => console.warn(`Lecture vidéo en attente : ${videoSrc}`)) }} onError={() => { console.warn(`Vidéo indisponible : ${videoSrc}`); setVideoFailed(true) }} />}
     </div>
     <div className="media-player__ripples" aria-hidden="true">{ripples.map(ripple => <i key={ripple.id} style={{ left: ripple.x, top: ripple.y }}/>)}</div>
     <div className="media-player__swipe-hint" aria-hidden="true">Faites défiler pour lire <span>↕</span></div>
