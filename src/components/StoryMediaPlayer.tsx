@@ -36,20 +36,20 @@ export function StoryMediaPlayer({ title, text, videoSrc, audioSrc, variant, bre
 
   useEffect(() => {
     const scroller = scrollerRef.current
-    if (scroller) scroller.scrollTo({ left: initialIndex.current * scroller.clientWidth })
+    if (scroller) scroller.scrollTo({ top: initialIndex.current * scroller.clientHeight })
   }, [])
 
   const move = (index: number) => {
     const next = Math.max(0, Math.min(breaths.length - 1, index))
     const scroller = scrollerRef.current
-    if (scroller) scroller.scrollTo({ left: next * scroller.clientWidth, behavior: 'smooth' })
+    if (scroller) scroller.scrollTo({ top: next * scroller.clientHeight, behavior: 'smooth' })
     onBreathChange(next)
   }
 
   const handleScroll = () => {
     const scroller = scrollerRef.current
-    if (!scroller?.clientWidth) return
-    const index = Math.max(0, Math.min(breaths.length - 1, Math.round(scroller.scrollLeft / scroller.clientWidth)))
+    if (!scroller?.clientHeight) return
+    const index = Math.max(0, Math.min(breaths.length - 1, Math.round(scroller.scrollTop / scroller.clientHeight)))
     if (index !== safeIndex) onBreathChange(index)
   }
 
@@ -66,11 +66,11 @@ export function StoryMediaPlayer({ title, text, videoSrc, audioSrc, variant, bre
     {!videoFailed && <video ref={videoRef} className="media-player__video" src={videoSrc} autoPlay loop muted playsInline preload="auto" onError={() => { console.warn(`Vidéo indisponible : ${videoSrc}`); setVideoFailed(true) }} />}
     <div className="media-player__wash" aria-hidden="true" />
     <header className="media-player__title">{title}</header>
-    <div ref={scrollerRef} className="media-player__text-scroll" onScroll={handleScroll} onPointerDown={addRipple} aria-label={`${title}, texte à faire défiler horizontalement`}>
+    <div ref={scrollerRef} className="media-player__text-scroll" onScroll={handleScroll} onPointerDown={addRipple} aria-label={`${title}, texte à faire défiler verticalement`}>
       {breaths.map((breath, index) => <div className="media-player__breath" key={`${breath}-${index}`}><p>{breath}</p></div>)}
     </div>
     <div className="media-player__ripples" aria-hidden="true">{ripples.map(ripple => <i key={ripple.id} style={{ left: ripple.x, top: ripple.y }}/>)}</div>
-    <div className="media-player__swipe-hint" aria-hidden="true">Glissez pour lire <span>↔</span></div>
+    <div className="media-player__swipe-hint" aria-hidden="true">Faites défiler pour lire <span>↕</span></div>
     <div className="media-player__counter" aria-live="polite">{safeIndex + 1} / {breaths.length}</div>
     <nav className="media-player__controls" aria-label="Contrôles de lecture">
       <button onClick={() => move(safeIndex - 1)} disabled={safeIndex === 0}>Précédent</button>

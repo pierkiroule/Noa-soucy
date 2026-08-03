@@ -1,5 +1,6 @@
 const DEFAULT_VOLUME = .22
 const FADE_INTERVAL_MS = 50
+const SILENT_WAV = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAAAACA'
 
 export class LoopAudioPlayer {
   private audio?: HTMLAudioElement
@@ -10,6 +11,13 @@ export class LoopAudioPlayer {
   private readonly targetVolume: number
 
   constructor(targetVolume = DEFAULT_VOLUME) { this.targetVolume = targetVolume }
+
+  async unlock() {
+    const audio = new Audio(SILENT_WAV)
+    audio.volume = 0
+    try { await audio.play(); audio.pause(); return true }
+    catch { return false }
+  }
 
   async load(source?: string) {
     await this.stop()

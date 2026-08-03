@@ -48,12 +48,13 @@ export function StoryPlayer() {
   const toggleMuted = () => {
     setState(current => { const isMuted = !current.isMuted; loopAudioPlayer.setMuted(isMuted); return { ...current, isMuted } })
   }
+  const start = () => { void loopAudioPlayer.unlock(); setStarted(true) }
   const restart = () => { setState(initialSaved); setStarted(false); setIsPlaying(true); void loopAudioPlayer.stop() }
 
   if (loadError) return <main className="loading"><h1>NAO SOUCI</h1><p>Le conte n’a pas pu être chargé.</p><button onClick={() => location.reload()}>Réessayer</button></main>
   if (!story) return <main className="loading" aria-live="polite">La mer retrouve son souffle…</main>
   if (scoreMode) return <ScoreReader story={story} onClose={() => setScoreMode(false)} />
-  if (!started) return <main className="story intro-screen"><Brand/><section className="intro"><span className="eyebrow">Un conte audiovisuel</span><h1>{story.title}</h1><p>{story.subtitle}</p><button className="primary" onClick={() => setStarted(true)}>{state.currentBlockIndex ? 'Reprendre la traversée' : 'Commencer le conte'} <span aria-hidden="true">→</span></button><button className="quiet intro__score" onClick={() => setScoreMode(true)}>Lecture de la partition</button><small>Vidéo, musique et texte · Son réglable à tout moment</small></section></main>
+  if (!started) return <main className="story intro-screen"><Brand/><section className="intro"><span className="eyebrow">Un conte audiovisuel</span><h1>{story.title}</h1><p>{story.subtitle}</p><button className="primary" onClick={start}>{state.currentBlockIndex ? 'Reprendre la traversée' : 'Commencer le conte'} <span aria-hidden="true">→</span></button><button className="quiet intro__score" onClick={() => setScoreMode(true)}>Lecture de la partition</button><small>Vidéo, musique et texte · Son réglable à tout moment</small></section></main>
   if (state.completed) return <main className="story completion"><Brand/><span className="eyebrow">NAO SOUCI</span><h1>La traversée continue.</h1><button className="primary" onClick={restart}>Recommencer</button></main>
 
   const mediaBlock: StoryMediaBlock | undefined = activeResonance ?? (block?.type !== 'question' ? block : undefined)
