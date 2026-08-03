@@ -21,7 +21,8 @@ export function StoryMediaPlayer({ title, text, videoSrc, audioSrc, variant, bre
   const rippleId = useRef(0)
   const safeIndex = Math.min(breathIndex, Math.max(0, breaths.length - 1))
   const initialIndex = useRef(safeIndex)
-  const finished = safeIndex === breaths.length - 1
+  const isSeedResonance = variant === 'resonance' && /(?:^|\/)3\.mp4(?:[?#].*)?$/.test(videoSrc)
+  const finished = isSeedResonance || safeIndex === breaths.length - 1
 
   useEffect(() => {
     setVideoFailed(false); setVideoReady(false)
@@ -70,7 +71,7 @@ export function StoryMediaPlayer({ title, text, videoSrc, audioSrc, variant, bre
     window.setTimeout(() => setRipples(current => current.filter(item => item.id !== ripple.id)), 1100)
   }
 
-  return <section className={`media-player media-player--${variant}`}>
+  return <section className={`media-player media-player--${variant}${isSeedResonance ? ' media-player--seed-resonance' : ''}`}>
     <div className="media-player__wash" aria-hidden="true" />
     <header className="media-player__title">{title}</header>
     <div ref={scrollerRef} className="media-player__text-scroll" onScroll={handleScroll} onPointerDown={addRipple} aria-label={`${title}, texte à faire défiler verticalement`}>
