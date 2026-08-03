@@ -14,6 +14,7 @@ interface Ripple { id:number; x:number; y:number }
 export function StoryMediaPlayer({ title, text, videoSrc, audioSrc, variant, breathIndex, isPlaying, isMuted, onBreathChange, onPlayingChange, onComplete }: Props) {
   const breaths = useMemo(() => splitTextIntoBreaths(text), [text])
   const [videoFailed, setVideoFailed] = useState(false)
+  const [videoReady, setVideoReady] = useState(false)
   const [ripples, setRipples] = useState<Ripple[]>([])
   const videoRef = useRef<HTMLVideoElement>(null)
   const scrollerRef = useRef<HTMLDivElement>(null)
@@ -23,7 +24,7 @@ export function StoryMediaPlayer({ title, text, videoSrc, audioSrc, variant, bre
   const finished = safeIndex === breaths.length - 1
 
   useEffect(() => {
-    setVideoFailed(false)
+    setVideoFailed(false); setVideoReady(false)
     void loopAudioPlayer.load(audioSrc)
     return () => { void loopAudioPlayer.stop() }
   }, [audioSrc])
@@ -63,7 +64,7 @@ export function StoryMediaPlayer({ title, text, videoSrc, audioSrc, variant, bre
 
   return <section className={`media-player media-player--${variant}`}>
     <div className={`media-player__fallback ${videoFailed ? 'is-visible' : ''}`} aria-hidden="true"><i/><i/><i/></div>
-    {!videoFailed && <video ref={videoRef} className="media-player__video" src={videoSrc} autoPlay loop muted playsInline preload="auto" onError={() => { console.warn(`Vidéo indisponible : ${videoSrc}`); setVideoFailed(true) }} />}
+    {!videoFailed && <video ref={videoRef} className={`media-player__video ${videoReady ? 'is-ready' : ''}`} src={videoSrc} autoPlay loop muted playsInline preload="auto" onLoadedData={() => setVideoReady(true)} onCanPlay={event => { setVideoReady(true); if (isPlaying) void event.currentTarget.play().catch(() => console.warn(`Lecture vidéo en attente : ${videoSrc}`)) }} onError={() => { console.warn(`Vidéo indisponible : ${videoSrc}`); setVideoFailed(true) }} />}
     <div className="media-player__wash" aria-hidden="true" />
     <header className="media-player__title">{title}</header>
     <div ref={scrollerRef} className="media-player__text-scroll" onScroll={handleScroll} onPointerDown={addRipple} aria-label={`${title}, texte à faire défiler verticalement`}>
