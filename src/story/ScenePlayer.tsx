@@ -19,8 +19,8 @@ export function ScenePlayer({ scene }: { scene: StoryScene }) {
   }, [scene, setMedia])
 
   useEffect(() => {
-    if (state.currentSceneTime >= scene.duration) next()
-  }, [state.currentSceneTime, scene.duration, next])
+    if (!scene.manualAdvance && state.currentSceneTime >= scene.duration) next()
+  }, [state.currentSceneTime, scene.duration, scene.manualAdvance, next])
 
   useEffect(() => {
     if (state.isPaused) audioEngine.pause()
@@ -30,26 +30,26 @@ export function ScenePlayer({ scene }: { scene: StoryScene }) {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.target instanceof HTMLButtonElement) return
-      if (event.code === 'Space') { event.preventDefault(); togglePause() }
+      if (!scene.manualAdvance && event.code === 'Space') { event.preventDefault(); togglePause() }
       if (event.code === 'ArrowRight') next()
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [next, togglePause])
+  }, [next, togglePause, scene.manualAdvance])
 
   const fallback = () => setMedia({ kind: 'placeholder', fallbackSceneId: scene.media.fallbackSceneId }, 'Le média vidéo est illisible.')
 
   return <section className={`scene transition transition--${scene.transitionIn}`} aria-label={scene.title}>
     <SceneStage scene={scene} media={state.media} parameters={state.parameters} effects={effects} time={state.currentSceneTime} isPaused={state.isPaused} onMediaError={fallback} />
     <div className="scene__veil" />
-    <div className="scene__copy">
+    <article className={`scene__copy ${scene.manualAdvance ? 'scene__copy--long' : ''}`}>
       <span>{scene.title}</span>
-      <p>{scene.text}</p>
-    </div>
+      <div className="scene__narration">{scene.text.split('\n').map((line, index) => <p key={`${line}-${index}`}>{line}</p>)}</div>
+    </article>
     <div className="scene__controls">
-      <span className="scene__time" aria-hidden="true">{state.isPaused ? 'En pause' : `${remaining} s`}</span>
-      <button className="scene__pause" aria-pressed={state.isPaused} onClick={togglePause}>{state.isPaused ? 'Reprendre' : 'Pause'}</button>
-      <button className="scene__skip" onClick={next}>Passer <span aria-hidden="true">→</span></button>
+      {!scene.manualAdvance && <span className="scene__time" aria-hidden="true">{state.isPaused ? 'En pause' : `${remaining} s`}</span>}
+      {!scene.manualAdvance && <button className="scene__pause" aria-pressed={state.isPaused} onClick={togglePause}>{state.isPaused ? 'Reprendre' : 'Pause'}</button>}
+      <button className="scene__skip" onClick={next}>{scene.manualAdvance ? 'Continuer' : 'Passer'} <span aria-hidden="true">→</span></button>
     </div>
   </section>
 }

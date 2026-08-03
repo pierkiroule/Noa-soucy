@@ -16,6 +16,7 @@ export function PausePlayer({ pause }: { pause: StoryPause }) {
   const selectionLabel = selected.length
     ? `${selected.length} choix sur ${pause.maxChoices}`
     : pause.allowSkip ? 'Vous pouvez aussi continuer sans choisir' : 'Sélectionnez une réponse'
+  const selectedOption = pause.options.find(option => selected.includes(option.id))
 
   return <section className="pause">
     <div className="pause__content">
@@ -27,6 +28,10 @@ export function PausePlayer({ pause }: { pause: StoryPause }) {
           <span>{option.label}</span><i aria-hidden="true">✓</i>
         </button>)}
       </div>
+      {selectedOption?.resonance && <article className="resonance" aria-live="polite">
+        <span className="eyebrow">{selectedOption.resonance.title}</span>
+        <div>{selectedOption.resonance.text.split('\n').map((line, index) => <p key={`${line}-${index}`}>{line}</p>)}</div>
+      </article>}
       <div className="pause__footer">
         <span aria-live="polite">{selectionLabel}</span>
         <button className="primary" disabled={!pause.allowSkip && !selected.length} onClick={submit}>{selected.length ? 'Continuer avec ce choix' : 'Continuer sans choisir'} <span aria-hidden="true">→</span></button>

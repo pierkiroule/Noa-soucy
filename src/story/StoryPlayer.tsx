@@ -48,12 +48,12 @@ function StoryReader() {
       <i style={{ width: `${state.progress * 100}%` }} />
     </div>
     {hasAudio && <button className="sound" aria-pressed={muted} onClick={toggleSound}>{muted ? 'Activer le son' : 'Couper le son'}</button>}
-    {step?.type === 'scene' && <ScenePlayer key={step.id} scene={step} />}
+    {step?.type === 'scene' && <ScenePlayer key={`${step.id}-${step.title}`} scene={step} />}
     {step?.type === 'pause' && <PausePlayer key={step.id} pause={step} />}
     {step?.type === 'ending' && <section className="ending">
       <span className="eyebrow">La rive</span>
       <h1>{step.title}</h1>
-      <p>{step.text}</p>
+      <div className="ending__text">{step.text.split('\n').map((line, index) => <p key={`${line}-${index}`}>{line}</p>)}</div>
       <div className="ending__mark" aria-hidden="true">✦</div>
       <div className="ending__actions">
         <button className="primary" onClick={review}>Revoir le conte</button>
