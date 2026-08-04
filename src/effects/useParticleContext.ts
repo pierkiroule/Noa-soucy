@@ -16,7 +16,8 @@ export function makeParticleContext(visibleText:string, audio:AudioReactiveValue
   const max = clamp(config.maxIntensity ?? .22)
   const sound = clamp(audio[preset.audioBand])
   const intensity = mode === 'none' ? 0 : max * (.75 + sound*.25)
-  return { mode, ...preset, intensity, density:preset.density*intensity, speed:preset.speed*(.85+sound*.25), opacity:clamp(preset.opacity*(.75+sound*.35),MIN_OPACITY,MAX_OPACITY) }
+  const relativeIntensity=max ? intensity/max : 0
+  return { mode, ...preset, intensity, density:preset.density*(.7+relativeIntensity*.3), speed:preset.speed*(.85+sound*.25), opacity:clamp(preset.opacity*(.75+sound*.35),MIN_OPACITY,MAX_OPACITY) }
 }
 export function useParticleContext({ visibleText, audioValues, sceneId, config={} }:{visibleText:string;audioValues:AudioReactiveValues;sceneId:string;config?:ParticleFxConfig}) {
   const target = makeParticleContext(visibleText,audioValues,config)

@@ -24,6 +24,7 @@ test('context interpolation remains bounded and changes family once',()=>{
   const a=makeParticleContext('vent',AUDIO_FALLBACK,{maxIntensity:.2}), b=makeParticleContext('mer',AUDIO_FALLBACK,{maxIntensity:.4})
   const middle=interpolateParticleContext(a,b,.5)
   assert.equal(middle.family,'droplets'); assert.ok(middle.intensity>=a.intensity&&middle.intensity<=b.intensity)
+  assert.ok(particleLimit(b.density)>=3, 'a normal scene keeps a visible but sparse particle population')
 })
 test('audio analysis has a stable silent fallback and normalized output',()=>{
   assert.deepEqual(AUDIO_FALLBACK,{level:.25,low:.2,mid:.2,high:.15})
