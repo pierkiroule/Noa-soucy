@@ -79,7 +79,7 @@ export function StoryPlayer() {
   if (!story) return <main className="loading" aria-live="polite">La mer retrouve son souffle…</main>
   if (scoreMode) return <ScoreReader story={story} onClose={() => setScoreMode(false)} />
   if (!started) return <main className="story intro-screen"><Brand/><section className="intro"><span className="eyebrow">Un conte audiovisuel</span><h1>{story.title}</h1><p>{story.subtitle}</p><button className="primary" onClick={start}>{state.currentBlockIndex ? 'Reprendre la traversée' : 'Commencer le conte'} <span aria-hidden="true">→</span></button><button className="quiet intro__score" onClick={() => setScoreMode(true)}>Lecture de la partition</button><small>Vidéo, musique et texte · Son réglable à tout moment</small></section></main>
-  if (state.completed) return <main className="story completion"><Brand/><span className="eyebrow">NAO SOUCI</span><h1>La traversée continue.</h1><button className="primary" onClick={restart}>Recommencer</button></main>
+  if (state.completed) return <main className="story completion"><Brand/><span className="eyebrow">NAO SOUCI</span><h1>Fin</h1><button className="primary" onClick={restart}>Recommencer</button></main>
 
   const mediaBlock: StoryMediaBlock | undefined = activeResonance ?? (block?.type !== 'question' ? block : undefined)
   return <main className="story">
