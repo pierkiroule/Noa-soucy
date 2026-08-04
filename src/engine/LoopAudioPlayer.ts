@@ -71,7 +71,10 @@ export class LoopAudioPlayer {
         const progress = Math.min(1, (performance.now() - started) / duration)
         audio.volume = Math.max(0, start * (1 - progress))
         if (progress < 1) requestAnimationFrame(tick)
-        else { audio.pause(); audio.removeAttribute('src'); audio.load(); resolve() }
+        else {
+          audio.pause(); audio.removeAttribute('src'); audio.load()
+          resolve()
+        }
       }
       requestAnimationFrame(tick)
     })

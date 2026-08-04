@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { StoryMediaPlayer } from '../components/StoryMediaPlayer'
+import { ParticleOverlay } from '../effects/ParticleOverlay'
 import { loopAudioPlayer } from '../engine/LoopAudioPlayer'
 import { getNextMedia, loadStory, preloadNextStoryMedia, storyMediaUrl, type StoryChoice, type StoryDocument, type StoryMediaBlock } from './storyData'
 
@@ -78,7 +79,7 @@ export function StoryPlayer() {
   if (!story) return <main className="loading" aria-live="polite">La mer retrouve son souffle…</main>
   if (scoreMode) return <ScoreReader story={story} onClose={() => setScoreMode(false)} />
   if (!started) return <main className="story intro-screen"><Brand/><section className="intro"><span className="eyebrow">Un conte audiovisuel</span><h1>{story.title}</h1><p>{story.subtitle}</p><button className="primary" onClick={start}>{state.currentBlockIndex ? 'Reprendre la traversée' : 'Commencer le conte'} <span aria-hidden="true">→</span></button><button className="quiet intro__score" onClick={() => setScoreMode(true)}>Lecture de la partition</button><small>Vidéo, musique et texte · Son réglable à tout moment</small></section></main>
-  if (state.completed) return <main className="story completion"><Brand/><span className="eyebrow">NAO SOUCI</span><h1>La traversée continue.</h1><button className="primary" onClick={restart}>Recommencer</button></main>
+  if (state.completed) return <main className="story completion"><Brand/><span className="eyebrow">NAO SOUCI</span><h1>Fin</h1><button className="primary" onClick={restart}>Recommencer</button></main>
 
   const mediaBlock: StoryMediaBlock | undefined = activeResonance ?? (block?.type !== 'question' ? block : undefined)
   return <main className="story">
@@ -110,7 +111,7 @@ function JourneyNavigation({ story, currentIndex, isOpen, onToggle, onGoTo, onRe
 }
 
 function QuestionScreen({ title, text, choices, selected, onSelect }: { title:string; text:string; choices:StoryChoice[]; selected?:string; onSelect:(choice:StoryChoice)=>void }) {
-  return <section className="question-screen"><span className="eyebrow">{title}</span><h1>{text}</h1><div className="question-screen__choices">{choices.map(choice => <button key={choice.id} className={selected === choice.id ? 'is-selected' : ''} onClick={() => onSelect(choice)}>{choice.label}<span aria-hidden="true">→</span></button>)}</div><small>Votre choix ouvre une résonance, sans interprétation.</small></section>
+  return <section className="question-screen"><ParticleOverlay/><div className="question-screen__content"><span className="eyebrow">{title}</span><h1>{text}</h1><div className="question-screen__choices">{choices.map(choice => <button key={choice.id} className={selected === choice.id ? 'is-selected' : ''} onClick={() => onSelect(choice)}>{choice.label}<span aria-hidden="true">→</span></button>)}</div><small>Votre choix ouvre une résonance, sans interprétation.</small></div></section>
 }
 
 function ScoreReader({ story, onClose }: { story:StoryDocument; onClose:()=>void }) {
