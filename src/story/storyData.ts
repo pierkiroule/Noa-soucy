@@ -18,10 +18,8 @@ export function preloadNextStoryMedia(media?: StoryMedia) {
   if (!media || typeof document === 'undefined') return () => undefined
   const video = document.createElement('link')
   video.rel = 'preload'; video.as = 'video'; video.href = storyMediaUrl(media.video)
-  const audio = document.createElement('link')
-  audio.rel = 'preload'; audio.as = 'audio'; audio.href = storyMediaUrl(media.music)
-  document.head.append(video, audio)
-  return () => { video.remove(); audio.remove() }
+  document.head.append(video)
+  return () => { video.remove() }
 }
 
 export function getNextMedia(blocks: StoryBlock[], index: number): StoryMedia | undefined {

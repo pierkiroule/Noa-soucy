@@ -12,11 +12,11 @@ test('story.json is the single complete narrative source', () => {
   assert.equal(story.blocks.filter(block => block.type === 'question').flatMap(block => block.choices).length, 9)
 })
 
-test('story media follows the fixed 1 to 14 mapping', () => {
+test('story video follows the fixed 1 to 14 mapping with one continuous soundtrack', () => {
   const media = story.blocks.flatMap(block => block.type === 'question' ? block.choices.map(choice => choice.resonance.media) : [block.media])
   const numbers = new Set(media.map(item => Number(item.video.replace('.mp4', ''))))
   assert.deepEqual([...numbers].sort((a, b) => a - b), Array.from({ length: 14 }, (_, index) => index + 1))
-  assert.ok(media.every(item => item.music === item.video.replace('.mp4', '.mp3')))
+  assert.ok(media.every(item => item.music === 'Fond2.mp3'))
 })
 
 test('prologue and epilogue reuse the requested act media', () => {
@@ -24,6 +24,6 @@ test('prologue and epilogue reuse the requested act media', () => {
   const epilogue = story.blocks.find(block => block.type === 'epilogue')
   assert.ok(prologue?.type === 'prologue')
   assert.ok(epilogue?.type === 'epilogue')
-  assert.deepEqual(prologue.media, { video: '1.mp4', music: '1.mp3' })
-  assert.deepEqual(epilogue.media, { video: '14.mp4', music: '14.mp3' })
+  assert.deepEqual(prologue.media, { video: '1.mp4', music: 'Fond2.mp3' })
+  assert.deepEqual(epilogue.media, { video: '14.mp4', music: 'Fond2.mp3' })
 })
