@@ -11,7 +11,7 @@
 
 /* Full-screen film with the current passage layered clearly above it. */
 .media-player__wash{z-index:3;background:linear-gradient(180deg,rgba(17,31,28,.3),rgba(17,31,28,.05) 24%,rgba(17,31,28,.08) 68%,rgba(17,31,28,.4));pointer-events:none}
-.media-player__text-scroll{z-index:5;padding:max(120px,calc(env(safe-area-inset-top) + 98px)) 0 max(170px,calc(env(safe-area-inset-bottom) + 150px));scroll-snap-type:none;mask-image:linear-gradient(to bottom,transparent 5%,rgba(0,0,0,.2) 16%,#000 34%,#000 66%,rgba(0,0,0,.2) 84%,transparent 95%);-webkit-mask-image:linear-gradient(to bottom,transparent 5%,rgba(0,0,0,.2) 16%,#000 34%,#000 66%,rgba(0,0,0,.2) 84%,transparent 95%)}
+.media-player__text-scroll{z-index:5;padding:max(108px,calc(env(safe-area-inset-top) + 86px)) 0 max(76vh,calc(env(safe-area-inset-bottom) + 68vh));scroll-snap-type:none;mask-image:linear-gradient(to bottom,transparent 6%,rgba(0,0,0,.45) 10%,#000 14%,#000 27%,rgba(0,0,0,.72) 36%,rgba(0,0,0,.38) 49%,rgba(0,0,0,.14) 62%,transparent 76%);-webkit-mask-image:linear-gradient(to bottom,transparent 6%,rgba(0,0,0,.45) 10%,#000 14%,#000 27%,rgba(0,0,0,.72) 36%,rgba(0,0,0,.38) 49%,rgba(0,0,0,.14) 62%,transparent 76%)}
 .media-player__breath{display:block;width:100%;height:auto;min-height:100%;padding:0 min(9vw,90px);scroll-snap-align:none}
 .media-player__breath p{position:relative;z-index:5;width:min(82vw,700px);margin:0 auto;color:#171717;white-space:pre-line;text-align:center;text-shadow:0 0 4px #fff,0 0 10px rgba(255,255,255,.98),0 0 22px rgba(255,255,255,.86),0 0 38px rgba(255,255,255,.68)}
 .media-player__visual{position:absolute;z-index:2;inset:0;overflow:hidden;background:#dfe8df;pointer-events:none}

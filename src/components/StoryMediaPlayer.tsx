@@ -44,16 +44,6 @@ export function StoryMediaPlayer({ title, text, videoSrc, audioSrc, variant, bre
     }
   }, [breaths.length])
 
-  const move = (index: number) => {
-    const next = Math.max(0, Math.min(breaths.length - 1, index))
-    const scroller = scrollerRef.current
-    if (scroller) {
-      const progress = breaths.length > 1 ? next / (breaths.length - 1) : 0
-      scroller.scrollTo({ top: (scroller.scrollHeight - scroller.clientHeight) * progress, behavior: 'smooth' })
-    }
-    onBreathChange(next)
-  }
-
   const handleScroll = () => {
     const scroller = scrollerRef.current
     if (!scroller) return
@@ -82,12 +72,9 @@ export function StoryMediaPlayer({ title, text, videoSrc, audioSrc, variant, bre
       {!videoFailed && <video ref={videoRef} className={`media-player__video ${videoReady ? 'is-ready' : ''}`} src={videoSrc} autoPlay loop muted playsInline preload="auto" onLoadedData={() => setVideoReady(true)} onCanPlay={event => { setVideoReady(true); if (isPlaying) void event.currentTarget.play().catch(() => console.warn(`Lecture vidéo en attente : ${videoSrc}`)) }} onError={() => { console.warn(`Vidéo indisponible : ${videoSrc}`); setVideoFailed(true) }} />}
     </div>
     <div className="media-player__ripples" aria-hidden="true">{ripples.map(ripple => <i key={ripple.id} style={{ left: ripple.x, top: ripple.y }}/>)}</div>
-    <div className="media-player__swipe-hint" aria-hidden="true">Faites défiler pour lire <span>↕</span></div>
     <div className="media-player__counter" aria-live="polite">{safeIndex + 1} / {breaths.length}</div>
     <nav className="media-player__controls" aria-label="Contrôles de lecture">
-      <button onClick={() => move(safeIndex - 1)} disabled={safeIndex === 0}>Précédent</button>
       <button onClick={() => onPlayingChange(!isPlaying)}>{isPlaying ? 'Pause' : 'Reprendre'}</button>
-      <button onClick={() => move(safeIndex + 1)} disabled={finished}>Suivant</button>
     </nav>
     {finished && <button className="media-player__continue" onClick={onComplete}>{variant === 'resonance' ? 'Reprendre la traversée' : variant === 'epilogue' ? 'Terminer' : 'Continuer'} <span aria-hidden="true">→</span></button>}
   </section>
