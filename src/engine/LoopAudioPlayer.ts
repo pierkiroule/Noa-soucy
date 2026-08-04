@@ -12,6 +12,8 @@ export class LoopAudioPlayer {
 
   constructor(targetVolume = DEFAULT_VOLUME) { this.targetVolume = targetVolume }
 
+  getMediaElement() { return this.audio ?? null }
+
   async unlock() {
     const audio = new Audio(SILENT_WAV)
     audio.volume = 0

@@ -1,6 +1,8 @@
+import type { ParticleFxConfig } from '../effects/particleTypes'
+
 export type StoryMediaVariant = 'prologue' | 'act' | 'resonance' | 'epilogue'
 export interface StoryMedia { video:string; music:string }
-export interface StoryMediaBlock { id:string; type:StoryMediaVariant; title:string; text:string; media:StoryMedia }
+export interface StoryMediaBlock { id:string; type:StoryMediaVariant; title:string; text:string; media:StoryMedia; particleFx?:ParticleFxConfig }
 export interface StoryChoice { id:string; label:string; resonance:StoryMediaBlock }
 export interface StoryQuestion { id:string; type:'question'; title:string; text:string; choices:StoryChoice[] }
 export type StoryBlock = StoryMediaBlock | StoryQuestion

@@ -1,27 +1,35 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { splitTextIntoBreaths } from '../engine/storyText'
+import { useAudioReactiveValues } from '../audio/useAudioReactiveValues'
+import { ParticleOverlay } from '../effects/ParticleOverlay'
+import type { ParticleFxConfig } from '../effects/particleTypes'
+import { loopAudioPlayer } from '../engine/LoopAudioPlayer'
 import type { StoryMediaVariant } from '../story/storyData'
 
 interface Props {
   title:string; text:string; videoSrc:string; variant:StoryMediaVariant
   breathIndex:number; isPlaying:boolean
+  sceneId:string; particleFx?:ParticleFxConfig
   onBreathChange:(index:number)=>void; onPlayingChange:(playing:boolean)=>void; onComplete:()=>void
 }
 
 interface Ripple { id:number; x:number; y:number }
 
-export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, isPlaying, onBreathChange, onPlayingChange, onComplete }: Props) {
+export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, isPlaying, sceneId, particleFx, onBreathChange, onPlayingChange, onComplete }: Props) {
   const breaths = useMemo(() => splitTextIntoBreaths(text), [text])
   const [videoFailed, setVideoFailed] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
   const [ripples, setRipples] = useState<Ripple[]>([])
   const videoRef = useRef<HTMLVideoElement>(null)
   const scrollerRef = useRef<HTMLDivElement>(null)
+  const textRef = useRef<HTMLParagraphElement>(null)
   const rippleId = useRef(0)
   const safeIndex = Math.min(breathIndex, Math.max(0, breaths.length - 1))
   const initialIndex = useRef(safeIndex)
   const isSeedResonance = variant === 'resonance' && /(?:^|\/)3\.mp4(?:[?#].*)?$/.test(videoSrc)
   const finished = isSeedResonance || safeIndex === breaths.length - 1
+  const audioValues = useAudioReactiveValues(loopAudioPlayer.getMediaElement())
+  const config = particleFx ?? { enabled:true, maxIntensity:variant === 'resonance' ? .38 : .22 }
 
   useEffect(() => {
     if (isPlaying) void videoRef.current?.play().catch(() => undefined)
@@ -55,9 +63,10 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
 
   return <section className={`media-player media-player--${variant}${isSeedResonance ? ' media-player--seed-resonance' : ''}`}>
     <div className="media-player__wash" aria-hidden="true" />
+    <ParticleOverlay visibleText={breaths[safeIndex] ?? ''} audioValues={audioValues} config={config} sceneId={sceneId} textRef={textRef}/>
     <header className="media-player__title">{title}</header>
     <div ref={scrollerRef} className="media-player__text-scroll" onScroll={handleScroll} onPointerDown={addRipple} aria-label={`${title}, texte à faire défiler verticalement`}>
-      <div className="media-player__breath"><p>{text}</p></div>
+      <div className="media-player__breath"><p ref={textRef}>{text}</p></div>
     </div>
     <div className="media-player__visual" aria-label="Illustration vidéo du récit">
       <div className={`media-player__fallback ${videoFailed ? 'is-visible' : ''}`} aria-hidden="true"><i/><i/><i/></div>

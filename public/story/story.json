@@ -12,6 +12,11 @@
       "media": {
         "video": "1.mp4",
         "music": "Fond2.mp3"
+      },
+      "particleFx": {
+        "enabled": true,
+        "maxIntensity": 0.22,
+        "preferredMode": "water"
       }
     },
     {
@@ -22,6 +27,11 @@
       "media": {
         "video": "1.mp4",
         "music": "Fond2.mp3"
+      },
+      "particleFx": {
+        "enabled": true,
+        "maxIntensity": 0.22,
+        "preferredMode": "water"
       }
     },
     {
@@ -32,6 +42,11 @@
       "media": {
         "video": "2.mp4",
         "music": "Fond2.mp3"
+      },
+      "particleFx": {
+        "enabled": true,
+        "maxIntensity": 0.22,
+        "preferredMode": "water"
       }
     },
     {
@@ -51,6 +66,11 @@
             "media": {
               "video": "3.mp4",
               "music": "Fond2.mp3"
+            },
+            "particleFx": {
+              "enabled": true,
+              "maxIntensity": 0.38,
+              "preferredMode": "seed"
             }
           }
         },
@@ -65,6 +85,11 @@
             "media": {
               "video": "4.mp4",
               "music": "Fond2.mp3"
+            },
+            "particleFx": {
+              "enabled": true,
+              "maxIntensity": 0.38,
+              "preferredMode": "wind"
             }
           }
         },
@@ -79,6 +104,11 @@
             "media": {
               "video": "5.mp4",
               "music": "Fond2.mp3"
+            },
+            "particleFx": {
+              "enabled": true,
+              "maxIntensity": 0.38,
+              "preferredMode": "seed"
             }
           }
         }
@@ -92,6 +122,11 @@
       "media": {
         "video": "6.mp4",
         "music": "Fond2.mp3"
+      },
+      "particleFx": {
+        "enabled": true,
+        "maxIntensity": 0.22,
+        "preferredMode": "seed"
       }
     },
     {
@@ -111,6 +146,11 @@
             "media": {
               "video": "7.mp4",
               "music": "Fond2.mp3"
+            },
+            "particleFx": {
+              "enabled": true,
+              "maxIntensity": 0.38,
+              "preferredMode": "light"
             }
           }
         },
@@ -125,6 +165,11 @@
             "media": {
               "video": "8.mp4",
               "music": "Fond2.mp3"
+            },
+            "particleFx": {
+              "enabled": true,
+              "maxIntensity": 0.38,
+              "preferredMode": "water"
             }
           }
         },
@@ -139,6 +184,11 @@
             "media": {
               "video": "9.mp4",
               "music": "Fond2.mp3"
+            },
+            "particleFx": {
+              "enabled": true,
+              "maxIntensity": 0.38,
+              "preferredMode": "wind"
             }
           }
         }
@@ -152,6 +202,11 @@
       "media": {
         "video": "10.mp4",
         "music": "Fond2.mp3"
+      },
+      "particleFx": {
+        "enabled": true,
+        "maxIntensity": 0.22,
+        "preferredMode": "light"
       }
     },
     {
@@ -171,6 +226,11 @@
             "media": {
               "video": "11.mp4",
               "music": "Fond2.mp3"
+            },
+            "particleFx": {
+              "enabled": true,
+              "maxIntensity": 0.38,
+              "preferredMode": "wind"
             }
           }
         },
@@ -185,6 +245,11 @@
             "media": {
               "video": "12.mp4",
               "music": "Fond2.mp3"
+            },
+            "particleFx": {
+              "enabled": true,
+              "maxIntensity": 0.38,
+              "preferredMode": "light"
             }
           }
         },
@@ -199,6 +264,11 @@
             "media": {
               "video": "13.mp4",
               "music": "Fond2.mp3"
+            },
+            "particleFx": {
+              "enabled": true,
+              "maxIntensity": 0.38,
+              "preferredMode": "water"
             }
           }
         }
@@ -212,6 +282,11 @@
       "media": {
         "video": "14.mp4",
         "music": "Fond2.mp3"
+      },
+      "particleFx": {
+        "enabled": true,
+        "maxIntensity": 0.22,
+        "preferredMode": "wind"
       }
     },
     {
@@ -222,6 +297,11 @@
       "media": {
         "video": "14.mp4",
         "music": "Fond2.mp3"
+      },
+      "particleFx": {
+        "enabled": true,
+        "maxIntensity": 0.22,
+        "preferredMode": "wind"
       }
     }
   ]
