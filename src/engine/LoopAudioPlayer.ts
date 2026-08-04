@@ -8,18 +8,9 @@ export class LoopAudioPlayer {
   private muted = false
   private paused = false
   private generation = 0
-  private mediaListeners = new Set<(media:HTMLAudioElement|null)=>void>()
   private readonly targetVolume: number
 
   constructor(targetVolume = DEFAULT_VOLUME) { this.targetVolume = targetVolume }
-
-  getMediaElement() { return this.audio ?? null }
-
-  subscribeMediaElement(listener:(media:HTMLAudioElement|null)=>void) {
-    this.mediaListeners.add(listener)
-    listener(this.getMediaElement())
-    return () => { this.mediaListeners.delete(listener) }
-  }
 
   async unlock() {
     const audio = new Audio(SILENT_WAV)
@@ -38,7 +29,6 @@ export class LoopAudioPlayer {
     audio.volume = 0
     audio.addEventListener('error', () => console.warn(`Musique indisponible : ${source}`), { once: true })
     this.audio = audio
-    this.notifyMediaListeners(audio)
     if (this.muted || this.paused) return true
     try {
       await audio.play()
@@ -83,9 +73,6 @@ export class LoopAudioPlayer {
         if (progress < 1) requestAnimationFrame(tick)
         else {
           audio.pause(); audio.removeAttribute('src'); audio.load()
-          // A newer load may already have installed another element while this
-          // asynchronous fade was finishing. Never detach its analyser.
-          if (!this.audio) this.notifyMediaListeners(null)
           resolve()
         }
       }
@@ -110,10 +97,6 @@ export class LoopAudioPlayer {
   private clearFade() {
     if (this.fadeTimer) clearInterval(this.fadeTimer)
     this.fadeTimer = undefined
-  }
-
-  private notifyMediaListeners(media:HTMLAudioElement|null) {
-    for (const listener of this.mediaListeners) listener(media)
   }
 }
 
