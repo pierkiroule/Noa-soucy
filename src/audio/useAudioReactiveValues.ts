@@ -15,15 +15,20 @@ export function useAudioReactiveValues(media:HTMLAudioElement|null, enabled=true
   const [values,setValues]=useState(AUDIO_FALLBACK)
   useEffect(()=>{
     if(!media || !enabled || matchMedia('(prefers-reduced-motion: reduce)').matches){ setValues(AUDIO_FALLBACK); return }
-    let frame=0, context:AudioContext|undefined
+    let frame=0, context:AudioContext|undefined, lastEmission=0
     try {
-      context=new AudioContext(); const analyser=context.createAnalyser(); analyser.fftSize=256; analyser.smoothingTimeConstant=.85
+      context=new AudioContext(); void context.resume(); const analyser=context.createAnalyser(); analyser.fftSize=256; analyser.smoothingTimeConstant=.85
       const source=context.createMediaElementSource(media); source.connect(analyser); analyser.connect(context.destination)
       const data=new Uint8Array(analyser.frequencyBinCount)
-      const tick=()=>{ analyser.getByteFrequencyData(data); setValues(analyseFrequencyData(data,context!.sampleRate)); frame=requestAnimationFrame(tick) }
+      const tick=(now:number)=>{
+        // The particles breathe slowly; publishing at 10 Hz avoids rerendering
+        // the whole story player on every animation frame.
+        if (now-lastEmission >= 100) { analyser.getByteFrequencyData(data); setValues(analyseFrequencyData(data,context!.sampleRate)); lastEmission=now }
+        frame=requestAnimationFrame(tick)
+      }
       frame=requestAnimationFrame(tick)
     } catch { // A procedural breath keeps the decoration alive when Web Audio is unavailable.
-      const started=performance.now(); const tick=(now:number)=>{const breath=.92+Math.sin((now-started)/2400)*.08;setValues({level:.25*breath,low:.2*breath,mid:.2*breath,high:.15*breath});frame=requestAnimationFrame(tick)};frame=requestAnimationFrame(tick)
+      const started=performance.now(); const tick=(now:number)=>{if(now-lastEmission>=100){const breath=.92+Math.sin((now-started)/2400)*.08;setValues({level:.25*breath,low:.2*breath,mid:.2*breath,high:.15*breath});lastEmission=now}frame=requestAnimationFrame(tick)};frame=requestAnimationFrame(tick)
     }
     return()=>{cancelAnimationFrame(frame); if(context) void context.close()}
   },[media,enabled])

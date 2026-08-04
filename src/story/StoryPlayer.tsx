@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { StoryMediaPlayer } from '../components/StoryMediaPlayer'
+import { useAudioReactiveValues } from '../audio/useAudioReactiveValues'
 import { loopAudioPlayer } from '../engine/LoopAudioPlayer'
 import { getNextMedia, loadStory, preloadNextStoryMedia, storyMediaUrl, type StoryChoice, type StoryDocument, type StoryMediaBlock } from './storyData'
 
@@ -23,11 +24,14 @@ export function StoryPlayer() {
   const [navigationOpen, setNavigationOpen] = useState(false)
   const [state, setState] = useState<SavedState>(readSaved)
   const [isPlaying, setIsPlaying] = useState(true)
+  const [musicElement, setMusicElement] = useState<HTMLAudioElement|null>(() => loopAudioPlayer.getMediaElement())
+  const audioValues = useAudioReactiveValues(musicElement)
   const completedOnLoad = useRef(state.completed)
 
   useEffect(() => { void loadStory().then(setStory).catch(error => { console.error(error); setLoadError(true) }) }, [])
   useEffect(() => { if (story) localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...state, version: story.version })) }, [state, story])
   useEffect(() => { loopAudioPlayer.setMuted(state.isMuted) }, [state.isMuted])
+  useEffect(() => loopAudioPlayer.subscribeMediaElement(setMusicElement), [])
   useEffect(() => {
     if (!story || completedOnLoad.current) return
     void loopAudioPlayer.load(BACKGROUND_MUSIC)
@@ -86,7 +90,7 @@ export function StoryPlayer() {
     <button className="sound-toggle" aria-pressed={state.isMuted} onClick={toggleMuted}>{state.isMuted ? 'Son coupé' : 'Son activé'}</button>
     <div className="journey-progress" role="progressbar" aria-label="Progression" aria-valuenow={state.currentBlockIndex + 1} aria-valuemin={1} aria-valuemax={story.blocks.length}><i style={{ width: `${((state.currentBlockIndex + 1) / story.blocks.length) * 100}%` }}/></div>
     <JourneyNavigation story={story} currentIndex={state.currentBlockIndex} isOpen={navigationOpen} onToggle={() => setNavigationOpen(open => !open)} onGoTo={goToPart} onRestart={restartStory} />
-    {mediaBlock && <StoryMediaPlayer key={mediaBlock.id} title={mediaBlock.title} text={mediaBlock.text} videoSrc={storyMediaUrl(mediaBlock.media.video)} variant={mediaBlock.type} sceneId={mediaBlock.id} particleFx={mediaBlock.particleFx} breathIndex={state.currentBreathIndex} isPlaying={isPlaying} onBreathChange={setBreath} onPlayingChange={setIsPlaying} onComplete={completeMedia}/>}
+    {mediaBlock && <StoryMediaPlayer key={mediaBlock.id} title={mediaBlock.title} text={mediaBlock.text} videoSrc={storyMediaUrl(mediaBlock.media.video)} variant={mediaBlock.type} sceneId={mediaBlock.id} particleFx={mediaBlock.particleFx} audioValues={audioValues} breathIndex={state.currentBreathIndex} isPlaying={isPlaying} onBreathChange={setBreath} onPlayingChange={setIsPlaying} onComplete={completeMedia}/>}
     {block?.type === 'question' && !activeResonance && <QuestionScreen title={block.title} text={block.text} choices={block.choices} selected={state.selectedChoices[block.id]} onSelect={selectChoice}/>}
   </main>
 }
