@@ -1,17 +1,16 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
-import { loopAudioPlayer } from '../engine/LoopAudioPlayer'
 import { splitTextIntoBreaths } from '../engine/storyText'
 import type { StoryMediaVariant } from '../story/storyData'
 
 interface Props {
-  title:string; text:string; videoSrc:string; audioSrc:string; variant:StoryMediaVariant
-  breathIndex:number; isPlaying:boolean; isMuted:boolean
+  title:string; text:string; videoSrc:string; variant:StoryMediaVariant
+  breathIndex:number; isPlaying:boolean
   onBreathChange:(index:number)=>void; onPlayingChange:(playing:boolean)=>void; onComplete:()=>void
 }
 
 interface Ripple { id:number; x:number; y:number }
 
-export function StoryMediaPlayer({ title, text, videoSrc, audioSrc, variant, breathIndex, isPlaying, isMuted, onBreathChange, onPlayingChange, onComplete }: Props) {
+export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, isPlaying, onBreathChange, onPlayingChange, onComplete }: Props) {
   const breaths = useMemo(() => splitTextIntoBreaths(text), [text])
   const [videoFailed, setVideoFailed] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
@@ -25,15 +24,8 @@ export function StoryMediaPlayer({ title, text, videoSrc, audioSrc, variant, bre
   const finished = isSeedResonance || safeIndex === breaths.length - 1
 
   useEffect(() => {
-    setVideoFailed(false); setVideoReady(false)
-    void loopAudioPlayer.load(audioSrc)
-    return () => { void loopAudioPlayer.stop() }
-  }, [audioSrc])
-
-  useEffect(() => { loopAudioPlayer.setMuted(isMuted) }, [isMuted])
-  useEffect(() => {
-    if (isPlaying) { void videoRef.current?.play().catch(() => undefined); void loopAudioPlayer.resume() }
-    else { videoRef.current?.pause(); loopAudioPlayer.pause() }
+    if (isPlaying) void videoRef.current?.play().catch(() => undefined)
+    else videoRef.current?.pause()
   }, [isPlaying])
 
   useEffect(() => {

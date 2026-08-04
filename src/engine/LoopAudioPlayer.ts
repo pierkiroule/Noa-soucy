@@ -58,7 +58,7 @@ export class LoopAudioPlayer {
     else void this.resume()
   }
 
-  async stop() {
+  async stop(duration = 500) {
     this.generation++
     const audio = this.audio
     this.audio = undefined
@@ -68,7 +68,7 @@ export class LoopAudioPlayer {
     await new Promise<void>(resolve => {
       const started = performance.now()
       const tick = () => {
-        const progress = Math.min(1, (performance.now() - started) / 500)
+        const progress = Math.min(1, (performance.now() - started) / duration)
         audio.volume = Math.max(0, start * (1 - progress))
         if (progress < 1) requestAnimationFrame(tick)
         else { audio.pause(); audio.removeAttribute('src'); audio.load(); resolve() }

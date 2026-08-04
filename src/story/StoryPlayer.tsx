@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { StoryMediaPlayer } from '../components/StoryMediaPlayer'
 import { loopAudioPlayer } from '../engine/LoopAudioPlayer'
 import { getNextMedia, loadStory, preloadNextStoryMedia, storyMediaUrl, type StoryChoice, type StoryDocument, type StoryMediaBlock } from './storyData'
 
 const STORAGE_KEY = 'nao-souci:audiovisual-progress:v4'
+const BACKGROUND_MUSIC = storyMediaUrl('Fond2.mp3')
 interface SavedState { version:number; currentBlockIndex:number; currentBreathIndex:number; isMuted:boolean; selectedChoices:Record<string,string>; activeResonanceId?:string; completed:boolean }
 
 const initialSaved: SavedState = { version: 4, currentBlockIndex: 0, currentBreathIndex: 0, isMuted: false, selectedChoices: {}, completed: false }
@@ -22,9 +23,19 @@ export function StoryPlayer() {
   const [navigationOpen, setNavigationOpen] = useState(false)
   const [state, setState] = useState<SavedState>(readSaved)
   const [isPlaying, setIsPlaying] = useState(true)
+  const completedOnLoad = useRef(state.completed)
 
   useEffect(() => { void loadStory().then(setStory).catch(error => { console.error(error); setLoadError(true) }) }, [])
   useEffect(() => { if (story) localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...state, version: story.version })) }, [state, story])
+  useEffect(() => { loopAudioPlayer.setMuted(state.isMuted) }, [state.isMuted])
+  useEffect(() => {
+    if (!story || completedOnLoad.current) return
+    void loopAudioPlayer.load(BACKGROUND_MUSIC)
+    return () => { void loopAudioPlayer.stop() }
+  }, [story])
+  useEffect(() => {
+    if (state.completed) void loopAudioPlayer.stop(1600)
+  }, [state.completed])
 
   const block = story?.blocks[state.currentBlockIndex]
   const activeResonance = useMemo(() => {
@@ -49,8 +60,8 @@ export function StoryPlayer() {
   const toggleMuted = () => {
     setState(current => { const isMuted = !current.isMuted; loopAudioPlayer.setMuted(isMuted); return { ...current, isMuted } })
   }
-  const start = () => { void loopAudioPlayer.unlock(); setStarted(true) }
-  const restart = () => { setState(initialSaved); setStarted(false); setIsPlaying(true); void loopAudioPlayer.stop() }
+  const start = () => { void loopAudioPlayer.unlock().then(() => loopAudioPlayer.resume()); setStarted(true) }
+  const restart = () => { setState(initialSaved); setStarted(false); setIsPlaying(true); void loopAudioPlayer.load(BACKGROUND_MUSIC) }
   const goToPart = (index: number) => {
     if (!story || index < 0 || index >= story.blocks.length) return
     setState(current => ({ ...current, currentBlockIndex: index, currentBreathIndex: 0, activeResonanceId: undefined, completed: false }))
@@ -61,7 +72,6 @@ export function StoryPlayer() {
     setState(initialSaved)
     setIsPlaying(true)
     setNavigationOpen(false)
-    void loopAudioPlayer.stop()
   }
 
   if (loadError) return <main className="loading"><h1>NAO SOUCI</h1><p>Le conte n’a pas pu être chargé.</p><button onClick={() => location.reload()}>Réessayer</button></main>
@@ -76,7 +86,7 @@ export function StoryPlayer() {
     <button className="sound-toggle" aria-pressed={state.isMuted} onClick={toggleMuted}>{state.isMuted ? 'Son coupé' : 'Son activé'}</button>
     <div className="journey-progress" role="progressbar" aria-label="Progression" aria-valuenow={state.currentBlockIndex + 1} aria-valuemin={1} aria-valuemax={story.blocks.length}><i style={{ width: `${((state.currentBlockIndex + 1) / story.blocks.length) * 100}%` }}/></div>
     <JourneyNavigation story={story} currentIndex={state.currentBlockIndex} isOpen={navigationOpen} onToggle={() => setNavigationOpen(open => !open)} onGoTo={goToPart} onRestart={restartStory} />
-    {mediaBlock && <StoryMediaPlayer key={mediaBlock.id} title={mediaBlock.title} text={mediaBlock.text} videoSrc={storyMediaUrl(mediaBlock.media.video)} audioSrc={storyMediaUrl(mediaBlock.media.music)} variant={mediaBlock.type} breathIndex={state.currentBreathIndex} isPlaying={isPlaying} isMuted={state.isMuted} onBreathChange={setBreath} onPlayingChange={setIsPlaying} onComplete={completeMedia}/>}
+    {mediaBlock && <StoryMediaPlayer key={mediaBlock.id} title={mediaBlock.title} text={mediaBlock.text} videoSrc={storyMediaUrl(mediaBlock.media.video)} variant={mediaBlock.type} breathIndex={state.currentBreathIndex} isPlaying={isPlaying} onBreathChange={setBreath} onPlayingChange={setIsPlaying} onComplete={completeMedia}/>}
     {block?.type === 'question' && !activeResonance && <QuestionScreen title={block.title} text={block.text} choices={block.choices} selected={state.selectedChoices[block.id]} onSelect={selectChoice}/>}
   </main>
 }
@@ -100,7 +110,6 @@ function JourneyNavigation({ story, currentIndex, isOpen, onToggle, onGoTo, onRe
 }
 
 function QuestionScreen({ title, text, choices, selected, onSelect }: { title:string; text:string; choices:StoryChoice[]; selected?:string; onSelect:(choice:StoryChoice)=>void }) {
-  useEffect(() => { void loopAudioPlayer.stop() }, [])
   return <section className="question-screen"><span className="eyebrow">{title}</span><h1>{text}</h1><div className="question-screen__choices">{choices.map(choice => <button key={choice.id} className={selected === choice.id ? 'is-selected' : ''} onClick={() => onSelect(choice)}>{choice.label}<span aria-hidden="true">→</span></button>)}</div><small>Votre choix ouvre une résonance, sans interprétation.</small></section>
 }
 
