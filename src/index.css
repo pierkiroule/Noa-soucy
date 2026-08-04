@@ -41,3 +41,14 @@
 @media(max-width:600px){.chapter-nav{width:calc(100% - 20px);bottom:max(10px,env(safe-area-inset-bottom));border-radius:15px}.chapter-nav button{min-width:48px;padding:9px}.chapter-nav>button:not(.chapter-nav__index) span:not([aria-hidden]){display:none}.chapter-nav__index strong{font-size:.78rem}.chapter-menu{padding:20px 15px;border-radius:20px}.chapter-menu__backdrop{padding:12px}.chapter-menu li button{padding:11px 7px}.media-player__controls{bottom:max(76px,calc(env(safe-area-inset-bottom) + 70px))}.media-player__counter{bottom:max(140px,calc(env(safe-area-inset-bottom) + 132px))}.media-player__swipe-hint{bottom:max(162px,calc(env(safe-area-inset-bottom) + 154px))}.media-player__continue{bottom:max(140px,calc(env(safe-area-inset-bottom) + 132px))}}
 .story .media-player__controls{bottom:max(82px,calc(env(safe-area-inset-bottom) + 74px))}.story .media-player__counter{bottom:max(142px,calc(env(safe-area-inset-bottom) + 134px))}.story .media-player__swipe-hint{bottom:max(164px,calc(env(safe-area-inset-bottom) + 156px))}.story .media-player__continue{bottom:max(142px,calc(env(safe-area-inset-bottom) + 134px))}
 .story .question-screen{padding-bottom:max(92px,calc(env(safe-area-inset-bottom) + 82px))}
+
+/* Stronger type contrast keeps the narrative legible over every film frame. */
+:root{color:#111514;--ink:#111514}
+.intro h1,.intro p,.loading h1,.completion h1,.question-screen h1,.score h1,.score article p,.score__question h2,.chapter-menu h2{color:#111514;font-weight:400}
+.intro p,.intro small,.question-screen small,.score article p{color:#202a28}
+.eyebrow,.media-player__title,.score article>span,.chapter-menu li span{color:#65431f;font-weight:600}
+.media-player__breath,.media-player__breath p{color:#080909;font-weight:400}
+.media-player__counter,.media-player__swipe-hint{color:#17201e;font-weight:600}
+.media-player--seed-resonance .media-player__breath p{color:#111514;font-weight:400}
+.question-screen__choices button,.media-player__controls button,.sound-toggle,.chapter-nav button,.chapter-menu li button,.chapter-menu__restart{color:#111514;font-weight:500}
+.chapter-nav__index strong,.chapter-menu li strong{font-weight:500}
