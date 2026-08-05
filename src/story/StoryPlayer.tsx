@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { StoryMediaPlayer } from '../components/StoryMediaPlayer'
-import { MetaphoricResonances } from '../components/resonances/MetaphoricResonances'
+import { MetaphoricalResonanceFlow } from '../components/metaphorical-resonances/MetaphoricalResonanceFlow'
 import { ParticleOverlay } from '../effects/ParticleOverlay'
 import { loopAudioPlayer } from '../engine/LoopAudioPlayer'
 import { getNextMedia, loadStory, preloadNextStoryMedia, storyMediaUrl, type StoryChoice, type StoryDocument, type StoryMediaBlock } from './storyData'
@@ -49,7 +49,7 @@ export function StoryPlayer() {
   const completeMedia = () => {
     if (!story || !block) return
     if (activeResonance) setState(current => ({ ...current, activeResonanceId: undefined, currentBlockIndex: current.currentBlockIndex + 1, currentBreathIndex: 0 }))
-    else if (block.type === 'epilogue') setState(current => story.blocks[current.currentBlockIndex + 1]?.type === 'resonances' ? ({ ...current, currentBlockIndex: current.currentBlockIndex + 1, currentBreathIndex: 0 }) : ({ ...current, completed: true }))
+    else if (block.type === 'epilogue') setState(current => story.blocks[current.currentBlockIndex + 1]?.type === 'metaphorical-resonances' ? ({ ...current, currentBlockIndex: current.currentBlockIndex + 1, currentBreathIndex: 0 }) : ({ ...current, completed: true }))
     else setState(current => ({ ...current, currentBlockIndex: current.currentBlockIndex + 1, currentBreathIndex: 0 }))
     setIsPlaying(true)
   }
@@ -78,9 +78,9 @@ export function StoryPlayer() {
   if (loadError) return <main className="loading"><h1>NAO SOUCI</h1><p>Le conte n’a pas pu être chargé.</p><button onClick={() => location.reload()}>Réessayer</button></main>
   if (!story) return <main className="loading" aria-live="polite">La mer retrouve son souffle…</main>
   if (!started) return <main className="story intro-screen"><Brand/><section className="intro"><span className="eyebrow">Un conte audiovisuel</span><h1>{story.title}</h1><p>{story.subtitle}</p><button className="primary" onClick={start}>{state.currentBlockIndex ? 'Reprendre la traversée' : 'Commencer le conte'} <span aria-hidden="true">→</span></button><small>Vidéo, musique et texte · Son réglable à tout moment</small></section></main>
-  if (state.completed) return <main className="story completion"><Brand/><span className="eyebrow">Fin de traversée</span><h1>Votre traversée s’arrête ici pour aujourd’hui.</h1><p>Les mots peuvent continuer de flotter.<br/>Sans réponse attendue.<br/>Sans chemin imposé.</p><div className="completion__actions"><button className="quiet" onClick={() => { setState(current => ({ ...current, completed: false, currentBlockIndex: story.blocks.findIndex(part => part.type === 'resonances') })); setStarted(true) }}>Résonances métaphoriques</button><button className="primary" onClick={restart}>Recommencer le conte</button><button className="quiet" onClick={() => setStarted(false)}>Revenir à l’accueil</button></div></main>
+  if (state.completed) return <main className="story completion"><Brand/><span className="eyebrow">Fin de traversée</span><h1>Votre traversée s’arrête ici pour aujourd’hui.</h1><p>Les mots peuvent continuer de flotter.<br/>Sans réponse attendue.<br/>Sans chemin imposé.</p><div className="completion__actions"><button className="quiet" onClick={() => { setState(current => ({ ...current, completed: false, currentBlockIndex: story.blocks.findIndex(part => part.type === 'metaphorical-resonances') })); setStarted(true) }}>Résonances métaphoriques</button><button className="primary" onClick={restart}>Recommencer le conte</button><button className="quiet" onClick={() => setStarted(false)}>Revenir à l’accueil</button></div></main>
 
-  if (block?.type === 'resonances') return <MetaphoricResonances onBackToEnding={() => setState(current => ({ ...current, currentBlockIndex: Math.max(0, current.currentBlockIndex - 1), completed: false }))} onFinish={() => setState(current => ({ ...current, completed: true }))} />
+  if (block?.type === 'metaphorical-resonances') return <MetaphoricalResonanceFlow onFinish={() => setState(current => ({ ...current, completed: true }))} onRestartStory={restartStory} />
 
   const mediaBlock: StoryMediaBlock | undefined = activeResonance ?? (block && block.type !== 'question' ? block : undefined)
   return <main className="story">
