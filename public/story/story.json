@@ -225,18 +225,18 @@
       }
     },
     {
-      "id": "navigation-compass",
-      "type": "compass",
-      "module": "navigation-compass",
-      "title": "Guide projectif des navigateurs de l’incertitude",
+      "id": "metaphoric-resonances",
+      "type": "resonances",
+      "module": "metaphoric-resonances",
+      "title": "Résonances métaphoriques",
       "enabled": true,
       "optional": true
     }
   ],
-  "compass": {
-    "navigation-compass": {
-      "id": "navigation-compass",
-      "title": "Guide projectif des navigateurs de l’incertitude",
+  "resonances": {
+    "metaphoric-resonances": {
+      "id": "metaphoric-resonances",
+      "title": "Résonances métaphoriques",
       "enabled": true,
       "optional": true
     }
