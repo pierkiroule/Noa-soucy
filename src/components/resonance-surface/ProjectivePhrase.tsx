@@ -1,0 +1,1 @@
+export function ProjectivePhrase({ text, position, onClose }: { text?: string; position?: { x: number; y: number }; onClose: () => void }) { if (!text) return null; return <button className="projective-phrase" style={position ? { left: position.x, top: Math.max(96, position.y - 58) } : undefined} onClick={onClose} aria-live="polite">{text}</button> }

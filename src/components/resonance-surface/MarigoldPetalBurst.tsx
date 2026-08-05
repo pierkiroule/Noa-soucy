@@ -1,0 +1,2 @@
+import type { CollisionEvent } from '../../types/resonanceSurface'
+export function MarigoldPetalBurst({ event }: { event?: CollisionEvent | null }) { if (!event) return null; return <div className="petal-burst" aria-hidden="true" style={{ left: event.position.x, top: event.position.y }}>{Array.from({ length: 8 }, (_, index) => <i key={`${event.createdAt}-${index}`} style={{ ['--angle' as string]: `${index * 45}deg`, ['--distance' as string]: `${34 + index * 3}px` }} />)}</div> }

@@ -225,20 +225,22 @@
       }
     },
     {
-      "id": "navigation-compass",
-      "type": "compass",
-      "module": "navigation-compass",
-      "title": "Guide projectif des navigateurs de l’incertitude",
+      "id": "resonance-surface-main",
+      "type": "resonance-surface",
+      "module": "resonance-surface-main",
+      "title": "La Surface de résonance",
       "enabled": true,
-      "optional": true
+      "optional": true,
+      "maxVisibleBubbles": 6
     }
   ],
-  "compass": {
-    "navigation-compass": {
-      "id": "navigation-compass",
-      "title": "Guide projectif des navigateurs de l’incertitude",
+  "resonanceSurface": {
+    "resonance-surface-main": {
+      "id": "resonance-surface-main",
+      "title": "La Surface de résonance",
       "enabled": true,
-      "optional": true
+      "optional": true,
+      "maxVisibleBubbles": 6
     }
   }
 }
