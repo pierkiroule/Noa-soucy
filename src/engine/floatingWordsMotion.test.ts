@@ -1,9 +1,0 @@
-import assert from 'node:assert/strict'
-import test from 'node:test'
-import { initializeWordPetals, limitWordSpeed, selectFloatingWords, stepWordPetals } from './floatingWordsMotion.ts'
-
-test('selects 8 to 10 unique orange petal sources', () => { const words = selectFloatingWords('seed', 9); assert.equal(words.length, 9); assert.equal(new Set(words.map(word => word.id)).size, 9) })
-test('initializes petals inside the viewport with slow movement', () => { const petals = initializeWordPetals(900, 700, false, 'a'); assert.equal(petals.length, 9); assert.ok(petals.every(petal => petal.position.x >= 0 && petal.position.y >= 0)); assert.ok(petals.every(petal => Math.hypot(petal.velocity.x, petal.velocity.y) <= 0.05)) })
-test('reduced motion initialization can remain still when explicitly requested', () => { const fixed = initializeWordPetals(900, 700, true, 'a'); assert.ok(fixed.every(petal => petal.velocity.x === 0 && petal.velocity.y === 0)) })
-test('petals move smoothly and stay speed-limited', () => { const petals = initializeWordPetals(900, 700, false, 'move'); const next = stepWordPetals(petals, 32, 900, 700, 1000, false); assert.ok(next.some((petal, index) => petal.position.x !== petals[index].position.x || petal.position.y !== petals[index].position.y)); assert.ok(Math.hypot(limitWordSpeed({ ...petals[0], velocity: { x: 9, y: 9 } }).velocity.x, limitWordSpeed({ ...petals[0], velocity: { x: 9, y: 9 } }).velocity.y) <= 0.12001) })
-test('petals bounce softly at screen edges', () => { const [petal] = initializeWordPetals(900, 700, false, 'edge'); const [next] = stepWordPetals([{ ...petal, position: { x: -20, y: -20 }, velocity: { x: -0.02, y: -0.02 } }], 32, 900, 700, 1000, false); assert.ok(next.position.x >= 12); assert.ok(next.position.y >= 24); assert.ok(next.velocity.x > 0); assert.ok(next.velocity.y > 0) })

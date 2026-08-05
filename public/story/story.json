@@ -225,22 +225,22 @@
       }
     },
     {
-      "id": "floating-words-main",
-      "type": "floating-words",
-      "module": "floating-words-main",
-      "title": "Les mots qui flottent",
+      "id": "flying-bubbles-main",
+      "type": "flying-bubbles",
+      "module": "flying-bubbles-main",
+      "title": "Les bulles qui volent",
       "enabled": true,
       "optional": true,
-      "visibleWordCount": 9
+      "visibleBubbleCount": 14
     }
   ],
-  "floatingWords": {
-    "floating-words-main": {
-      "id": "floating-words-main",
-      "title": "Les mots qui flottent",
+  "flyingBubbles": {
+    "flying-bubbles-main": {
+      "id": "flying-bubbles-main",
+      "title": "Les bulles qui volent",
       "enabled": true,
       "optional": true,
-      "visibleWordCount": 9
+      "visibleBubbleCount": 14
     }
   }
 }
