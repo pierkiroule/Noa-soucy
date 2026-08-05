@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { StoryMediaPlayer } from '../components/StoryMediaPlayer'
-import { NavigationCompassFlow } from '../components/navigation/NavigationCompassFlow'
+import { NavigationFlowerExperience } from '../components/navigation-flower/NavigationFlowerExperience'
 import { ParticleOverlay } from '../effects/ParticleOverlay'
 import { loopAudioPlayer } from '../engine/LoopAudioPlayer'
 import { getNextMedia, loadStory, preloadNextStoryMedia, storyMediaUrl, type StoryChoice, type StoryDocument, type StoryMediaBlock } from './storyData'
@@ -23,7 +23,7 @@ export function StoryPlayer() {
   const [started, setStarted] = useState(false)
   const [scoreMode, setScoreMode] = useState(false)
   const [navigationOpen, setNavigationOpen] = useState(false)
-  const [compassStarted, setCompassStarted] = useState(false)
+  const [flowerStarted, setFlowerStarted] = useState(false)
   const [state, setState] = useState<SavedState>(readSaved)
   const [isPlaying, setIsPlaying] = useState(true)
   const completedOnLoad = useRef(state.completed)
@@ -51,7 +51,7 @@ export function StoryPlayer() {
   const completeMedia = () => {
     if (!story || !block) return
     if (activeResonance) setState(current => ({ ...current, activeResonanceId: undefined, currentBlockIndex: current.currentBlockIndex + 1, currentBreathIndex: 0 }))
-    else if (block.type === 'epilogue') setState(current => story.blocks[current.currentBlockIndex + 1]?.type === 'compass' ? ({ ...current, currentBlockIndex: current.currentBlockIndex + 1, currentBreathIndex: 0 }) : ({ ...current, completed: true }))
+    else if (block.type === 'epilogue') setState(current => story.blocks[current.currentBlockIndex + 1]?.type === 'navigation-flower' ? ({ ...current, currentBlockIndex: current.currentBlockIndex + 1, currentBreathIndex: 0 }) : ({ ...current, completed: true }))
     else setState(current => ({ ...current, currentBlockIndex: current.currentBlockIndex + 1, currentBreathIndex: 0 }))
     setIsPlaying(true)
   }
@@ -70,24 +70,24 @@ export function StoryPlayer() {
     setState(current => ({ ...current, currentBlockIndex: index, currentBreathIndex: 0, activeResonanceId: undefined, completed: false }))
     setIsPlaying(true)
     setNavigationOpen(false)
-    setCompassStarted(false)
+    setFlowerStarted(false)
   }
   const restartStory = () => {
     setState(initialSaved)
     setIsPlaying(true)
     setNavigationOpen(false)
-    setCompassStarted(false)
+    setFlowerStarted(false)
   }
 
   if (loadError) return <main className="loading"><h1>NAO SOUCI</h1><p>Le conte n’a pas pu être chargé.</p><button onClick={() => location.reload()}>Réessayer</button></main>
   if (!story) return <main className="loading" aria-live="polite">La mer retrouve son souffle…</main>
   if (scoreMode) return <ScoreReader story={story} onClose={() => setScoreMode(false)} />
   if (!started) return <main className="story intro-screen"><Brand/><section className="intro"><span className="eyebrow">Un conte audiovisuel</span><h1>{story.title}</h1><p>{story.subtitle}</p><button className="primary" onClick={start}>{state.currentBlockIndex ? 'Reprendre la traversée' : 'Commencer le conte'} <span aria-hidden="true">→</span></button><button className="quiet intro__score" onClick={() => setScoreMode(true)}>Lecture de la partition</button><small>Vidéo, musique et texte · Son réglable à tout moment</small></section></main>
-  if (state.completed) return <main className="story completion"><Brand/><span className="eyebrow">Fin de traversée</span><h1>Votre traversée s’arrête ici pour aujourd’hui.</h1><p>Votre boussole pourra changer.<br/>Comme la mer.<br/>Comme le vent.<br/>Comme vous.</p><div className="completion__actions"><button className="quiet" onClick={() => { setState(current => ({ ...current, completed: false, currentBlockIndex: story.blocks.findIndex(part => part.type === 'compass') })); setStarted(true) }}>Revoir ma boussole</button><button className="primary" onClick={restart}>Recommencer le conte</button><button className="quiet" onClick={() => setStarted(false)}>Revenir à l’accueil</button></div></main>
+  if (state.completed) return <main className="story completion"><Brand/><span className="eyebrow">Fin de traversée</span><h1>Votre traversée s’arrête ici pour aujourd’hui.</h1><p>Votre fleur pourra changer.<br/>Comme la mer.<br/>Comme le vent.<br/>Comme vous.</p><div className="completion__actions"><button className="quiet" onClick={() => { setState(current => ({ ...current, completed: false, currentBlockIndex: story.blocks.findIndex(part => part.type === 'navigation-flower') })); setStarted(true) }}>Revoir ma fleur</button><button className="primary" onClick={restart}>Recommencer le conte</button><button className="quiet" onClick={() => setStarted(false)}>Revenir à l’accueil</button></div></main>
 
-  if (block?.type === 'compass') {
-    if (compassStarted) return <NavigationCompassFlow onBackToEnding={() => { setCompassStarted(false); setState(current => ({ ...current, currentBlockIndex: Math.max(0, current.currentBlockIndex - 1), completed: false })) }} onFinish={() => setState(current => ({ ...current, completed: true }))} />
-    return <main className="story compass-flow"><Brand/><section className="compass-panel compass-invitation"><span className="eyebrow">Module facultatif</span><h1>Guide projectif des navigateurs de l’incertitude</h1><p>La boussole ne dit pas qui vous êtes. Elle montre les ressources sur lesquelles vous pouvez vous appuyer aujourd’hui.</p><div className="compass-actions"><button className="primary" onClick={() => setCompassStarted(true)}>Découvrir ma boussole</button><button className="quiet" onClick={() => setState(current => ({ ...current, completed: true }))}>Terminer ici</button></div><small>Vos réponses restent uniquement sur cet appareil.</small></section></main>
+  if (block?.type === 'navigation-flower') {
+    if (flowerStarted) return <NavigationFlowerExperience onBackToEnding={() => { setFlowerStarted(false); setState(current => ({ ...current, currentBlockIndex: Math.max(0, current.currentBlockIndex - 1), completed: false })) }} onFinish={() => setState(current => ({ ...current, completed: true }))} />
+    return <main className="story compass-flow flower-flow"><Brand/><section className="compass-panel compass-invitation"><span className="eyebrow">Invitation à poursuivre</span><h1>La Fleur-Boussole des navigateurs de l’incertitude</h1><p>La traversée choisit les pétales. Les pétales construisent la fleur. La fleur devient une voile.</p><div className="compass-actions"><button className="primary" onClick={() => setFlowerStarted(true)}>Découvrir ma fleur de navigation</button><button className="quiet" onClick={() => setState(current => ({ ...current, completed: true }))}>Terminer ici</button></div><small>Vos choix restent uniquement sur cet appareil.</small></section></main>
   }
 
   const mediaBlock: StoryMediaBlock | undefined = activeResonance ?? (block && block.type !== 'question' ? block : undefined)
@@ -124,7 +124,7 @@ function QuestionScreen({ title, text, choices, selected, onSelect }: { title:st
 }
 
 function ScoreReader({ story, onClose }: { story:StoryDocument; onClose:()=>void }) {
-  const entries = story.blocks.flatMap(block => block.type === 'question' ? [block, ...block.choices.map(choice => choice.resonance)] : block.type === 'compass' ? [] : [block])
+  const entries = story.blocks.flatMap(block => block.type === 'question' ? [block, ...block.choices.map(choice => choice.resonance)] : block.type === 'navigation-flower' ? [] : [block])
   return <main className="score"><header><div><span className="eyebrow">Mode de vérification</span><h1>Lecture de la partition</h1></div><button className="quiet" onClick={onClose}>Fermer</button></header>{entries.map(entry => entry.type === 'question' ? <article key={entry.id} className="score__question"><span>{entry.title}</span><h2>{entry.text}</h2><p>{entry.choices.map(choice => choice.label).join(' · ')}</p></article> : <article key={entry.id}><span>{entry.title}</span><p>{entry.text}</p><code>{entry.media.video} · {entry.media.music}</code></article>)}</main>
 }
 

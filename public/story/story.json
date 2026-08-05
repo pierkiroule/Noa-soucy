@@ -225,18 +225,18 @@
       }
     },
     {
-      "id": "navigation-compass",
-      "type": "compass",
-      "module": "navigation-compass",
-      "title": "Guide projectif des navigateurs de l’incertitude",
+      "id": "navigation-flower-main",
+      "type": "navigation-flower",
+      "module": "navigation-flower-main",
+      "title": "La Fleur-Boussole des navigateurs de l’incertitude",
       "enabled": true,
       "optional": true
     }
   ],
-  "compass": {
-    "navigation-compass": {
-      "id": "navigation-compass",
-      "title": "Guide projectif des navigateurs de l’incertitude",
+  "navigationFlower": {
+    "navigation-flower-main": {
+      "id": "navigation-flower-main",
+      "title": "La Fleur-Boussole des navigateurs de l’incertitude",
       "enabled": true,
       "optional": true
     }
