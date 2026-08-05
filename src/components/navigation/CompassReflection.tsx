@@ -1,6 +1,0 @@
-import type { NavigationCompassReflections } from './compassUtils'
-
-export function CompassReflection({ reflections, onChange, onFinish, onRestart }: { reflections:NavigationCompassReflections; onChange:(reflections:NavigationCompassReflections)=>void; onFinish:()=>void; onRestart:()=>void }) {
-  const set = (key: keyof NavigationCompassReflections, value: string) => onChange({ ...reflections, [key]: value })
-  return <section className="compass-panel compass-reflection"><span className="eyebrow">Réflexion finale</span><h1>Avant de rejoindre le rivage</h1><label>Aujourd’hui, ma plus grande force est…<textarea value={reflections.strength} onChange={event => set('strength', event.target.value)} /></label><label>La compétence que j’aimerais développer davantage est…<textarea value={reflections.growth} onChange={event => set('growth', event.target.value)} /></label><label>Mon prochain petit pas sera…<textarea value={reflections.nextStep} onChange={event => set('nextStep', event.target.value)} /></label><div className="compass-actions"><button className="primary" onClick={onFinish}>Terminer ma traversée</button><button className="quiet" onClick={onRestart}>Recommencer la boussole</button></div><small>Ces champs sont facultatifs. Vos réponses restent uniquement sur cet appareil.</small></section>
-}

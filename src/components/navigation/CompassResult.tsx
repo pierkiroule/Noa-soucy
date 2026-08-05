@@ -1,8 +1,0 @@
-import { navigationSkills } from '../../data/navigationSkills'
-import type { NavigationCompassResult } from '../../types/navigationCompass'
-import { CompassChart } from './CompassChart'
-
-export function CompassResult({ result, onContinue, onRestart }: { result:NavigationCompassResult; onContinue:()=>void; onRestart:()=>void }) {
-  const label = (id: string) => navigationSkills.find(skill => skill.id === id)?.label ?? id
-  return <section className="compass-panel compass-result"><span className="eyebrow">Votre voile de navigation</span><h1>Votre voile de navigation</h1><p>Cette forme représente les compétences sur lesquelles vous pouvez vous appuyer aujourd’hui.</p><p>Elle n’a pas besoin d’être régulière.</p><p>Certaines traversées demandent davantage d’ancrage.<br/>D’autres davantage d’adaptation ou d’audace.</p><CompassChart scores={result.scores}/><div className="compass-result__lists"><article><h2>Mes appuis du moment</h2><p>Aujourd’hui, vous semblez pouvoir particulièrement vous appuyer sur :</p><ul>{result.strongestSkillIds.map(id => <li key={id}>{label(id)}</li>)}</ul></article><article><h2>Une compétence que je pourrais faire grandir</h2><p>Vous pourriez choisir de faire grandir :</p><ul>{result.growthSkillIds.slice(0, 1).map(id => <li key={id}>{label(id)}</li>)}</ul></article></div><p>Ce résultat n’est pas fixe. Il peut changer selon les périodes, les contextes et les traversées.</p><div className="compass-actions"><button className="primary" onClick={onContinue}>Continuer</button><button className="quiet" onClick={onRestart}>Recommencer la boussole</button></div><small>Vos réponses restent uniquement sur cet appareil.</small></section>
-}
