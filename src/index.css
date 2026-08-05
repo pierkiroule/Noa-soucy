@@ -79,7 +79,7 @@
   position: relative;
   width: 100%;
   height: 100dvh;
-  padding: clamp(86px,12vh,130px) clamp(18px,4vw,56px) clamp(64px,8vh,92px);
+  padding: clamp(82px,11vh,118px) clamp(18px,4vw,56px) clamp(64px,8vh,92px);
   animation: stage-in 1.3s both;
 }
 .resonance-intro {
@@ -87,10 +87,10 @@
   z-index: 4;
   width: min(92vw,640px);
   margin: 0 auto;
-  padding: clamp(14px,2.8vw,26px);
+  padding: clamp(14px,2.8vw,24px);
   border: 1px solid rgba(255,255,255,.58);
   border-radius: 28px;
-  background: rgba(246,240,229,.78);
+  background: rgba(246,240,229,.82);
   box-shadow: 0 18px 60px rgba(32,58,53,.08);
   text-align: center;
   backdrop-filter: blur(10px);
@@ -109,31 +109,41 @@
 }
 .resonance-words {
   position: absolute;
-  inset: clamp(320px,43vh,390px) clamp(14px,4vw,54px) max(72px,calc(env(safe-area-inset-bottom) + 56px));
+  inset: clamp(315px,43vh,382px) clamp(18px,5vw,70px) max(72px,calc(env(safe-area-inset-bottom) + 56px));
   z-index: 3;
+  overflow: hidden;
+  border-radius: 34px;
+  pointer-events: none;
+}
+.resonance-word-shell {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  display: inline-block;
+  transform: translate(-50%,-50%);
+  animation: petal-drift var(--duration) ease-in-out var(--delay) infinite alternate;
+  will-change: transform;
+  pointer-events: auto;
 }
 .resonance-word {
-  position: absolute;
-  left: 0;
-  top: 0;
+  display: block;
   min-width: 72px;
   min-height: 48px;
   padding: 12px 16px;
   border: 0;
   border-radius: 999px;
-  background: rgba(255,250,244,.62);
+  background: rgba(255,250,244,.72);
   box-shadow: 0 14px 34px rgba(57,75,70,.08);
   color: #203a35;
   font: 500 clamp(1rem,2.2vw,1.45rem)/1 DM Sans,sans-serif;
-  transform: translate3d(0,0,0);
   cursor: pointer;
-  will-change: transform;
-  transition: opacity .45s, background .45s, box-shadow .45s, filter .45s;
+  animation: petal-bob calc(var(--duration) * .72) ease-in-out calc(var(--delay) * .5) infinite alternate;
+  transition: opacity .45s, transform .45s, background .45s, box-shadow .45s, filter .45s;
   backdrop-filter: blur(7px);
 }
 .resonance-word:hover,
 .resonance-word:focus-visible {
-  background: rgba(255,255,255,.86);
+  background: rgba(255,255,255,.9);
   box-shadow: 0 16px 38px rgba(169,111,54,.16);
 }
 .resonance-cloud.has-selection .resonance-word:not(.is-selected) {
@@ -142,7 +152,9 @@
 .resonance-word.is-selected {
   z-index: 4;
   background: #fffaf4;
+  animation-play-state: paused;
   filter: saturate(1.08);
+  transform: scale(1.09);
 }
 .resonance-word:disabled {
   cursor: default;
@@ -180,6 +192,16 @@
 .resonance-card button {
   padding: 12px 18px;
 }
+@keyframes petal-drift {
+  0% { transform: translate(-50%,-50%) translate(calc(var(--dx) * -.65), calc(var(--dy) * -.45)); }
+  35% { transform: translate(-50%,-50%) translate(var(--rx), calc(var(--dy) * .55)); }
+  70% { transform: translate(-50%,-50%) translate(calc(var(--dx) * .72), calc(var(--dy) * -.35)); }
+  100% { transform: translate(-50%,-50%) translate(calc(var(--dx) * -.18), var(--dy)); }
+}
+@keyframes petal-bob {
+  from { transform: translateY(-5px) rotate(calc(var(--tilt) * -1)); }
+  to { transform: translateY(6px) rotate(var(--tilt)); }
+}
 @media(max-width:720px) {
   .resonance-cloud { padding-top: max(82px, calc(env(safe-area-inset-top) + 70px)); }
   .resonance-intro { width: min(94vw,520px); padding: 14px; }
@@ -201,9 +223,12 @@
   .resonance-intro p:nth-of-type(3),
   .resonance-intro p:nth-of-type(4) { display: none; }
   .resonance-intro h1 { font-size: clamp(1.8rem,5vw,3.1rem); }
+  .resonance-words { top: clamp(250px,45vh,310px); }
 }
 @media(prefers-reduced-motion:reduce) {
   .resonance-cloud,
+  .resonance-word-shell,
+  .resonance-word,
   .resonance-modal { animation: none; }
   .resonance-word { transition: opacity .2s, background .2s, box-shadow .2s; }
 }
