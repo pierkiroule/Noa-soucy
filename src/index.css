@@ -18,7 +18,7 @@
 .media-player__visual .media-player__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:none}
 .media-player__visual .media-player__fallback{position:absolute;inset:0}
 .media-player__ripples{z-index:6}
-.media-player__swipe-hint,.media-player__counter,.media-player__controls{z-index:7}
+.media-player__swipe-hint,.media-player__counter,.media-player__controls,.media-player__instructions{z-index:7}
 
 @media(max-width:600px){.media-player__text-scroll{padding-top:max(104px,calc(env(safe-area-inset-top) + 86px))}.media-player__breath{padding:0 5vw}.media-player__breath p{width:90vw}}
 
@@ -53,3 +53,10 @@
 .media-player--resonance-bubble .media-player__breath p{color:#111514;font-weight:400}
 .question-screen__choices button,.media-player__controls button,.sound-toggle,.chapter-nav button,.chapter-menu li button,.chapter-menu__restart{color:#111514;font-weight:500}
 .chapter-nav__index strong,.chapter-menu li strong{font-weight:500}
+
+/* Reading aids make progression explicit without hiding the film. */
+.media-player__instructions{position:absolute;right:max(14px,env(safe-area-inset-right));bottom:max(142px,calc(env(safe-area-inset-bottom) + 134px));left:max(14px,env(safe-area-inset-left));margin:0;color:#17201e;font-size:.64rem;font-weight:600;letter-spacing:.08em;text-align:center;text-shadow:0 0 8px white;pointer-events:none}
+.media-player__text-scroll:focus-visible{outline:3px solid rgba(197,137,75,.9);outline-offset:-8px}
+.media-player__controls{width:min(94vw,520px);justify-content:center}.media-player__controls button{min-width:118px}.media-player__controls button:nth-child(2){min-width:92px;background:rgba(246,240,229,.92)}
+.media-player--resonance-bubble .media-player__instructions{display:none}
+@media(max-width:600px){.media-player__instructions{bottom:max(220px,calc(env(safe-area-inset-bottom) + 210px));padding:0 9vw;font-size:.58rem}.media-player__controls{width:calc(100% - 20px)}.media-player__controls button{min-width:0;padding:9px 8px;font-size:.66rem}}
