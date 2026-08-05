@@ -1,0 +1,1 @@
+export function ResourcePhrase({ phrase, onClose }: { phrase: string; onClose: () => void }) { if (!phrase) return null; return <button className="resource-phrase" onClick={onClose} aria-live="polite">{phrase}</button> }

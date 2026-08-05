@@ -1,11 +1,11 @@
 export type StoryMediaVariant = 'prologue' | 'act' | 'resonance' | 'epilogue'
-export interface ResonanceSurfaceStoryboardBlock { id:string; type:'resonance-surface'; module:'resonance-surface-main'; title:string; enabled:boolean; optional:boolean; maxVisibleBubbles?:number }
+export interface FloatingWordsStoryboardBlock { id:string; type:'floating-words'; module:'floating-words-main'; title:string; enabled:boolean; optional:boolean; visibleWordCount?:number }
 export interface StoryMedia { video:string; music:string }
 export interface StoryMediaBlock { id:string; type:StoryMediaVariant; title:string; text:string; media:StoryMedia }
 export interface StoryChoice { id:string; label:string; resonance:StoryMediaBlock }
 export interface StoryQuestion { id:string; type:'question'; title:string; text:string; choices:StoryChoice[] }
-export type StoryBlock = StoryMediaBlock | StoryQuestion | ResonanceSurfaceStoryboardBlock
-export interface StoryDocument { version:number; id:string; title:string; subtitle:string; blocks:StoryBlock[]; resonanceSurface?:Record<string,{ id:string; title:string; enabled:boolean; optional:boolean; maxVisibleBubbles:number }> }
+export type StoryBlock = StoryMediaBlock | StoryQuestion | FloatingWordsStoryboardBlock
+export interface StoryDocument { version:number; id:string; title:string; subtitle:string; blocks:StoryBlock[]; floatingWords?:Record<string,{ id:string; title:string; enabled:boolean; optional:boolean; visibleWordCount:number }> }
 
 export const storyMediaUrl = (file: string) => `/story/${file}`
 
@@ -25,5 +25,5 @@ export function preloadNextStoryMedia(media?: StoryMedia) {
 
 export function getNextMedia(blocks: StoryBlock[], index: number): StoryMedia | undefined {
   const next = blocks[index + 1]
-  return !next || next.type === 'question' || next.type === 'resonance-surface' ? undefined : next.media
+  return !next || next.type === 'question' || next.type === 'floating-words' ? undefined : next.media
 }

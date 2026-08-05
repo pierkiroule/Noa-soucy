@@ -1,0 +1,2 @@
+import type { WordCollisionEvent } from '../../types/floatingWords'
+export function PetalBurst({ event }: { event: WordCollisionEvent | null }) { if (!event) return null; return <div className="word-petal-burst" aria-hidden="true" style={{ left: event.position.x, top: event.position.y }}>{Array.from({ length: 7 }, (_, index) => <i key={`${event.createdAt}-${index}`} style={{ ['--angle' as string]: `${index * 52}deg`, ['--distance' as string]: `${22 + index * 4}px` }} />)}</div> }

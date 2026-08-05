@@ -225,22 +225,22 @@
       }
     },
     {
-      "id": "resonance-surface-main",
-      "type": "resonance-surface",
-      "module": "resonance-surface-main",
-      "title": "La Surface de résonance",
+      "id": "floating-words-main",
+      "type": "floating-words",
+      "module": "floating-words-main",
+      "title": "Les mots qui flottent",
       "enabled": true,
       "optional": true,
-      "maxVisibleBubbles": 6
+      "visibleWordCount": 9
     }
   ],
-  "resonanceSurface": {
-    "resonance-surface-main": {
-      "id": "resonance-surface-main",
-      "title": "La Surface de résonance",
+  "floatingWords": {
+    "floating-words-main": {
+      "id": "floating-words-main",
+      "title": "Les mots qui flottent",
       "enabled": true,
       "optional": true,
-      "maxVisibleBubbles": 6
+      "visibleWordCount": 9
     }
   }
 }

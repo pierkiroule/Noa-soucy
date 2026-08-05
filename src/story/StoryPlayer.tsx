@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { StoryMediaPlayer } from '../components/StoryMediaPlayer'
-import { ResonanceSurfaceFlow } from '../components/resonance-surface/ResonanceSurfaceFlow'
+import { FloatingWordsFlow } from '../components/floating-words/FloatingWordsFlow'
 import { ParticleOverlay } from '../effects/ParticleOverlay'
 import { loopAudioPlayer } from '../engine/LoopAudioPlayer'
 import { getNextMedia, loadStory, preloadNextStoryMedia, storyMediaUrl, type StoryChoice, type StoryDocument, type StoryMediaBlock } from './storyData'
@@ -50,7 +50,7 @@ export function StoryPlayer() {
   const completeMedia = () => {
     if (!story || !block) return
     if (activeResonance) setState(current => ({ ...current, activeResonanceId: undefined, currentBlockIndex: current.currentBlockIndex + 1, currentBreathIndex: 0 }))
-    else if (block.type === 'epilogue') setState(current => story.blocks[current.currentBlockIndex + 1]?.type === 'resonance-surface' ? ({ ...current, currentBlockIndex: current.currentBlockIndex + 1, currentBreathIndex: 0 }) : ({ ...current, completed: true }))
+    else if (block.type === 'epilogue') setState(current => story.blocks[current.currentBlockIndex + 1]?.type === 'floating-words' ? ({ ...current, currentBlockIndex: current.currentBlockIndex + 1, currentBreathIndex: 0 }) : ({ ...current, completed: true }))
     else setState(current => ({ ...current, currentBlockIndex: current.currentBlockIndex + 1, currentBreathIndex: 0 }))
     setIsPlaying(true)
   }
@@ -82,7 +82,7 @@ export function StoryPlayer() {
   if (!started) return <main className="story intro-screen"><Brand/><section className="intro"><span className="eyebrow">Un conte audiovisuel</span><h1>{story.title}</h1><p>{story.subtitle}</p><button className="primary" onClick={start}>{state.currentBlockIndex ? 'Reprendre la traversée' : 'Commencer le conte'} <span aria-hidden="true">→</span></button><button className="quiet intro__score" onClick={() => setScoreMode(true)}>Lecture de la partition</button><small>Vidéo, musique et texte · Son réglable à tout moment</small></section></main>
   if (state.completed) return <main className="story completion"><Brand/><span className="eyebrow">Fin de traversée</span><h1>Votre traversée s’arrête ici pour aujourd’hui.</h1><p>Certaines images continueront peut-être de flotter.<br/>Comme la mer.<br/>Comme le vent.</p><div className="completion__actions"><button className="quiet" onClick={restart}>Recommencer le conte</button><button className="quiet" onClick={() => setStarted(false)}>Revenir à l’accueil</button></div></main>
 
-  if (block?.type === 'resonance-surface') return <ResonanceSurfaceFlow muted={state.isMuted} onToggleMuted={toggleMuted} onExit={() => setState(current => ({ ...current, completed: true }))} onRestartStory={restart} />
+  if (block?.type === 'floating-words') return <FloatingWordsFlow onExit={() => setState(current => ({ ...current, completed: true }))} onRestartStory={restart} />
 
 
   const mediaBlock: StoryMediaBlock | undefined = activeResonance ?? (block && block.type !== 'question' ? block : undefined)
@@ -119,7 +119,7 @@ function QuestionScreen({ title, text, choices, selected, onSelect }: { title:st
 }
 
 function ScoreReader({ story, onClose }: { story:StoryDocument; onClose:()=>void }) {
-  const entries = story.blocks.flatMap(block => block.type === 'question' ? [block, ...block.choices.map(choice => choice.resonance)] : block.type === 'resonance-surface' ? [] : [block])
+  const entries = story.blocks.flatMap(block => block.type === 'question' ? [block, ...block.choices.map(choice => choice.resonance)] : block.type === 'floating-words' ? [] : [block])
   return <main className="score"><header><div><span className="eyebrow">Mode de vérification</span><h1>Lecture de la partition</h1></div><button className="quiet" onClick={onClose}>Fermer</button></header>{entries.map(entry => entry.type === 'question' ? <article key={entry.id} className="score__question"><span>{entry.title}</span><h2>{entry.text}</h2><p>{entry.choices.map(choice => choice.label).join(' · ')}</p></article> : <article key={entry.id}><span>{entry.title}</span><p>{entry.text}</p><code>{entry.media.video} · {entry.media.music}</code></article>)}</main>
 }
 
