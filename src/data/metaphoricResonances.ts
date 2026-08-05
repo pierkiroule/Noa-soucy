@@ -24,3 +24,14 @@ export const metaphoricResonances: MetaphoricResonance[] = [
   { id: 'trace', word: 'Trace', text: 'Certaines traces disparaissent.\nD’autres restent assez longtemps\npour nous aider à retrouver le chemin.', position: { x: 42, y: 72 }, drift: { x: 12, y: 9, duration: 25, delay: -16 } },
   { id: 'lumiere', word: 'Lumière', text: 'La lumière ne montre pas tout.\nElle révèle parfois seulement\nce qui peut être regardé maintenant.', position: { x: 14, y: 18 }, drift: { x: 10, y: 12, duration: 31, delay: -11 } }
 ]
+
+export const resonanceAssociations: Record<string, string> = {
+  ancre__tempete: 'Quand la tempête rencontre l’ancre, une stabilité souple devient possible : rester là, sans se confondre avec ce qui secoue.',
+  brouillard__phare: 'Dans le brouillard, le phare ne donne pas toute la route. Il offre juste assez de lumière pour faire confiance au prochain pas.',
+  graine__lumiere: 'La graine et la lumière rappellent qu’une transformation peut commencer avant même d’être visible.',
+  courant__rivage: 'Entre le courant et le rivage, il existe une façon de traverser sans lutter contre tout ce qui bouge.',
+  derive__horizon: 'La dérive peut ouvrir un horizon inattendu : parfois, perdre la ligne droite révèle une autre direction.',
+  echo__trace: 'L’écho et la trace gardent mémoire de ce qui compte, même quand la scène a déjà changé.',
+  ile__souffle: 'L’île et le souffle dessinent un refuge intérieur : un lieu bref où reprendre assez d’air pour repartir.',
+  maree__rocher: 'La marée touche le rocher sans l’annuler. Ce qui revient par vagues peut aussi polir une force tranquille.'
+}
