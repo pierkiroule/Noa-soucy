@@ -1,7 +1,7 @@
 import { DEFAULT_VISIBLE_WORD_COUNT, floatingWords, type FloatingWordDefinition } from '../data/floatingWords.ts'
 import type { Vec2, WordPetalState } from '../types/floatingWords.ts'
 
-export const MAX_SPEED = 0.08
+export const MAX_SPEED = 0.12
 const BOTTOM_MARGIN = 96
 
 const hash = (value: string) => [...value].reduce((total, char) => total + char.charCodeAt(0), 0)
@@ -28,7 +28,7 @@ export function initializeWordPetals(width: number, height: number, reducedMotio
       id: word.id,
       label: word.label,
       position: { x: column * width / 4 - petalWidth / 2, y: row * height / 4 - petalHeight / 2 },
-      velocity: reducedMotion ? { x: 0, y: 0 } : { x: ((hash(word.id) % 37) - 18) / 1000, y: ((hash(word.label) % 29) - 14) / 1000 },
+      velocity: reducedMotion ? { x: 0, y: 0 } : { x: ((hash(word.id) % 37) - 18) / 520, y: ((hash(word.label) % 29) - 14) / 560 },
       rotation: ((hash(word.id) % 19) - 9) / 20,
       rotationSpeed: reducedMotion ? 0 : (((hash(word.label) % 17) - 8) / 12000),
       width: petalWidth,
@@ -41,7 +41,7 @@ export function initializeWordPetals(width: number, height: number, reducedMotio
 
 export function stepWordPetals(petals: WordPetalState[], deltaTime: number, width: number, height: number, now: number, reducedMotion = false): WordPetalState[] {
   return petals.map(petal => {
-    const oscillation = reducedMotion ? 0 : Math.sin(now * 0.00032 + hash(petal.id)) * 0.006 * deltaTime
+    const oscillation = reducedMotion ? 0 : Math.sin(now * 0.00042 + hash(petal.id)) * 0.01 * deltaTime
     let next = {
       ...petal,
       position: { x: petal.position.x + petal.velocity.x * deltaTime, y: petal.position.y + petal.velocity.y * deltaTime + oscillation },
