@@ -1,10 +1,11 @@
 export type StoryMediaVariant = 'prologue' | 'act' | 'resonance' | 'epilogue'
+export interface CompassStoryboardBlock { id:string; type:'compass'; module:'navigation-compass'; title:string; enabled:boolean; optional:boolean }
 export interface StoryMedia { video:string; music:string }
 export interface StoryMediaBlock { id:string; type:StoryMediaVariant; title:string; text:string; media:StoryMedia }
 export interface StoryChoice { id:string; label:string; resonance:StoryMediaBlock }
 export interface StoryQuestion { id:string; type:'question'; title:string; text:string; choices:StoryChoice[] }
-export type StoryBlock = StoryMediaBlock | StoryQuestion
-export interface StoryDocument { version:number; id:string; title:string; subtitle:string; blocks:StoryBlock[] }
+export type StoryBlock = StoryMediaBlock | StoryQuestion | CompassStoryboardBlock
+export interface StoryDocument { version:number; id:string; title:string; subtitle:string; blocks:StoryBlock[]; compass?:Record<string,{ id:string; title:string; enabled:boolean; optional:boolean }> }
 
 export const storyMediaUrl = (file: string) => `/story/${file}`
 
@@ -24,5 +25,5 @@ export function preloadNextStoryMedia(media?: StoryMedia) {
 
 export function getNextMedia(blocks: StoryBlock[], index: number): StoryMedia | undefined {
   const next = blocks[index + 1]
-  return next?.type === 'question' ? undefined : next?.media
+  return !next || next.type === 'question' || next.type === 'compass' ? undefined : next.media
 }

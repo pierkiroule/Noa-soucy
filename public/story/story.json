@@ -223,6 +223,22 @@
         "video": "14.mp4",
         "music": "Fond2.mp3"
       }
+    },
+    {
+      "id": "navigation-compass",
+      "type": "compass",
+      "module": "navigation-compass",
+      "title": "Guide projectif des navigateurs de l’incertitude",
+      "enabled": true,
+      "optional": true
     }
-  ]
+  ],
+  "compass": {
+    "navigation-compass": {
+      "id": "navigation-compass",
+      "title": "Guide projectif des navigateurs de l’incertitude",
+      "enabled": true,
+      "optional": true
+    }
+  }
 }
