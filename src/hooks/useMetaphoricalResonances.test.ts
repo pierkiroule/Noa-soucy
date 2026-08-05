@@ -1,20 +1,20 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { metaphoricalResonances } from '../data/metaphoricalResonances.ts'
-import { initialMetaphoricalResonanceState, markVisitedState, openPetalState, closePetalState, saveAnswerState, readStoredResonances, resetResonancesState, toStoredResonances, METAPHORICAL_RESONANCES_STORAGE_KEY } from './useMetaphoricalResonances.ts'
+import { initialMetaphoricalResonanceState, markVisitedState, openDirectionState, closeDirectionState, saveAnswerState, readStoredResonances, resetResonancesState, toStoredResonances, METAPHORICAL_RESONANCES_STORAGE_KEY } from './useMetaphoricalResonances.ts'
 
 const now = '2026-08-05T00:00:00.000Z'
 
-test('opens a petal and marks it visited', () => {
-  const state = openPetalState(initialMetaphoricalResonanceState, 'seed', now)
+test('opens a direction and marks it visited', () => {
+  const state = openDirectionState(initialMetaphoricalResonanceState, 'seed', now)
   assert.equal(state.opened, true)
-  assert.equal(state.activePetalId, 'seed')
+  assert.equal(state.activeDirectionId, 'seed')
   assert.equal(state.answers.seed?.visited, true)
 })
 
 test('closes the panel without removing visited state', () => {
-  const state = closePetalState(openPetalState(initialMetaphoricalResonanceState, 'wind', now))
-  assert.equal(state.activePetalId, null)
+  const state = closeDirectionState(openDirectionState(initialMetaphoricalResonanceState, 'wind', now))
+  assert.equal(state.activeDirectionId, null)
   assert.equal(state.answers.wind?.visited, true)
 })
 
@@ -25,7 +25,7 @@ test('saves and modifies an answer', () => {
   assert.equal(second.answers.roots?.visited, true)
 })
 
-test('serializes summary data for visited petals only', () => {
+test('serializes summary data for visited directions only', () => {
   const state = markVisitedState(saveAnswerState(initialMetaphoricalResonanceState, 'flower', '', now), 'storm', now)
   const stored = toStoredResonances(state, now)
   assert.deepEqual(stored.visitedPetalIds.sort(), ['flower', 'storm'])
@@ -41,6 +41,6 @@ test('resets resonance state', () => {
   assert.deepEqual(resetResonancesState(), initialMetaphoricalResonanceState)
 })
 
-test('defines the eight expected petals for free navigation', () => {
-  assert.deepEqual(metaphoricalResonances.map(petal => petal.id), ['storm', 'shell', 'seed', 'roots', 'flower', 'wind', 'horizon', 'journey'])
+test('defines the eight expected directions for free navigation', () => {
+  assert.deepEqual(metaphoricalResonances.map(direction => direction.id), ['storm', 'shell', 'seed', 'roots', 'flower', 'wind', 'horizon', 'journey'])
 })

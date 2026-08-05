@@ -9,7 +9,7 @@ export interface ResonanceAnswer {
 
 export interface MetaphoricalResonanceState {
   opened: boolean
-  activePetalId: ResonancePetalId | null
+  activeDirectionId: ResonancePetalId | null
   answers: Partial<Record<ResonancePetalId, ResonanceAnswer>>
   completed: boolean
 }
