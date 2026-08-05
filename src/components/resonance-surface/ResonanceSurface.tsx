@@ -33,7 +33,7 @@ export function ResonanceSurface({ muted, onToggleMuted, onExit, onRestartStory 
     const animate = (now: number) => {
       const rect = surfaceRef.current?.getBoundingClientRect()
       if (document.visibilityState !== 'hidden' && rect) setBubbles(current => {
-        const stepped = stepBubbles(current, Math.min(40, now - lastRef.current), rect.width, rect.height, now, reducedMotion || Boolean(phrase))
+        const stepped = stepBubbles(current, Math.min(40, now - lastRef.current), rect.width, rect.height, now, reducedMotion, phrase ? 0.38 : 1)
         const collision = detectCollision(stepped, now, Boolean(phrase), recentPairs, lastCollisionRef.current)
         if (collision) triggerCollision(collision, stepped, now)
         return stepped
@@ -74,9 +74,12 @@ export function ResonanceSurface({ muted, onToggleMuted, onExit, onRestartStory 
   }
 
   if (finished) return <main className="resonance-final"><section><h1>Certaines images se sont rencontrées.</h1><p>Peut-être continueront-elles leur voyage autrement.</p><button className="quiet" onClick={onExit}>Revenir au conte</button><button className="primary" onClick={() => { setFinished(false); setRecentPairs([]) }}>Recommencer les résonances</button><button className="quiet" onClick={onRestartStory}>Accueil</button></section></main>
-  return <main ref={surfaceRef} className="resonance-surface" onPointerDown={event => { if (event.target === surfaceRef.current) handleSurfaceTap(event.clientX, event.clientY) }}>
+  return <main ref={surfaceRef} className="resonance-surface" onPointerDown={event => {
+    if ((event.target as HTMLElement).closest('.resonance-controls')) return
+    handleSurfaceTap(event.clientX, event.clientY)
+  }}>
     {hint && <p className="surface-hint">Touchez l’eau</p>}
-    <RippleLayer ripples={ripples}/>{bubbles.map(bubble => <VideoBubble key={bubble.id} bubble={bubble} onSelect={selectAccessible}/>) }
+    <RippleLayer ripples={ripples}/>{bubbles.map(bubble => <VideoBubble key={bubble.id} bubble={bubble} reducedMotion={reducedMotion} onSelect={selectAccessible}/>) }
     <MarigoldPetalBurst event={event}/><ProjectivePhrase text={phrase} position={event?.position} onClose={() => setPhrase('')}/>
     <div className="sr-only" aria-label="Choisir deux images">{bubbles.map(bubble => <button key={bubble.id} onClick={() => selectAccessible(bubble.id)}>Choisir {bubble.id}</button>)}</div>
     <ResonanceSurfaceControls muted={muted} canFinish={discovered.discoveredPairs.length >= 3} onExit={onExit} onRestart={() => setRecentPairs([])} onToggleMuted={onToggleMuted} onFinish={() => { const next = { ...discovered, completedAt: new Date().toISOString() }; writeResonanceSurfaceStorage(next); setFinished(true) }}/>

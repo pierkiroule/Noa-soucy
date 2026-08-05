@@ -3,7 +3,7 @@ import { buildPairKey } from '../data/resonancePairs.ts'
 import type { BubbleState, CollisionEvent, ResonanceSurfaceStorage, Vec2 } from '../types/resonanceSurface.ts'
 
 export const RESONANCE_SURFACE_STORAGE_KEY = 'nao-souci-resonance-surface-v1'
-const maxSpeed = 0.16
+const maxSpeed = 0.24
 const minCollisionDelay = 2200
 
 const hash = (value: string) => [...value].reduce((total, char) => total + char.charCodeAt(0), 0)
@@ -38,24 +38,28 @@ export function initializeBubbles(width: number, height: number, reducedMotion =
   })
 }
 
-export function stepBubbles(bubbles: BubbleState[], deltaTime: number, width: number, height: number, now: number, reducedMotion = false): BubbleState[] {
-  const drift = reducedMotion ? 0 : 1
+export function stepBubbles(bubbles: BubbleState[], deltaTime: number, width: number, height: number, now: number, reducedMotion = false, interactionDamping = 1): BubbleState[] {
+  const drift = reducedMotion ? 0 : interactionDamping
   return bubbles.map(bubble => {
-    let next = { ...bubble, position: { x: bubble.position.x + bubble.velocity.x * deltaTime * drift, y: bubble.position.y + bubble.velocity.y * deltaTime * drift }, rotation: bubble.rotation + bubble.rotationSpeed * deltaTime }
+    const floatOffset = reducedMotion ? 0 : Math.sin(now * 0.00024 + hash(bubble.id)) * 0.018 * deltaTime * interactionDamping
+    let next = { ...bubble, position: { x: bubble.position.x + bubble.velocity.x * deltaTime * drift, y: bubble.position.y + bubble.velocity.y * deltaTime * drift + floatOffset }, rotation: bubble.rotation + bubble.rotationSpeed * deltaTime * interactionDamping }
     if (next.position.x < 0 || next.position.x > width - next.radius * 2) next = { ...next, velocity: { ...next.velocity, x: next.velocity.x * -0.75 }, position: { ...next.position, x: clamp(next.position.x, 0, width - next.radius * 2) } }
     if (next.position.y < 0 || next.position.y > height - next.radius * 2) next = { ...next, velocity: { ...next.velocity, y: next.velocity.y * -0.75 }, position: { ...next.position, y: clamp(next.position.y, 0, height - next.radius * 2) } }
     return limitVelocity({ ...next, isColliding: next.cooldownUntil > now && next.isColliding })
   })
 }
 
-export function applyRippleImpulse(bubbles: BubbleState[], tap: Vec2, reducedMotion = false, maxRadius = 280, impulse = 0.075): BubbleState[] {
+export function applyRippleImpulse(bubbles: BubbleState[], tap: Vec2, reducedMotion = false, maxRadius = 360, impulse = 0.16): BubbleState[] {
   return bubbles.map(bubble => {
     const center = { x: bubble.position.x + bubble.radius, y: bubble.position.y + bubble.radius }
     const dx = center.x - tap.x
     const dy = center.y - tap.y
-    const distance = Math.max(Math.hypot(dx, dy), 1)
+    const rawDistance = Math.hypot(dx, dy)
+    const distance = Math.max(rawDistance, 1)
+    const fallbackAngle = hash(bubble.id)
+    const unit = rawDistance < 1 ? { x: Math.cos(fallbackAngle), y: Math.sin(fallbackAngle) } : { x: dx / distance, y: dy / distance }
     const strength = Math.max(0, 1 - distance / maxRadius) * (reducedMotion ? 0.25 : 1)
-    return limitVelocity({ ...bubble, velocity: { x: bubble.velocity.x + (dx / distance) * strength * impulse, y: bubble.velocity.y + (dy / distance) * strength * impulse } })
+    return limitVelocity({ ...bubble, velocity: { x: bubble.velocity.x + unit.x * strength * impulse, y: bubble.velocity.y + unit.y * strength * impulse } })
   })
 }
 
