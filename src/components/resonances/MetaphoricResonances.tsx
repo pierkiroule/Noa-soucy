@@ -5,10 +5,10 @@ type WordBody = { id: string; x: number; y: number; vx: number; vy: number }
 type Link = { a: string; b: string; phrase: string }
 type Ripple = { id: number; x: number; y: number }
 
-const WORD_RADIUS = 58
-const COLLISION_DISTANCE = 116
-const PUSH_RADIUS = 210
-const PUSH_FORCE = 7.5
+const WORD_RADIUS = 50
+const COLLISION_DISTANCE = 96
+const PUSH_RADIUS = 190
+const PUSH_FORCE = 6.8
 const DRAG = .965
 
 export function MetaphoricResonances({ onBackToEnding, onFinish }: { onBackToEnding:()=>void; onFinish:()=>void }) {
@@ -20,6 +20,8 @@ export function MetaphoricResonances({ onBackToEnding, onFinish }: { onBackToEnd
   const linksRef = useRef<Link[]>(links)
   const fieldRef = useRef<HTMLDivElement>(null)
   const rippleIdRef = useRef(0)
+  const hasInteractedRef = useRef(false)
+  const hasSizedFieldRef = useRef(false)
 
   const wordsById = useMemo(() => new Map(metaphoricResonances.map(item => [item.id, item])), [])
 
@@ -33,6 +35,13 @@ export function MetaphoricResonances({ onBackToEnding, onFinish }: { onBackToEnd
       if (!rect) {
         frame = requestAnimationFrame(tick)
         return
+      }
+
+      if (!hasSizedFieldRef.current) {
+        hasSizedFieldRef.current = true
+        const sizedBodies = initialBodies(rect.width, rect.height)
+        bodiesRef.current = sizedBodies
+        setBodies(sizedBodies)
       }
 
       const next = bodiesRef.current.map(body => ({ ...body }))
@@ -70,7 +79,7 @@ export function MetaphoricResonances({ onBackToEnding, onFinish }: { onBackToEnd
             b.vx += nx * .12
             b.vy += ny * .12
 
-            const phrase = associationPhrase(a.id, b.id)
+            const phrase = hasInteractedRef.current ? associationPhrase(a.id, b.id) : undefined
             if (phrase) {
               const key = linkKey(a.id, b.id)
               if (!discovered.has(key)) {
@@ -96,6 +105,7 @@ export function MetaphoricResonances({ onBackToEnding, onFinish }: { onBackToEnd
 
   const pushWords = (event: PointerEvent<HTMLDivElement>) => {
     if (event.target instanceof HTMLElement && event.target.closest('button')) return
+    hasInteractedRef.current = true
     const rect = fieldRef.current?.getBoundingClientRect()
     if (!rect) return
     const x = event.clientX - rect.left
@@ -122,11 +132,11 @@ export function MetaphoricResonances({ onBackToEnding, onFinish }: { onBackToEnd
         <span className="eyebrow">Après le conte</span>
         <h1 id="resonance-title">◌ Résonances métaphoriques</h1>
         <p>Touchez l’espace autour des mots : une onde naît et les pousse sans les saisir.</p>
-        <p>Quand deux mots se frôlent, un fil se tisse et une phrase ressource apparaît.</p>
+        <p>Quand certains mots associés se frôlent, un fil se tisse et une phrase ressource apparaît.</p>
       </div>
       <div ref={fieldRef} className="resonance-words" aria-label="Champ de mots à déplacer par ondes" onPointerDown={pushWords}>
         <svg className="resonance-network" aria-hidden="true">
-          {links.map(link => <line key={linkKey(link.a, link.b)} x1={wordsById.has(link.a) ? bodies.find(body => body.id === link.a)?.x : 0} y1={bodies.find(body => body.id === link.a)?.y} x2={bodies.find(body => body.id === link.b)?.x} y2={bodies.find(body => body.id === link.b)?.y} />)}
+          {links.map(link => <NetworkLine key={linkKey(link.a, link.b)} link={link} bodies={bodies} />)}
         </svg>
         {ripples.map(ripple => <i key={ripple.id} className="resonance-ripple" style={{ left: ripple.x, top: ripple.y }} />)}
         {metaphoricResonances.map(item => {
@@ -145,8 +155,21 @@ export function MetaphoricResonances({ onBackToEnding, onFinish }: { onBackToEnd
   </main>
 }
 
-function initialBodies(): WordBody[] {
-  return metaphoricResonances.map((item, index) => ({ id: item.id, x: item.position.x * 8, y: item.position.y * 4, vx: item.drift.x / 35, vy: item.drift.y / 35 + (index % 2 ? .2 : -.2) }))
+function NetworkLine({ link, bodies }: { link: Link; bodies: WordBody[] }) {
+  const a = bodies.find(body => body.id === link.a)
+  const b = bodies.find(body => body.id === link.b)
+  if (!a || !b) return null
+  return <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} />
+}
+
+function initialBodies(width = 1000, height = 520): WordBody[] {
+  return metaphoricResonances.map((item, index) => ({
+    id: item.id,
+    x: clamp(item.position.x / 100 * width, WORD_RADIUS, width - WORD_RADIUS),
+    y: clamp(item.position.y / 100 * height, WORD_RADIUS, height - WORD_RADIUS),
+    vx: item.drift.x / 45,
+    vy: item.drift.y / 45 + (index % 2 ? .12 : -.12)
+  }))
 }
 
 function bodyStyle(body: WordBody | undefined, fallback: MetaphoricResonance): CSSProperties {
@@ -158,5 +181,9 @@ function linkKey(a: string, b: string): string {
 }
 
 function associationPhrase(a: string, b: string): string | undefined {
-  return resonanceAssociations[linkKey(a, b)] ?? 'Entre ces deux images, cherchez la petite passerelle : elle n’a pas besoin d’être solide pour soutenir le prochain pas.'
+  return resonanceAssociations[linkKey(a, b)]
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max)
 }
