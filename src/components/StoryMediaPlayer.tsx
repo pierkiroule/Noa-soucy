@@ -61,7 +61,7 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
     </div>
     <div className="media-player__visual" aria-label="Illustration vidéo du récit">
       <div className={`media-player__fallback ${videoFailed ? 'is-visible' : ''}`} aria-hidden="true"><i/><i/><i/></div>
-      {!videoFailed && <video ref={videoRef} className={`media-player__video ${videoReady ? 'is-ready' : ''}`} src={videoSrc} autoPlay loop muted playsInline preload="auto" onLoadedData={() => setVideoReady(true)} onCanPlay={event => { setVideoReady(true); void event.currentTarget.play().catch(() => console.warn(`Lecture vidéo en attente : ${videoSrc}`)) }} onError={() => { console.warn(`Vidéo indisponible : ${videoSrc}`); setVideoFailed(true) }} />}
+      {!videoFailed && <video ref={videoRef} className={`media-player__video ${videoReady ? 'is-ready' : ''}`} src={videoSrc} autoPlay loop muted playsInline preload="metadata" onLoadedData={() => setVideoReady(true)} onCanPlay={event => { setVideoReady(true); void event.currentTarget.play().catch(() => console.warn(`Lecture vidéo en attente : ${videoSrc}`)) }} onError={() => { console.warn(`Vidéo indisponible : ${videoSrc}`); setVideoFailed(true) }} />}
     </div>
     <div className="media-player__ripples" aria-hidden="true">{ripples.map(ripple => <i key={ripple.id} style={{ left: ripple.x, top: ripple.y }}/>)}</div>
     {isResonance && <button className="media-player__continue" onClick={onComplete}>Reprendre la traversée <span aria-hidden="true">→</span></button>}

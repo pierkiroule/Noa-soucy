@@ -17,6 +17,8 @@ export async function loadStory(): Promise<StoryDocument> {
 
 export function preloadNextStoryMedia(media?: StoryMedia) {
   if (!media || typeof document === 'undefined') return () => undefined
+  const connection = (navigator as Navigator & { connection?: { saveData?:boolean; effectiveType?:string } }).connection
+  if (connection?.saveData || connection?.effectiveType === '2g' || connection?.effectiveType === 'slow-2g') return () => undefined
   const video = document.createElement('link')
   video.rel = 'preload'; video.as = 'video'; video.href = storyMediaUrl(media.video)
   document.head.append(video)
