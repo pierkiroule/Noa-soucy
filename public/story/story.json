@@ -225,17 +225,17 @@
       }
     },
     {
-      "id": "metaphoric-resonances",
-      "type": "resonances",
-      "module": "metaphoric-resonances",
+      "id": "metaphorical-resonances-main",
+      "type": "metaphorical-resonances",
+      "module": "metaphorical-resonances-main",
       "title": "Résonances métaphoriques",
       "enabled": true,
       "optional": true
     }
   ],
-  "resonances": {
-    "metaphoric-resonances": {
-      "id": "metaphoric-resonances",
+  "metaphoricalResonances": {
+    "metaphorical-resonances-main": {
+      "id": "metaphorical-resonances-main",
       "title": "Résonances métaphoriques",
       "enabled": true,
       "optional": true
