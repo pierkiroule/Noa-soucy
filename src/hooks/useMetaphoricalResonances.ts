@@ -16,9 +16,6 @@ export function closeDirectionState(state: MetaphoricalResonanceState): Metaphor
   return { ...state, activeDirectionId: null }
 }
 
-export function saveAnswerState(state: MetaphoricalResonanceState, id: ResonancePetalId, text: string, now = new Date().toISOString()): MetaphoricalResonanceState {
-  return { ...state, answers: { ...state.answers, [id]: { petalId: id, text, visited: true, updatedAt: now } } }
-}
 
 export function markVisitedState(state: MetaphoricalResonanceState, id: ResonancePetalId, now = new Date().toISOString()): MetaphoricalResonanceState {
   const current = state.answers[id]
@@ -48,12 +45,11 @@ export function useMetaphoricalResonances() {
   const openCompass = useCallback(() => setState(current => ({ ...current, opened: true, completed: false })), [])
   const openDirection = useCallback((id: ResonancePetalId) => setState(current => openDirectionState(current, id)), [])
   const closeDirection = useCallback(() => setState(closeDirectionState), [])
-  const saveAnswer = useCallback((id: ResonancePetalId, text: string) => setState(current => saveAnswerState(current, id, text)), [])
   const markVisited = useCallback((id: ResonancePetalId) => setState(current => markVisitedState(current, id)), [])
   const resetResonances = useCallback(() => { localStorage.removeItem(METAPHORICAL_RESONANCES_STORAGE_KEY); setState(resetResonancesState()) }, [])
   const completeForToday = useCallback(() => setState(current => ({ ...current, completed: true, activeDirectionId: null })), [])
   const returnToCompass = useCallback(() => setState(current => ({ ...current, opened: true, completed: false, activeDirectionId: null })), [])
   const visitedAnswers = useMemo(() => Object.values(state.answers).filter((answer): answer is ResonanceAnswer => Boolean(answer?.visited)), [state.answers])
 
-  return { state, visitedAnswers, openCompass, openDirection, closeDirection, saveAnswer, markVisited, resetResonances, completeForToday, returnToCompass }
+  return { state, visitedAnswers, openCompass, openDirection, closeDirection, markVisited, resetResonances, completeForToday, returnToCompass }
 }

@@ -7,7 +7,7 @@ import { ResonancePanel } from './ResonancePanel'
 import { ResonanceSummary } from './ResonanceSummary'
 
 export function MetaphoricalResonanceFlow({ onFinish, onRestartStory }: { onFinish:()=>void; onRestartStory:()=>void }) {
-  const { state, visitedAnswers, openDirection, closeDirection, saveAnswer, resetResonances, completeForToday, returnToCompass, openCompass } = useMetaphoricalResonances()
+  const { state, visitedAnswers, openDirection, closeDirection, resetResonances, completeForToday, returnToCompass, openCompass } = useMetaphoricalResonances()
   const lastButtonRef = useRef<HTMLElement | null>(null)
   const activeDirection = metaphoricalResonances.find(petal => petal.id === state.activeDirectionId)
 
@@ -26,6 +26,6 @@ export function MetaphoricalResonanceFlow({ onFinish, onRestartStory }: { onFini
   return <main className="story compass-flow">
     <div className="story__brand"><span aria-hidden="true">◌</span> NAO SOUCI</div>
     {state.completed ? <ResonanceSummary visitedAnswers={visitedAnswers} onBackToCompass={returnToCompass} onFinish={onFinish} onRestartStory={onRestartStory} /> : <ResonanceCompass state={state} onOpenDirection={openCompassDirection} onFinishToday={completeForToday} onReset={resetResonances} />}
-    {activeDirection && <ResonancePanel direction={activeDirection} value={state.answers[activeDirection.id]?.text ?? ''} onSave={text => saveAnswer(activeDirection.id, text)} onClose={closeAndRestore} />}
+    {activeDirection && <ResonancePanel direction={activeDirection} onClose={closeAndRestore} />}
   </main>
 }

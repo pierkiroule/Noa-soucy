@@ -1,7 +1,7 @@
 export function ResonanceIntro({ onOpen, onFinish }: { onOpen:()=>void; onFinish:()=>void }) {
   return <main className="story compass-flow compass-intro-screen">
     <div className="story__brand"><span aria-hidden="true">◌</span> NAO SOUCI</div>
-    <section className="compass-intro" aria-labelledby="compass-intro-title">
+    <section className="compass-intro compass-petal-fx" aria-labelledby="compass-intro-title">
       <span className="eyebrow">Prolonger la traversée</span>
       <h1 id="compass-intro-title">Résonances métaphoriques</h1>
       <p>Certaines images continuent de résonner après la fin d’un conte.</p>
