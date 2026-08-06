@@ -248,26 +248,26 @@
 @media(max-width:600px){.intro h1{font-size:clamp(3.8rem,20vw,6rem)}.intro__halo{width:88vw}.welcome-petals>i:nth-child(even){display:none}}
 
 /* A golden breath between views: a brief iris of light followed by petals or seed bubbles. */
-.view-transition{position:fixed;z-index:120;inset:0;overflow:hidden;pointer-events:none;isolation:isolate;animation:fx-release 1.55s both}
-.view-transition__veil{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(255,251,220,.96) 0 7%,rgba(246,177,52,.24) 19%,rgba(246,240,229,.82) 37%,rgba(246,240,229,0) 72%);animation:fx-veil 1.25s cubic-bezier(.16,.72,.24,1) both}
-.view-transition__heart{position:absolute;left:50%;top:50%;width:11vmin;height:11vmin;transform:translate(-50%,-50%);animation:fx-heart 1.05s cubic-bezier(.2,.75,.25,1) both}
-.view-transition__heart i{position:absolute;inset:8%;border:1px solid rgba(218,126,26,.42);border-radius:50%;animation:fx-ring 1s ease-out both}
+.view-transition{position:fixed;z-index:120;inset:0;overflow:hidden;pointer-events:none;isolation:isolate;animation:fx-release 1.8s both}
+.view-transition__veil{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(255,251,220,.58) 0 8%,rgba(246,177,52,.12) 23%,rgba(246,240,229,.36) 42%,rgba(246,240,229,0) 72%);animation:fx-veil 1.65s cubic-bezier(.22,.61,.36,1) both}
+.view-transition__heart{position:absolute;left:50%;top:50%;width:9vmin;height:9vmin;transform:translate(-50%,-50%);animation:fx-heart 1.45s cubic-bezier(.22,.61,.36,1) both}
+.view-transition__heart i{position:absolute;inset:8%;border:1px solid rgba(218,126,26,.24);border-radius:50%;animation:fx-ring 1.4s ease-out both}
 .view-transition__heart i:nth-child(2){animation-delay:.08s}.view-transition__heart i:nth-child(3){animation-delay:.16s}
 .view-transition__particle{position:absolute;left:50%;top:50%;width:var(--fx-size);height:calc(var(--fx-size) * 1.55);border-radius:85% 18% 72% 25%;background:linear-gradient(145deg,#ffe879 4%,#f4ad2e 55%,#d66f1e);box-shadow:0 2px 7px rgba(142,76,18,.19);opacity:0;transform:translate(-50%,-50%);animation:fx-petal 1.35s cubic-bezier(.12,.66,.22,1) var(--fx-delay) both}
 .view-transition--seeds .view-transition__particle{height:var(--fx-size);border:1px solid rgba(213,126,24,.62);border-radius:50%;background:radial-gradient(circle at 34% 28%,#fff8c9 0 15%,#f5bd3f 40%,rgba(226,125,25,.35) 64%,rgba(255,225,117,.08) 67%);box-shadow:0 0 0 4px rgba(247,180,54,.07),0 4px 12px rgba(149,81,20,.15);animation-name:fx-seed}
 @keyframes fx-release{0%,78%{visibility:visible}100%{visibility:hidden}}
-@keyframes fx-veil{0%{opacity:0;transform:scale(.35)}20%{opacity:1}100%{opacity:0;transform:scale(2)}}
-@keyframes fx-heart{0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(-18deg)}35%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(3.5) rotate(18deg)}}
-@keyframes fx-ring{from{opacity:.8;transform:scale(.25)}to{opacity:0;transform:scale(4.5)}}
-@keyframes fx-petal{0%{opacity:0;transform:translate(-50%,-50%) scale(.25) rotate(0)}16%{opacity:.92}72%{opacity:.82}100%{opacity:0;transform:translate(calc(-50% + var(--fx-x)),calc(-50% + var(--fx-y))) scale(.72) rotate(var(--fx-spin))}}
-@keyframes fx-seed{0%{opacity:0;transform:translate(-50%,-50%) scale(.15)}18%{opacity:.9}65%{opacity:.76}100%{opacity:0;transform:translate(calc(-50% + var(--fx-x)),calc(-50% + var(--fx-y))) scale(1.35)}}
+@keyframes fx-veil{0%{opacity:0;transform:scale(.72)}28%{opacity:.72}100%{opacity:0;transform:scale(1.45)}}
+@keyframes fx-heart{0%{opacity:0;transform:translate(-50%,-50%) scale(.65) rotate(-5deg)}38%{opacity:.55}100%{opacity:0;transform:translate(-50%,-50%) scale(2.1) rotate(7deg)}}
+@keyframes fx-ring{from{opacity:.42;transform:scale(.65)}to{opacity:0;transform:scale(2.8)}}
+@keyframes fx-petal{0%{opacity:0;transform:translate(-50%,-50%) scale(.55) rotate(0)}22%{opacity:.62}72%{opacity:.48}100%{opacity:0;transform:translate(calc(-50% + var(--fx-x)),calc(-50% + var(--fx-y))) scale(.76) rotate(var(--fx-spin))}}
+@keyframes fx-seed{0%{opacity:0;transform:translate(-50%,-50%) scale(.45)}24%{opacity:.58}68%{opacity:.45}100%{opacity:0;transform:translate(calc(-50% + var(--fx-x)),calc(-50% + var(--fx-y))) scale(1.05)}}
 @media(prefers-reduced-motion:reduce){.view-transition{animation-duration:.35s}.view-transition__veil{animation:fx-reduced .35s ease-out both}.view-transition__heart,.view-transition__particle{display:none}@keyframes fx-reduced{from{opacity:.3}to{opacity:0}}}
 
 /* Reading polish: one typographic system, a compact ending, and always-visible compass labels. */
 .media-player__text-scroll{padding-bottom:max(118px,calc(env(safe-area-inset-bottom) + 104px));mask-image:linear-gradient(to bottom,transparent 2%,#000 10%,#000 90%,transparent 98%);-webkit-mask-image:linear-gradient(to bottom,transparent 2%,#000 10%,#000 90%,transparent 98%)}
 .media-player__breath{display:flex;min-height:calc(100dvh - 226px);flex-direction:column;align-items:center;justify-content:center}
 .media-player__breath p{font-family:Newsreader,serif;font-weight:400;line-height:1.34}
-.media-player__continue--inline{position:relative;bottom:auto;left:auto;flex:0 0 auto;margin:22px auto 0;transform:none;animation:button-inline-in .55s both}
+.media-player__continue--inline{position:relative;bottom:auto;left:auto;min-height:34px;flex:0 0 auto;margin:18px auto 0;padding:7px 14px;border-width:1px;font-size:.66rem;line-height:1.1;transform:none;animation:button-inline-in .55s both}
 .story .media-player__continue--inline{bottom:auto}
 @keyframes button-inline-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .compass-point__glyph-object{overflow:visible}

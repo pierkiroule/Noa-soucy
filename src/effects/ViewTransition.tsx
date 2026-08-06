@@ -1,11 +1,11 @@
 import type { CSSProperties } from 'react'
 
-const particles = Array.from({ length: 28 }, (_, index) => {
-  const angle = (index / 28) * Math.PI * 2 + (index % 3) * .12
-  const distance = 34 + (index % 7) * 9
+const particles = Array.from({ length: 18 }, (_, index) => {
+  const angle = (index / 18) * Math.PI * 2 + (index % 3) * .12
+  const distance = 18 + (index % 6) * 5
   return {
     x: `${Math.cos(angle) * distance}vmax`, y: `${Math.sin(angle) * distance}vmax`,
-    delay: `${(index % 6) * 24}ms`, size: `${7 + (index % 5) * 3}px`, spin: `${160 + (index % 8) * 57}deg`,
+    delay: `${(index % 6) * 34}ms`, size: `${6 + (index % 4) * 2}px`, spin: `${80 + (index % 6) * 38}deg`,
   }
 })
 
