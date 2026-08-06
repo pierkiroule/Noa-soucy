@@ -11,12 +11,19 @@ const colors = ['#f4b64e', '#e89537', '#d99a36', '#f0c45d']
 
 export function ResonanceCompassPoint({ direction, index, active, visited, onOpen }: { direction:MetaphoricalResonance; index:number; active:boolean; visited:boolean; onOpen:()=>void }) {
   const angle = index * 45 - 90
-  return <g className={`compass-point${visited ? ' is-visited' : ''}${active ? ' is-active' : ''}`} style={{ '--compass-angle': `${angle}deg`, '--compass-delay': `${index * 95}ms` } as CSSProperties}>
-    <path d={compassNeedlePaths[index % compassNeedlePaths.length]} fill={colors[index % colors.length]} transform={`rotate(${angle})`} />
-    {visited && <circle className="compass-point__visited-dot" r="4" cx="0" cy="-43" transform={`rotate(${angle})`} />}
-    <foreignObject x="-48" y="-156" width="96" height="86" transform={`rotate(${angle})`}>
+  const radians = angle * Math.PI / 180
+  const glyphRadius = 166
+  const glyphX = Math.cos(radians) * glyphRadius
+  const glyphY = Math.sin(radians) * glyphRadius
+
+  return <g className={`compass-point${visited ? ' is-visited' : ''}${active ? ' is-active' : ''}`} style={{ '--compass-delay': `${index * 95}ms`, '--wind-delay': `${index * -430}ms`, '--wind-start': index % 2 ? '1.2deg' : '-1.2deg', '--wind-mid': index % 2 ? '-1.8deg' : '1.8deg', '--wind-end': index % 2 ? '-2.5deg' : '2.5deg' } as CSSProperties}>
+    <g className="compass-point__petal" transform={`rotate(${angle + 90})`}>
+      <path d={compassNeedlePaths[index % compassNeedlePaths.length]} fill={colors[index % colors.length]} />
+      {visited && <circle className="compass-point__visited-dot" r="4" cy="-43" />}
+    </g>
+    <foreignObject className="compass-point__glyph-object" x={glyphX - 25} y={glyphY - 25} width="50" height="50">
       <button type="button" className="compass-point__button" aria-label={`Ouvrir la direction ${direction.actionLabel}`} aria-pressed={visited} onClick={onOpen}>
-        <span aria-hidden="true">{direction.glyph}</span><strong>{direction.actionLabel}</strong><em>{direction.title}</em>
+        <span aria-hidden="true">{direction.glyph}</span>
       </button>
     </foreignObject>
   </g>
