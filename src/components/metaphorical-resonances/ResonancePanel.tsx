@@ -17,6 +17,11 @@ export function ResonancePanel({ direction, onClose }: { direction:MetaphoricalR
       <span className="resonance-panel__glyph" aria-hidden="true">{direction.glyph}</span>
       <h2 id="resonance-panel-title">{direction.title}</h2>
       <blockquote>« {direction.quote} »</blockquote>
+      <div className="resonance-panel__meaning">
+        <p>{direction.meaning}</p>
+        <p>{direction.invitation}</p>
+      </div>
+      <span className="resonance-panel__prompt-label">Une question pour vous</span>
       <p className="resonance-panel__question">{direction.question}</p>
       {direction.helperText && <p className="resonance-panel__helper">{direction.helperText}</p>}
       <div className="resonance-panel__actions"><button ref={closeRef} className="primary" onClick={onClose}>Refermer la direction</button></div>
