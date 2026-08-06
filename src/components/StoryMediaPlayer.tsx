@@ -64,7 +64,6 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
       {!videoFailed && <video ref={videoRef} className={`media-player__video ${videoReady ? 'is-ready' : ''}`} src={videoSrc} autoPlay loop muted playsInline preload="auto" onLoadedData={() => setVideoReady(true)} onCanPlay={event => { setVideoReady(true); void event.currentTarget.play().catch(() => console.warn(`Lecture vidéo en attente : ${videoSrc}`)) }} onError={() => { console.warn(`Vidéo indisponible : ${videoSrc}`); setVideoFailed(true) }} />}
     </div>
     <div className="media-player__ripples" aria-hidden="true">{ripples.map(ripple => <i key={ripple.id} style={{ left: ripple.x, top: ripple.y }}/>)}</div>
-    <div className="media-player__counter" aria-live="polite">{safeIndex + 1} / {breaths.length}</div>
     {isResonance && <button className="media-player__continue" onClick={onComplete}>Reprendre la traversée <span aria-hidden="true">→</span></button>}
   </section>
 }
