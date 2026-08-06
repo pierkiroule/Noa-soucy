@@ -12,7 +12,7 @@ const colors = ['#f4b64e', '#e89537', '#d99a36', '#f0c45d']
 export function ResonanceCompassPoint({ direction, index, active, visited, onOpen }: { direction:MetaphoricalResonance; index:number; active:boolean; visited:boolean; onOpen:()=>void }) {
   const angle = index * 45 - 90
   const radians = angle * Math.PI / 180
-  const glyphRadius = 166
+  const glyphRadius = 160
   const glyphX = Math.cos(radians) * glyphRadius
   const glyphY = Math.sin(radians) * glyphRadius
 
@@ -21,9 +21,10 @@ export function ResonanceCompassPoint({ direction, index, active, visited, onOpe
       <path d={compassNeedlePaths[index % compassNeedlePaths.length]} fill={colors[index % colors.length]} />
       {visited && <circle className="compass-point__visited-dot" r="4" cy="-43" />}
     </g>
-    <foreignObject className="compass-point__glyph-object" x={glyphX - 25} y={glyphY - 25} width="50" height="50">
+    <foreignObject className="compass-point__glyph-object" x={glyphX - 48} y={glyphY - 34} width="96" height="68">
       <button type="button" className="compass-point__button" aria-label={`Ouvrir la direction ${direction.actionLabel}`} aria-pressed={visited} onClick={onOpen}>
         <span aria-hidden="true">{direction.glyph}</span>
+        <strong>{direction.title}</strong>
       </button>
     </foreignObject>
   </g>
