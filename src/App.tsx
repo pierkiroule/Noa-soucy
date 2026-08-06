@@ -18,12 +18,14 @@ function NfcGate({ onUnlock }: { onUnlock: () => void }) {
 
   useEffect(() => {
     if (scanState !== 'scanning') return
-    const unlockTimer = window.setTimeout(() => setScanState('unlocked'), 1800)
-    const enterTimer = window.setTimeout(onUnlock, 2800)
-    return () => {
-      window.clearTimeout(unlockTimer)
-      window.clearTimeout(enterTimer)
-    }
+    const recognitionTimer = window.setTimeout(() => setScanState('unlocked'), 1800)
+    return () => window.clearTimeout(recognitionTimer)
+  }, [scanState])
+
+  useEffect(() => {
+    if (scanState !== 'unlocked') return
+    const enterTimer = window.setTimeout(onUnlock, 1000)
+    return () => window.clearTimeout(enterTimer)
   }, [onUnlock, scanState])
 
   const startScan = () => {
@@ -66,10 +68,15 @@ function NfcGate({ onUnlock }: { onUnlock: () => void }) {
           <span><b>3</b> Entre dans Nao•°</span>
         </div>
 
-        <button className="nfc-gate__scan" type="button" onClick={startScan} disabled={scanState !== 'idle'}>
+        <button
+          className="nfc-gate__scan"
+          type="button"
+          onClick={scanState === 'unlocked' ? onUnlock : startScan}
+          disabled={scanState === 'scanning'}
+        >
           {scanState === 'idle' && <><span aria-hidden="true">⌁</span> Simuler le scan de la noix</>}
           {scanState === 'scanning' && <><span className="nfc-gate__spinner" /> Scan en cours…</>}
-          {scanState === 'unlocked' && <>✓ Noix reconnue</>}
+          {scanState === 'unlocked' && <>✓ Entrer dans Nao•°</>}
         </button>
 
         <p className="nfc-gate__note">
