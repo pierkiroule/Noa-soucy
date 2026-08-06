@@ -284,3 +284,8 @@
 .resonance-panel__meaning{text-align:center;text-wrap:pretty}
 .resonance-panel__actions{padding-bottom:2px}
 @media(max-width:600px){.compass-stage{padding-right:8px;padding-left:8px}.compass-heading h1{font-size:clamp(1.8rem,8vw,2.65rem)}.compass-heading p{font-size:.92rem}.compass-canvas{width:min(94vw,54dvh)}.resonance-panel{top:max(54px,calc(env(safe-area-inset-top) + 44px));padding:14px 18px calc(20px + env(safe-area-inset-bottom))}.resonance-panel h2{font-size:clamp(2rem,10vw,3rem)}}
+
+/* The summary owns its scroll area; safe-area insets never hide its first or last lines. */
+.compass-summary{position:fixed;top:max(62px,calc(env(safe-area-inset-top) + 50px));right:0;bottom:max(12px,env(safe-area-inset-bottom));left:0;width:min(calc(100vw - 28px),720px);height:auto;max-height:none;margin:0 auto;padding:clamp(22px,4vw,38px);overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;-webkit-overflow-scrolling:touch}
+.compass-summary:focus{outline:none}.compass-summary__actions{padding-bottom:4px}
+@media(max-width:520px){.compass-summary{top:max(54px,calc(env(safe-area-inset-top) + 44px));bottom:max(8px,env(safe-area-inset-bottom));width:calc(100vw - 16px);padding:20px 15px}.compass-summary h1{font-size:clamp(1.9rem,9vw,2.7rem)}.compass-summary__actions{flex-direction:column}.compass-summary__actions button{width:100%}}
