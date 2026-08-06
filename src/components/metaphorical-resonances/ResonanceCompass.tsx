@@ -6,7 +6,7 @@ export function ResonanceCompass({ state, onOpenDirection, onFinishToday, onRese
   const visitedCount = Object.values(state.answers).filter(answer => answer?.visited).length
   return <section className={`compass-stage${state.activeDirectionId ? ' has-active-direction' : ''}`} aria-labelledby="compass-title">
     <div className="compass-heading">
-      <span className="eyebrow">Résonances métaphoriques</span>
+      <span className="eyebrow">Boussole métaphorique</span>
       <h1 id="compass-title">La Boussole de Nao Souci</h1>
       <p>Touchez la direction qui vous appelle aujourd’hui.</p>
       {visitedCount > 0 && <small>{visitedCount === 1 ? '1 direction explorée' : `${visitedCount} directions explorées`}</small>}

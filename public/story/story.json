@@ -228,7 +228,7 @@
       "id": "metaphorical-resonances-main",
       "type": "metaphorical-resonances",
       "module": "metaphorical-resonances-main",
-      "title": "Résonances métaphoriques",
+      "title": "Boussole métaphorique",
       "enabled": true,
       "optional": true
     }
@@ -236,7 +236,7 @@
   "metaphoricalResonances": {
     "metaphorical-resonances-main": {
       "id": "metaphorical-resonances-main",
-      "title": "Résonances métaphoriques",
+      "title": "Boussole métaphorique",
       "enabled": true,
       "optional": true
     }

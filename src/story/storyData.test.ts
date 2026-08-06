@@ -36,7 +36,7 @@ test('story keeps metaphorical resonances optional after the epilogue', () => {
     id: 'metaphorical-resonances-main',
     type: 'metaphorical-resonances',
     module: 'metaphorical-resonances-main',
-    title: 'Résonances métaphoriques',
+    title: 'Boussole métaphorique',
     enabled: true,
     optional: true
   })
