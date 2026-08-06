@@ -1,32 +1,33 @@
-# React + TypeScript + Vite
+# NAO SOUCI
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Expérience narrative interactive autour de **La petite noix qui apprit à naviguer sur l’Océan des Soucis**. L’application déroule le conte, synchronise les vidéos et la bande-son, propose trois choix narratifs, puis ouvre un parcours facultatif de résonances métaphoriques.
 
-Currently, two official plugins are available:
+## Développement
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Le projet requiert une version récente de Node.js et npm.
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Commandes disponibles :
+
+- `npm run build` : vérifie les types et produit la version de production ;
+- `npm run lint` : analyse le code avec Oxlint ;
+- `npm test` : exécute les tests unitaires avec le lanceur de tests de Node.js ;
+- `npm run preview` : sert localement la version de production.
+
+## Organisation
+
+- `public/story/story.json` est la source unique du récit, des choix et de l’ordre des médias ;
+- `public/story/1.mp4` à `public/story/14.mp4` sont les séquences vidéo référencées par le récit ;
+- `public/story/Fond2.mp3` est la bande-son continue ;
+- `src/story` charge et orchestre le récit ;
+- `src/components/metaphorical-resonances` et `src/hooks/useMetaphoricalResonances.ts` portent le parcours facultatif final.
+
+Pour modifier un chapitre, un choix ou une association de média, mettre à jour `story.json` plutôt que d’ajouter une seconde définition dans le code. Le test `src/story/storyData.test.ts` vérifie que le document reste complet et que les associations de médias respectent le contrat attendu.
+
+## Médias
+
+Les fichiers référencés par `story.json` sont servis depuis `/story/`. La fonction `storyMediaUrl` centralise la construction de ces URL, et le préchargement anticipe la prochaine vidéo ainsi que la bande-son sans dupliquer les données narratives.
