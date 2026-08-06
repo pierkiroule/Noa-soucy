@@ -21,9 +21,6 @@ export function ResonanceCompass({ state, onOpenDirection, onFinishToday, onRese
           <circle className="compass-center compass-center--inner" r="23" />
         </g>
       </svg>
-      <ul className="compass-fallback" aria-label="Liste accessible des directions">
-        {metaphoricalResonances.map(petal => <li key={petal.id}><button type="button" onClick={() => onOpenDirection(petal.id)}>{petal.glyph} {petal.actionLabel}</button></li>)}
-      </ul>
     </div>
     <div className="compass-stage__actions">
       {visitedCount > 0 && <button className="primary" onClick={onFinishToday}>Terminer pour aujourd’hui</button>}

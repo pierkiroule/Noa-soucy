@@ -276,3 +276,11 @@
 .compass-point__button:hover,.compass-point__button:focus-visible{background:#fffaf0;transform:scale(1.05)}
 .resonance-panel h2,.resonance-panel blockquote,.resonance-panel__meaning,.resonance-panel__question{font-family:Newsreader,serif;font-weight:400}.resonance-panel__helper,.resonance-panel__prompt-label,.resonance-panel__actions{font-family:'DM Sans',sans-serif}
 @media(max-width:600px){.media-player__text-scroll{padding-bottom:max(112px,calc(env(safe-area-inset-bottom) + 98px))}.media-player__breath{min-height:calc(100dvh - 216px)}.media-player__continue--inline{margin-top:18px}.compass-point__button{width:88px;height:62px}.compass-point__button strong{max-width:80px;font-size:.58rem}}
+
+/* Keep the compass and its long reflection sheets inside every viewport. */
+.compass-canvas{width:min(92vw,58dvh,570px)}
+.resonance-panel{top:max(68px,calc(env(safe-area-inset-top) + 54px));bottom:0;max-height:none;scroll-padding-top:20px;text-align:center}
+.resonance-panel:focus{outline:none}
+.resonance-panel__meaning{text-align:center;text-wrap:pretty}
+.resonance-panel__actions{padding-bottom:2px}
+@media(max-width:600px){.compass-stage{padding-right:8px;padding-left:8px}.compass-heading h1{font-size:clamp(1.8rem,8vw,2.65rem)}.compass-heading p{font-size:.92rem}.compass-canvas{width:min(94vw,54dvh)}.resonance-panel{top:max(54px,calc(env(safe-area-inset-top) + 44px));padding:14px 18px calc(20px + env(safe-area-inset-bottom))}.resonance-panel h2{font-size:clamp(2rem,10vw,3rem)}}
