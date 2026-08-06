@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { StoryMediaPlayer } from '../components/StoryMediaPlayer'
-import { MetaphoricalResonanceFlow } from '../components/metaphorical-resonances/MetaphoricalResonanceFlow'
 import { ParticleOverlay } from '../effects/ParticleOverlay'
 import { ViewTransition } from '../effects/ViewTransition'
 import { loopAudioPlayer } from '../engine/LoopAudioPlayer'
@@ -8,6 +7,7 @@ import { getNextMedia, loadStory, preloadNextStoryMedia, storyMediaUrl, type Sto
 
 const STORAGE_KEY = 'nao-souci:audiovisual-progress:v4'
 const BACKGROUND_MUSIC = storyMediaUrl('Fond2.mp3')
+const MetaphoricalResonanceFlow = lazy(() => import('../components/metaphorical-resonances/MetaphoricalResonanceFlow').then(module => ({ default: module.MetaphoricalResonanceFlow })))
 interface SavedState { version:number; currentBlockIndex:number; currentBreathIndex:number; isMuted:boolean; selectedChoices:Record<string,string>; activeResonanceId?:string; completed:boolean }
 
 const initialSaved: SavedState = { version: 4, currentBlockIndex: 0, currentBreathIndex: 0, isMuted: false, selectedChoices: {}, completed: false }
@@ -27,7 +27,15 @@ export function StoryPlayer() {
   const completedOnLoad = useRef(state.completed)
 
   useEffect(() => { void loadStory().then(setStory).catch(error => { console.error(error); setLoadError(true) }) }, [])
-  useEffect(() => { if (story) localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...state, version: story.version })) }, [state, story])
+  useEffect(() => {
+    if (!story) return
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...state, version: story.version })) }
+    catch (error) { console.warn('Progression non enregistrée', error) }
+  }, [state, story])
+  useEffect(() => {
+    if (!story || (state.currentBlockIndex >= 0 && state.currentBlockIndex < story.blocks.length)) return
+    setState(current => ({ ...current, currentBlockIndex: 0, currentBreathIndex: 0, activeResonanceId: undefined }))
+  }, [state.currentBlockIndex, story])
   useEffect(() => { loopAudioPlayer.setMuted(state.isMuted) }, [state.isMuted])
   useEffect(() => {
     if (!story || completedOnLoad.current) return
@@ -76,7 +84,7 @@ export function StoryPlayer() {
   if (!started) return <main className="story intro-screen"><ViewTransition variant="petals"/><WelcomePetals/><Brand/><section className="intro"><div className="intro__halo" aria-hidden="true"/><div className="intro__content"><span className="eyebrow">Un conte audiovisuel</span><h1>NAO<span aria-hidden="true">•°</span> Souci</h1><p>La petite noix sur l’Océan des soucis.</p><div className="intro__flourish" aria-hidden="true"><i/><span>✦</span><i/></div><button className="primary" onClick={start}>{state.currentBlockIndex ? 'Reprendre la traversée' : 'Commencer le conte'} <span aria-hidden="true">→</span></button><small>Vidéo, musique et texte · Son réglable à tout moment</small></div></section></main>
   if (state.completed) return <main className="story completion"><ViewTransition variant="seeds"/><Brand/><span className="eyebrow">Fin de traversée</span><h1>Votre traversée s’arrête ici pour aujourd’hui.</h1><p>Les mots peuvent continuer de flotter.<br/>Sans réponse attendue.<br/>Sans chemin imposé.</p><div className="completion__actions"><button className="quiet" onClick={() => { setState(current => ({ ...current, completed: false, currentBlockIndex: story.blocks.findIndex(part => part.type === 'metaphorical-resonances') })); setStarted(true) }}>Boussole métaphorique</button><button className="primary" onClick={restart}>Recommencer le conte</button><button className="quiet" onClick={() => setStarted(false)}>Revenir à l’accueil</button></div></main>
 
-  if (block?.type === 'metaphorical-resonances') return <MetaphoricalResonanceFlow onFinish={() => setState(current => ({ ...current, completed: true }))} onRestartStory={restartStory} />
+  if (block?.type === 'metaphorical-resonances') return <Suspense fallback={<LoadingExperience label="La boussole se dessine…"/>}><MetaphoricalResonanceFlow onFinish={() => setState(current => ({ ...current, completed: true }))} onRestartStory={restartStory} /></Suspense>
 
   const mediaBlock: StoryMediaBlock | undefined = activeResonance ?? (block && block.type !== 'question' ? block : undefined)
   return <main className="story">
@@ -113,6 +121,10 @@ function QuestionScreen({ title, text, choices, selected, onSelect }: { title:st
 }
 
 function Brand() { return <div className="story__brand"><span aria-hidden="true">◌</span> NAO SOUCI</div> }
+
+function LoadingExperience({ label }: { label:string }) {
+  return <main className="loading" aria-live="polite"><span className="loading__orb" aria-hidden="true"/><p>{label}</p></main>
+}
 
 const welcomePetals = Array.from({ length: 22 }, (_, index) => ({
   left: `${(index * 37 + 7) % 101}%`,
