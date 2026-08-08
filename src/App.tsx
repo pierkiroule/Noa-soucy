@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AppErrorBoundary } from './components/AppErrorBoundary'
 import { NutAccessGuard } from './components/nut/NutAccessGuard'
 import { readNutToken } from './routing/nutRoute'
 import { StoryPlayer } from './story/StoryPlayer'
 import { DEMO_NUT_TOKEN } from './services/nutAccessMode'
+import { checkSupabaseConnection, type SupabaseHealthStatus } from './services/supabaseHealth'
 
 type ScanState = 'idle' | 'scanning' | 'unlocked'
 
@@ -16,6 +17,12 @@ function WalnutMark() {
 
 function NfcDemo({ onScan }: { onScan: () => void }) {
   const [scanState, setScanState] = useState<ScanState>('idle')
+  const [supabaseHealth, setSupabaseHealth] = useState<SupabaseHealthStatus>('checking')
+  const testSupabase = useCallback(async () => {
+    setSupabaseHealth('checking')
+    setSupabaseHealth(await checkSupabaseConnection())
+  }, [])
+  useEffect(() => { void testSupabase() }, [testSupabase])
   useEffect(() => {
     if (scanState !== 'scanning') return
     const timer = window.setTimeout(() => setScanState('unlocked'), 1800)
@@ -28,7 +35,7 @@ function NfcDemo({ onScan }: { onScan: () => void }) {
   }, [onScan, scanState])
 
   return <main className={`nfc-gate nfc-gate--${scanState}`}>
-    <header className="nfc-gate__header"><span className="nfc-gate__brand">NAO<span>•°</span></span><span className="nfc-gate__demo">mode démo</span></header>
+    <header className="nfc-gate__header"><span className="nfc-gate__brand">NAO<span>•°</span></span><div className="nfc-gate__status"><button className={`supabase-status supabase-status--${supabaseHealth}`} type="button" onClick={() => void testSupabase()} aria-label="Retester la connexion Supabase"><i aria-hidden="true" />Supabase · {supabaseHealth === 'checking' ? 'vérification…' : supabaseHealth === 'connected' ? 'connecté' : supabaseHealth === 'unconfigured' ? 'non configuré' : 'injoignable'}</button><span className="nfc-gate__demo">mode démo</span></div></header>
     <section className="nfc-gate__content" aria-labelledby="nfc-title">
       <div className="nfc-gate__ritual" aria-live="polite"><span className="nfc-gate__orbit nfc-gate__orbit--one" /><span className="nfc-gate__orbit nfc-gate__orbit--two" /><div className="nfc-gate__nut-shell"><WalnutMark /></div><div className="nfc-gate__phone"><span className="nfc-gate__phone-speaker" /><span className="nfc-gate__nfc">)))</span></div></div>
       <p className="eyebrow">Le rituel d’entrée</p>
