@@ -3,6 +3,7 @@ import { beforeEach, test } from 'node:test'
 import { getOrCreateDeviceId } from './deviceIdentity.ts'
 import { mockNutAccessService, resetMockNuts, setMockNutState } from './mockNutAccessService.ts'
 import { clearAllNutSessions, getNutSession, removeNutSession, saveNutSession } from './nutSessionStorage.ts'
+import { nutAccessService } from './nutAccessService.ts'
 
 class MemoryStorage implements Storage {
   private values = new Map<string, string>()
@@ -71,4 +72,8 @@ test('offrir Nao ne supprime pas la progression du conte', async () => {
 test('une noix associée ailleurs refuse une association', async () => {
   setMockNutState('walnut1', 'locked')
   await assert.rejects(() => mockNutAccessService.associate('walnut1', getOrCreateDeviceId()))
+})
+
+test('le token du bouton de simulation passe toujours par le mock', async () => {
+  assert.equal(await nutAccessService.getStatus('nao-demo-token', getOrCreateDeviceId()), 'free')
 })

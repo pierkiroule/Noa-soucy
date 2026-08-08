@@ -1,6 +1,6 @@
 import type { NutAccessStatus } from '../types/nutAccess.ts'
 import { mockNutAccessService } from './mockNutAccessService.ts'
-import { shouldUseMockNutAccess } from './nutAccessMode.ts'
+import { isDemoNutToken, shouldUseMockNutAccess } from './nutAccessMode.ts'
 
 export interface NutAccessService {
   getStatus(nutToken: string, deviceId: string): Promise<NutAccessStatus>
@@ -14,16 +14,16 @@ const useMock = shouldUseMockNutAccess(
   import.meta.env?.VITE_USE_MOCK_NUT_ACCESS,
   import.meta.env?.DEV ?? false,
 )
-export const nutAccessMode = useMock ? 'mock' : 'supabase'
+export const getNutAccessMode = (nutToken: string) => useMock || isDemoNutToken(nutToken) ? 'mock' : 'supabase'
 let remoteService: Promise<NutAccessService> | undefined
-const getService = () => {
-  if (useMock) return Promise.resolve(mockNutAccessService)
+const getService = (nutToken: string) => {
+  if (getNutAccessMode(nutToken) === 'mock') return Promise.resolve(mockNutAccessService)
   remoteService ??= import('./supabaseNutAccessService').then(module => module.supabaseNutAccessService)
   return remoteService
 }
 
 export const nutAccessService: NutAccessService = {
-  async getStatus(nutToken, deviceId) { return (await getService()).getStatus(nutToken, deviceId) },
-  async associate(nutToken, deviceId) { return (await getService()).associate(nutToken, deviceId) },
-  async dissociate(nutToken, deviceId) { return (await getService()).dissociate(nutToken, deviceId) },
+  async getStatus(nutToken, deviceId) { return (await getService(nutToken)).getStatus(nutToken, deviceId) },
+  async associate(nutToken, deviceId) { return (await getService(nutToken)).associate(nutToken, deviceId) },
+  async dissociate(nutToken, deviceId) { return (await getService(nutToken)).dissociate(nutToken, deviceId) },
 }

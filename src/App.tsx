@@ -3,6 +3,7 @@ import { AppErrorBoundary } from './components/AppErrorBoundary'
 import { NutAccessGuard } from './components/nut/NutAccessGuard'
 import { readNutToken } from './routing/nutRoute'
 import { StoryPlayer } from './story/StoryPlayer'
+import { DEMO_NUT_TOKEN } from './services/nutAccessMode'
 
 type ScanState = 'idle' | 'scanning' | 'unlocked'
 
@@ -53,6 +54,6 @@ export default function App() {
   const [pathname, setPathname] = useState(() => location.pathname)
   useEffect(() => { const update = () => setPathname(location.pathname); addEventListener('popstate', update); return () => removeEventListener('popstate', update) }, [])
   const nutToken = readNutToken(pathname)
-  const openDemoNut = () => { history.pushState({}, '', '/n/nao-demo-token'); setPathname(location.pathname) }
+  const openDemoNut = () => { history.pushState({}, '', `/n/${DEMO_NUT_TOKEN}`); setPathname(location.pathname) }
   return <AppErrorBoundary>{nutToken ? <NutAccessGuard nutToken={nutToken}><StoryPlayer /></NutAccessGuard> : pathname === '/' ? <NfcDemo onScan={openDemoNut} /> : <PublicHome invalid={pathname.startsWith('/n/')} />}</AppErrorBoundary>
 }
