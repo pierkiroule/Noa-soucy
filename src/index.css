@@ -306,3 +306,4 @@
 .public-home h1{max-width:760px;margin:12px 0;color:#203a35;font:300 clamp(2.7rem,8vw,5.6rem)/1 Newsreader,serif;letter-spacing:-.035em;text-wrap:balance}
 .public-home p:not(.eyebrow){max-width:570px;margin:5px auto;color:#506762;font:300 clamp(1.1rem,2.4vw,1.4rem)/1.45 Newsreader,serif}
 .public-home .eyebrow{margin:0}
+.public-home__open-story{margin-top:26px;text-decoration:none}

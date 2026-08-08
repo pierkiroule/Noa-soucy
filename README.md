@@ -15,6 +15,8 @@ La page d’accueil publique est disponible sur `/`. Le tag NFC de Nao pointe ve
 `https://naosouci.fr/n` : cette route ouvre directement le conte, sans compte,
 association ni contrôle d’accès. La progression et les préférences restent
 exclusivement enregistrées dans le stockage local du navigateur.
+Depuis `/`, le bouton « Découvrir le conte sans NFC » permet d’ouvrir exactement
+la même route pour tester ou découvrir l’expérience sans disposer de la noix.
 
 Commandes disponibles :
 
