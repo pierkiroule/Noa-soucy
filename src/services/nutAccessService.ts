@@ -8,6 +8,7 @@ export interface NutAccessService {
 }
 
 const useMock = import.meta.env?.VITE_USE_MOCK_NUT_ACCESS === 'true'
+export const nutAccessMode = useMock ? 'mock' : 'supabase'
 let remoteService: Promise<NutAccessService> | undefined
 const getService = () => {
   if (useMock) return Promise.resolve(mockNutAccessService)

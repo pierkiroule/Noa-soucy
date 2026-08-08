@@ -2,9 +2,10 @@ import { useState, type ReactNode } from 'react'
 import { setMockNutState, resetMockNuts } from '../../services/mockNutAccessService'
 import { useNutAccess } from '../../hooks/useNutAccess'
 import { NutOfferContext } from './nutOfferContext'
+import { nutAccessMode } from '../../services/nutAccessService'
 
 export function NutAccessGuard({ nutToken, children }: { nutToken: string; children: ReactNode }) {
-  const { state, associateNao, offerNao, refresh } = useNutAccess(nutToken)
+  const { state, associateNao, offerNao, refresh, sync } = useNutAccess(nutToken)
   const [recognized, setRecognized] = useState(false)
   const [confirming, setConfirming] = useState(false)
   const [offered, setOffered] = useState(false)
@@ -20,7 +21,7 @@ export function NutAccessGuard({ nutToken, children }: { nutToken: string; child
     {state.status === 'mine' && recognized && <AccessScreen eyebrow="associée ici" title="Nao vous reconnaît désormais." action={<button className="primary" onClick={() => setRecognized(false)}>Commencer la traversée</button>} />}
     {state.status === 'mine' && !recognized && <NutOfferContext.Provider value={() => setConfirming(true)}><div className="nut-story"><div className="nut-recognition"><span>Nao vous reconnaît.</span><button onClick={() => document.querySelector<HTMLButtonElement>('.intro .primary')?.click()}>Poursuivre la traversée</button></div>{children}</div></NutOfferContext.Provider>}
     {confirming && <div className="nut-modal" role="dialog" aria-modal="true" aria-labelledby="offer-title"><div><h2 id="offer-title">Offrir Nao ?</h2><p>Votre téléphone ne sera plus associé à cette noix.</p><p>La personne qui recevra Nao pourra ensuite l’associer à son téléphone et commencer sa propre traversée.</p><footer><button className="quiet" onClick={() => setConfirming(false)}>Annuler</button><button className="primary" onClick={() => void doOffer()}>Offrir Nao</button></footer></div></div>}
-    {import.meta.env.DEV && <aside className="nut-dev"><strong>Test accès</strong><button onClick={() => void simulate('free')}>Noix libre</button><button onClick={() => void simulate('mine')}>Associée à ce téléphone</button><button onClick={() => void simulate('locked')}>Associée à un autre téléphone</button><button onClick={() => { resetMockNuts(); void refresh() }}>Reset mock</button></aside>}
+    {import.meta.env.DEV && <aside className="nut-dev" aria-label="État de synchronisation de développement"><strong>Synchronisation</strong><span className={`nut-dev__signal ${sync.hasError ? 'is-error' : sync.lastSyncedAt ? 'is-ready' : ''}`}><i />{nutAccessMode === 'mock' ? 'Mock local' : 'Supabase'} · {sync.hasError ? 'erreur' : state.status === 'loading' ? 'en cours' : 'relié'}</span><span>État : {state.status}</span>{sync.lastOperation && <span>Dernier échange : {sync.lastOperation}</span>}{sync.lastSyncedAt && <time dateTime={sync.lastSyncedAt.toISOString()}>{sync.lastSyncedAt.toLocaleTimeString('fr-FR')}</time>}<button onClick={() => void refresh()}>Tester la synchro</button>{nutAccessMode === 'mock' && <><button onClick={() => void simulate('free')}>Noix libre</button><button onClick={() => void simulate('mine')}>Associée à ce téléphone</button><button onClick={() => void simulate('locked')}>Associée à un autre téléphone</button><button onClick={() => { resetMockNuts(); void refresh() }}>Reset mock</button></>}</aside>}
   </>
 }
 

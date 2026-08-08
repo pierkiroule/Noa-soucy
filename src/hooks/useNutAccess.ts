@@ -7,6 +7,9 @@ export function canAccessStory(state: NutAccessState) { return state.status === 
 
 export function useNutAccess(nutToken: string | null) {
   const [state, setState] = useState<NutAccessState>({ status: nutToken ? 'loading' : 'error', nutToken, isAssociated: false })
+  const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null)
+  const [lastOperation, setLastOperation] = useState<'status' | 'associate' | 'dissociate' | null>(null)
+  const [hasSyncError, setHasSyncError] = useState(false)
   const actionPending = useRef(false)
   const refresh = useCallback(async () => {
     if (!nutToken) return setState({ status: 'error', nutToken: null, isAssociated: false })
@@ -15,9 +18,11 @@ export function useNutAccess(nutToken: string | null) {
       const deviceId = getOrCreateDeviceId()
       const status = await nutAccessService.getStatus(nutToken, deviceId)
       setState({ status, nutToken, isAssociated: status === 'mine' })
+      setLastOperation('status'); setLastSyncedAt(new Date()); setHasSyncError(false)
     } catch (error) {
       if (import.meta.env.DEV) console.error('Nut access status failed', error)
       setState({ status: 'error', nutToken, isAssociated: false })
+      setHasSyncError(true)
     }
   }, [nutToken])
   useEffect(() => { void refresh() }, [refresh])
@@ -28,9 +33,11 @@ export function useNutAccess(nutToken: string | null) {
     try {
       const status = await nutAccessService.associate(nutToken, getOrCreateDeviceId())
       setState({ status, nutToken, isAssociated: status === 'mine' })
+      setLastOperation('associate'); setLastSyncedAt(new Date()); setHasSyncError(false)
     } catch (error) {
       if (import.meta.env.DEV) console.error('Nut association failed', error)
       setState({ status: 'error', nutToken, isAssociated: false })
+      setHasSyncError(true)
     } finally { actionPending.current = false }
   }
   const offerNao = async () => {
@@ -39,10 +46,12 @@ export function useNutAccess(nutToken: string | null) {
     try {
       const status = await nutAccessService.dissociate(nutToken, getOrCreateDeviceId())
       setState({ status, nutToken, isAssociated: false })
+      setLastOperation('dissociate'); setLastSyncedAt(new Date()); setHasSyncError(false)
     } catch (error) {
       if (import.meta.env.DEV) console.error('Nut transmission failed', error)
       setState({ status: 'error', nutToken, isAssociated: false })
+      setHasSyncError(true)
     } finally { actionPending.current = false }
   }
-  return { state, associateNao, offerNao, refresh }
+  return { state, associateNao, offerNao, refresh, sync: { lastSyncedAt, lastOperation, hasError: hasSyncError } }
 }
