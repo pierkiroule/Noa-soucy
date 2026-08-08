@@ -11,6 +11,11 @@ npm install
 npm run dev
 ```
 
+La page d’accueil publique est disponible sur `/`. Le tag NFC de Nao pointe vers
+`https://naosouci.fr/n` : cette route ouvre directement le conte, sans compte,
+association ni contrôle d’accès. La progression et les préférences restent
+exclusivement enregistrées dans le stockage local du navigateur.
+
 Commandes disponibles :
 
 - `npm run build` : vérifie les types et produit la version de production ;
