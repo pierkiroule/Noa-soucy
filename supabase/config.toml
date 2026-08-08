@@ -1,4 +1,1 @@
 project_id = "kkialbpkfbgqzrcrlngq"
-
-[functions.nut-access]
-verify_jwt = false

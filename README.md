@@ -11,6 +11,16 @@ npm install
 npm run dev
 ```
 
+La page d’accueil publique est disponible sur `/`. Le tag NFC de Nao pointe vers
+`https://naosouci.fr/n` : cette route ouvre directement le conte, sans compte,
+association ni contrôle d’accès. La progression et les préférences restent
+exclusivement enregistrées dans le stockage local du navigateur.
+Depuis `/`, le bouton « Découvrir le conte sans NFC » permet d’ouvrir exactement
+la même route pour tester ou découvrir l’expérience sans disposer de la noix.
+Sur Vercel, `vercel.json` réécrit `/n` vers l’entrée Vite afin que cette URL
+fonctionne également lors d’un scan ou d’un chargement direct, et pas seulement
+après une navigation interne à l’application.
+
 Commandes disponibles :
 
 - `npm run build` : vérifie les types et produit la version de production ;
