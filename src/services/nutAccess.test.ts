@@ -33,37 +33,42 @@ test('la session locale est enregistrée, retirée et nettoyée', () => {
   assert.equal(getNutSession('walnut2'), null)
 })
 
-test('une valeur locale corrompue est ignorée', () => {
+test('une valeur locale corrompue est ignorée', async () => {
   localStorage.setItem('nao-nut-session:walnut1', '{cassé')
   localStorage.setItem('nao-mock-nuts', '{cassé')
   assert.equal(getNutSession('walnut1'), null)
-  return assert.doesNotReject(() => mockNutAccessService.getStatus('walnut1'))
+  assert.equal(await mockNutAccessService.getStatus('walnut1', 'phone'), 'free')
 })
 
 test('les états libre, associée ici et associée ailleurs sont distingués', async () => {
-  assert.equal(await mockNutAccessService.getStatus('walnut1'), 'free')
+  const deviceId = getOrCreateDeviceId()
+  assert.equal(await mockNutAccessService.getStatus('walnut1', deviceId), 'free')
   setMockNutState('walnut1', 'mine')
-  assert.equal(await mockNutAccessService.getStatus('walnut1'), 'mine')
+  assert.equal(await mockNutAccessService.getStatus('walnut1', deviceId), 'mine')
   setMockNutState('walnut1', 'locked')
-  assert.equal(await mockNutAccessService.getStatus('walnut1'), 'locked')
+  assert.equal(await mockNutAccessService.getStatus('walnut1', deviceId), 'locked')
 })
 
-test('association, refresh, offre et réassociation suivent le cycle attendu', async () => {
-  const first = await mockNutAccessService.associate('walnut1')
-  saveNutSession(first)
-  assert.equal(await mockNutAccessService.verify('walnut1'), true)
-  assert.equal(getNutSession('walnut1')?.sessionToken, first.sessionToken)
-  await mockNutAccessService.dissociate('walnut1')
-  removeNutSession('walnut1')
-  assert.equal(await mockNutAccessService.verify('walnut1'), false)
-  const second = await mockNutAccessService.associate('walnut1')
-  assert.notEqual(second.sessionToken, first.sessionToken)
-  assert.equal(await mockNutAccessService.getStatus('walnut1'), 'mine')
+test('association, offre et réassociation suivent le cycle attendu', async () => {
+  const deviceId = getOrCreateDeviceId()
+  assert.equal(await mockNutAccessService.associate('walnut1', deviceId), 'mine')
+  assert.equal(await mockNutAccessService.getStatus('walnut1', deviceId), 'mine')
+  assert.equal(await mockNutAccessService.dissociate('walnut1', deviceId), 'free')
+  assert.equal(await mockNutAccessService.getStatus('walnut1', deviceId), 'free')
+  assert.equal(await mockNutAccessService.associate('walnut1', deviceId), 'mine')
   resetMockNuts()
-  assert.equal(await mockNutAccessService.getStatus('walnut1'), 'free')
+  assert.equal(await mockNutAccessService.getStatus('walnut1', deviceId), 'free')
+})
+
+test('offrir Nao ne supprime pas la progression du conte', async () => {
+  const deviceId = getOrCreateDeviceId()
+  localStorage.setItem('nao-souci:audiovisual-progress:v4', '{"currentBlockIndex":4}')
+  await mockNutAccessService.associate('walnut1', deviceId)
+  await mockNutAccessService.dissociate('walnut1', deviceId)
+  assert.equal(localStorage.getItem('nao-souci:audiovisual-progress:v4'), '{"currentBlockIndex":4}')
 })
 
 test('une noix associée ailleurs refuse une association', async () => {
   setMockNutState('walnut1', 'locked')
-  await assert.rejects(() => mockNutAccessService.associate('walnut1'))
+  await assert.rejects(() => mockNutAccessService.associate('walnut1', getOrCreateDeviceId()))
 })

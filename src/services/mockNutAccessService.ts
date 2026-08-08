@@ -1,6 +1,6 @@
-import { getOrCreateDeviceId } from './deviceIdentity.ts'
 import type { NutAccessService } from './nutAccessService.ts'
-import type { NutAccessStatus, NutSession } from '../types/nutAccess.ts'
+import type { NutAccessStatus } from '../types/nutAccess.ts'
+import { getOrCreateDeviceId } from './deviceIdentity.ts'
 
 const MOCK_KEY = 'nao-mock-nuts'
 export type MockNutRecord = { nutToken: string; associatedDeviceId: string | null }
@@ -20,21 +20,20 @@ function setDevice(nutToken: string, associatedDeviceId: string | null) {
 }
 
 export const mockNutAccessService: NutAccessService = {
-  async getStatus(nutToken): Promise<NutAccessStatus> {
+  async getStatus(nutToken, deviceId): Promise<NutAccessStatus> {
     const associated = recordFor(nutToken)?.associatedDeviceId ?? null
     if (!associated) return 'free'
-    return associated === getOrCreateDeviceId() ? 'mine' : 'locked'
+    return associated === deviceId ? 'mine' : 'locked'
   },
-  async associate(nutToken): Promise<NutSession> {
-    const deviceId = getOrCreateDeviceId()
+  async associate(nutToken, deviceId): Promise<NutAccessStatus> {
     const record = recordFor(nutToken)
     if (record?.associatedDeviceId && record.associatedDeviceId !== deviceId) throw new Error('Nut unavailable')
     setDevice(nutToken, deviceId)
-    return { nutToken, deviceId, sessionToken: crypto.randomUUID() }
+    return 'mine'
   },
-  async verify(nutToken) { return this.getStatus(nutToken).then(status => status === 'mine') },
-  async dissociate(nutToken) {
-    if (recordFor(nutToken)?.associatedDeviceId === getOrCreateDeviceId()) setDevice(nutToken, null)
+  async dissociate(nutToken, deviceId) {
+    if (recordFor(nutToken)?.associatedDeviceId === deviceId) setDevice(nutToken, null)
+    return 'free'
   },
 }
 

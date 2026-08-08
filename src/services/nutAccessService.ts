@@ -1,12 +1,22 @@
-import type { NutAccessStatus, NutSession } from '../types/nutAccess.ts'
+import type { NutAccessStatus } from '../types/nutAccess.ts'
 import { mockNutAccessService } from './mockNutAccessService.ts'
 
 export interface NutAccessService {
-  getStatus(nutToken: string): Promise<NutAccessStatus>
-  associate(nutToken: string): Promise<NutSession>
-  verify(nutToken: string): Promise<boolean>
-  dissociate(nutToken: string): Promise<void>
+  getStatus(nutToken: string, deviceId: string): Promise<NutAccessStatus>
+  associate(nutToken: string, deviceId: string): Promise<NutAccessStatus>
+  dissociate(nutToken: string, deviceId: string): Promise<NutAccessStatus>
 }
 
-// Point d'échange unique : une future implémentation Supabase remplacera ce mock.
-export const nutAccessService: NutAccessService = mockNutAccessService
+const useMock = import.meta.env?.VITE_USE_MOCK_NUT_ACCESS === 'true'
+let remoteService: Promise<NutAccessService> | undefined
+const getService = () => {
+  if (useMock) return Promise.resolve(mockNutAccessService)
+  remoteService ??= import('./supabaseNutAccessService').then(module => module.supabaseNutAccessService)
+  return remoteService
+}
+
+export const nutAccessService: NutAccessService = {
+  async getStatus(nutToken, deviceId) { return (await getService()).getStatus(nutToken, deviceId) },
+  async associate(nutToken, deviceId) { return (await getService()).associate(nutToken, deviceId) },
+  async dissociate(nutToken, deviceId) { return (await getService()).dissociate(nutToken, deviceId) },
+}

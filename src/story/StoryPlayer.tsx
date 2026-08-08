@@ -1,5 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { StoryMediaPlayer } from '../components/StoryMediaPlayer'
+import { useNutOffer } from '../components/nut/nutOfferContext'
 import { ParticleOverlay } from '../effects/ParticleOverlay'
 import { ViewTransition } from '../effects/ViewTransition'
 import { loopAudioPlayer } from '../engine/LoopAudioPlayer'
@@ -19,6 +20,7 @@ function readSaved(): SavedState {
 }
 
 export function StoryPlayer() {
+  const offerNao = useNutOffer()
   const [story, setStory] = useState<StoryDocument>()
   const [loadError, setLoadError] = useState(false)
   const [started, setStarted] = useState(false)
@@ -92,13 +94,13 @@ export function StoryPlayer() {
     <Brand />
     <button className="sound-toggle" aria-pressed={state.isMuted} onClick={toggleMuted}>{state.isMuted ? 'Son coupé' : 'Son activé'}</button>
     <div className="journey-progress" role="progressbar" aria-label="Progression" aria-valuenow={state.currentBlockIndex + 1} aria-valuemin={1} aria-valuemax={story.blocks.length}><i style={{ width: `${((state.currentBlockIndex + 1) / story.blocks.length) * 100}%` }}/></div>
-    <JourneyNavigation story={story} currentIndex={state.currentBlockIndex} isOpen={navigationOpen} onToggle={() => setNavigationOpen(open => !open)} onGoTo={goToPart} onRestart={restartStory} />
+    <JourneyNavigation story={story} currentIndex={state.currentBlockIndex} isOpen={navigationOpen} onToggle={() => setNavigationOpen(open => !open)} onGoTo={goToPart} onRestart={restartStory} onOffer={offerNao ?? undefined} />
     {mediaBlock && <StoryMediaPlayer key={mediaBlock.id} title={mediaBlock.title} text={mediaBlock.text} videoSrc={storyMediaUrl(mediaBlock.media.video)} variant={mediaBlock.type} breathIndex={state.currentBreathIndex} onBreathChange={setBreath} onComplete={completeMedia}/>}
     {block?.type === 'question' && !activeResonance && <QuestionScreen title={block.title} text={block.text} choices={block.choices} selected={state.selectedChoices[block.id]} onSelect={selectChoice}/>}
   </main>
 }
 
-function JourneyNavigation({ story, currentIndex, isOpen, onToggle, onGoTo, onRestart }: { story:StoryDocument; currentIndex:number; isOpen:boolean; onToggle:()=>void; onGoTo:(index:number)=>void; onRestart:()=>void }) {
+function JourneyNavigation({ story, currentIndex, isOpen, onToggle, onGoTo, onRestart, onOffer }: { story:StoryDocument; currentIndex:number; isOpen:boolean; onToggle:()=>void; onGoTo:(index:number)=>void; onRestart:()=>void; onOffer?:()=>void }) {
   const current = story.blocks[currentIndex]
   return <>
     <nav className="chapter-nav" aria-label="Navigation entre les parties du conte">
@@ -111,6 +113,7 @@ function JourneyNavigation({ story, currentIndex, isOpen, onToggle, onGoTo, onRe
         <header><div><span className="eyebrow">Le fil du conte</span><h2>Choisir une partie</h2></div><button className="chapter-menu__close" onClick={onToggle} aria-label="Fermer le sommaire">×</button></header>
         <ol>{story.blocks.map((part, index) => <li key={part.id}><button className={index === currentIndex ? 'is-current' : ''} aria-current={index === currentIndex ? 'step' : undefined} onClick={() => onGoTo(index)}><span>{String(index + 1).padStart(2, '0')}</span><strong>{part.title}</strong>{index === currentIndex && <i>En cours</i>}</button></li>)}</ol>
         <button className="chapter-menu__restart" onClick={onRestart}><span aria-hidden="true">↺</span> Recommencer au début</button>
+        {onOffer && <button className="chapter-menu__restart" onClick={onOffer}>Offrir Nao</button>}
       </aside>
     </div>}
   </>

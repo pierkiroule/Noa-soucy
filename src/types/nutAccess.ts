@@ -1,7 +1,12 @@
-export type NutAccessStatus = 'free' | 'mine' | 'locked' | 'loading' | 'error'
+export type NutAccessStatus = 'free' | 'mine' | 'locked'
+export type NutAccessViewStatus = NutAccessStatus | 'loading' | 'error'
+
+export interface NutAccessResult {
+  status: NutAccessStatus
+}
 
 export interface NutAccessState {
-  status: NutAccessStatus
+  status: NutAccessViewStatus
   nutToken: string | null
   isAssociated: boolean
 }
