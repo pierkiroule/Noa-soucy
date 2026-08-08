@@ -17,6 +17,9 @@ association ni contrôle d’accès. La progression et les préférences restent
 exclusivement enregistrées dans le stockage local du navigateur.
 Depuis `/`, le bouton « Découvrir le conte sans NFC » permet d’ouvrir exactement
 la même route pour tester ou découvrir l’expérience sans disposer de la noix.
+Sur Vercel, `vercel.json` réécrit `/n` vers l’entrée Vite afin que cette URL
+fonctionne également lors d’un scan ou d’un chargement direct, et pas seulement
+après une navigation interne à l’application.
 
 Commandes disponibles :
 
