@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { resonanceSeeds } from '../data/resonanceSeeds.ts'
+import { resonanceSeeds, resonanceWordTags } from '../data/resonanceSeeds.ts'
 import { getPlantGrowthStage, layoutRootNetwork } from '../utils/resonanceGardenLayout.ts'
 import { emptyGarden, readResonanceGarden, RESONANCE_GARDEN_STORAGE_KEY, writeResonanceGarden } from './useResonanceGarden.ts'
 import type { ResonanceGardenState, ResonanceNode } from '../types/resonanceSeeds.ts'
@@ -8,6 +8,11 @@ import type { ResonanceGardenState, ResonanceNode } from '../types/resonanceSeed
 test('the scene defines five distinct seeds', () => {
   assert.equal(resonanceSeeds.length, 5)
   assert.equal(new Set(resonanceSeeds.map(seed => seed.id)).size, 5)
+})
+
+test('the watering can offers a finite list of unique word tags', () => {
+  assert.ok(resonanceWordTags.length >= 15)
+  assert.equal(new Set(resonanceWordTags).size, resonanceWordTags.length)
 })
 
 test('garden state survives local storage serialization and page reload', () => {
