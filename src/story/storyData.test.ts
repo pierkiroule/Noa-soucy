@@ -33,6 +33,8 @@ test('available voices are assigned only to their narrated chapters', () => {
   assert.deepEqual(voicedBlocks, [
     { id: 'prologue', voice: 'Voc1.mp3' },
     { id: 'act-01', voice: 'Voc2.mp3' },
+    { id: 'act-02', voice: 'Voc3.mp3' },
+    { id: 'act-03', voice: 'Voc4.mp3' },
   ])
   assert.ok(story.blocks.filter(block => block.type === 'question').flatMap(block => block.choices).every(choice => !choice.resonance.media.voice))
 })
