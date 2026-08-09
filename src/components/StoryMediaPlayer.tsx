@@ -3,26 +3,60 @@ import { splitTextIntoBreaths } from '../engine/storyText'
 import type { StoryMediaVariant } from '../story/storyData'
 
 interface Props {
-  title:string; text:string; videoSrc:string; variant:StoryMediaVariant
+  title:string; text:string; videoSrc:string; voiceSrc?:string; variant:StoryMediaVariant
+  isMuted:boolean
   breathIndex:number
   onBreathChange:(index:number)=>void; onComplete:()=>void
 }
 
 interface Ripple { id:number; x:number; y:number }
 
-export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, onBreathChange, onComplete }: Props) {
+export function StoryMediaPlayer({ title, text, videoSrc, voiceSrc, variant, isMuted, breathIndex, onBreathChange, onComplete }: Props) {
   const breaths = useMemo(() => splitTextIntoBreaths(text), [text])
   const [videoFailed, setVideoFailed] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
   const [ripples, setRipples] = useState<Ripple[]>([])
   const [reachedEnd, setReachedEnd] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const voiceRef = useRef<HTMLAudioElement | undefined>(undefined)
+  const mutedRef = useRef(isMuted)
   const scrollerRef = useRef<HTMLDivElement>(null)
   const rippleId = useRef(0)
   const safeIndex = Math.min(breathIndex, Math.max(0, breaths.length - 1))
   const initialIndex = useRef(safeIndex)
   const isResonance = variant === 'resonance'
   const finished = isResonance || reachedEnd || safeIndex === breaths.length - 1
+
+  useEffect(() => {
+    mutedRef.current = isMuted
+    const voice = voiceRef.current
+    if (!voice) return
+    if (isMuted) voice.pause()
+    else if (!voice.ended) void voice.play().catch(() => console.warn(`Lecture de la voix en attente : ${voiceSrc}`))
+  }, [isMuted, voiceSrc])
+
+  useEffect(() => {
+    if (!voiceSrc || isResonance) return
+    const voice = new Audio(voiceSrc)
+    voice.preload = 'auto'
+    voice.volume = .82
+    voice.addEventListener('error', () => console.warn(`Voix indisponible : ${voiceSrc}`), { once: true })
+    voiceRef.current = voice
+    if (!mutedRef.current) void voice.play().catch(() => console.warn(`Lecture de la voix en attente : ${voiceSrc}`))
+
+    return () => {
+      if (voiceRef.current === voice) voiceRef.current = undefined
+      const initialVolume = voice.volume
+      const startedAt = performance.now()
+      const fadeOut = (now: number) => {
+        const progress = Math.min(1, (now - startedAt) / 650)
+        voice.volume = Math.max(0, initialVolume * (1 - progress))
+        if (progress < 1 && !voice.paused) requestAnimationFrame(fadeOut)
+        else { voice.pause(); voice.removeAttribute('src'); voice.load() }
+      }
+      requestAnimationFrame(fadeOut)
+    }
+  }, [isResonance, voiceSrc])
 
   useEffect(() => {
     const scroller = scrollerRef.current
