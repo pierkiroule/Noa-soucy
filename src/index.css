@@ -311,3 +311,10 @@
 /* A short, generous invitation keeps the compass introduction easy to read. */
 .compass-intro p{max-width:590px;margin-bottom:14px;font-size:clamp(1.2rem,3vw,1.55rem);line-height:1.38}
 .compass-intro .compass-actions{margin-top:26px}
+
+/* Direction sheets favor comfortable reading and remain scrollable on short screens. */
+.resonance-panel{scrollbar-gutter:stable;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}
+.resonance-panel blockquote{max-width:680px;font-size:clamp(1.12rem,2.6vw,1.32rem);line-height:1.45}
+.resonance-panel__meaning{font-size:clamp(1.12rem,2.8vw,1.3rem);line-height:1.55}
+.resonance-panel__question{font-size:clamp(1.4rem,4.8vw,1.9rem);line-height:1.28}
+.resonance-panel__helper{max-width:620px;font-size:clamp(1rem,2.4vw,1.12rem);line-height:1.5}
