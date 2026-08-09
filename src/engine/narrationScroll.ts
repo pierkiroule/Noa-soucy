@@ -13,3 +13,12 @@ export function narrationScrollProgress(currentTime: number, duration: number) {
   const tail = 0.08
   return Math.max(0, Math.min(1, (audioProgress - leadIn) / (1 - leadIn - tail)))
 }
+
+
+/** Advances toward narration without ever pulling a reader who moved ahead backward. */
+export function nextAutoScrollTop(current: number, target: number, elapsed: number) {
+  if (!Number.isFinite(current) || !Number.isFinite(target) || target <= current) return current
+  const safeElapsed = Math.max(0, Math.min(64, elapsed))
+  const easing = 1 - Math.exp(-safeElapsed / 420)
+  return current + (target - current) * easing
+}
