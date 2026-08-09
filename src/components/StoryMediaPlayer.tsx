@@ -56,7 +56,7 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
     <div ref={scrollerRef} className="media-player__text-scroll" onScroll={handleScroll} onPointerDown={addRipple} aria-label={`${title}, texte à faire défiler verticalement`}>
       <div className="media-player__breath">
         <p>{text}</p>
-        {finished && !isResonance && <button className="media-player__continue media-player__continue--inline" onClick={onComplete}>{variant === 'epilogue' ? 'Terminer' : 'Continuer'} <span aria-hidden="true">→</span></button>}
+        {finished && <button className="media-player__continue media-player__continue--inline" onClick={onComplete}>{isResonance ? 'Reprendre la traversée' : variant === 'epilogue' ? 'Terminer' : 'Continuer'} <span aria-hidden="true">→</span></button>}
       </div>
     </div>
     <div className="media-player__visual" aria-label="Illustration vidéo du récit">
@@ -64,6 +64,5 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
       {!videoFailed && <video ref={videoRef} className={`media-player__video ${videoReady ? 'is-ready' : ''}`} src={videoSrc} autoPlay loop muted playsInline preload="metadata" onLoadedData={() => setVideoReady(true)} onCanPlay={event => { setVideoReady(true); void event.currentTarget.play().catch(() => console.warn(`Lecture vidéo en attente : ${videoSrc}`)) }} onError={() => { console.warn(`Vidéo indisponible : ${videoSrc}`); setVideoFailed(true) }} />}
     </div>
     <div className="media-player__ripples" aria-hidden="true">{ripples.map(ripple => <i key={ripple.id} style={{ left: ripple.x, top: ripple.y }}/>)}</div>
-    {isResonance && <button className="media-player__continue" onClick={onComplete}>Reprendre la traversée <span aria-hidden="true">→</span></button>}
   </section>
 }
