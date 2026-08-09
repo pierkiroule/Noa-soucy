@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
-import { getNextMedia, type StoryDocument } from './storyData.ts'
+import { getNextMedia, loadStory, storyVoiceUrl, type StoryDocument } from './storyData.ts'
 
 const story = JSON.parse(await readFile(new URL('../../public/story/story.json', import.meta.url), 'utf8')) as StoryDocument
 
@@ -24,8 +24,45 @@ test('prologue and epilogue reuse the requested act media', () => {
   const epilogue = story.blocks.find(block => block.type === 'epilogue')
   assert.ok(prologue?.type === 'prologue')
   assert.ok(epilogue?.type === 'epilogue')
-  assert.deepEqual(prologue.media, { video: '1.mp4', music: 'Fond2.mp3' })
-  assert.deepEqual(epilogue.media, { video: '14.mp4', music: 'Fond2.mp3' })
+  assert.deepEqual(prologue.media, { video: '1.mp4', music: 'Fond2.mp3', voice: 'Voc1.mp3' })
+  assert.deepEqual(epilogue.media, { video: '14.mp4', music: 'Fond2.mp3', voice: 'Voc7.mp3' })
+})
+
+test('available voices are assigned only to their narrated chapters', () => {
+  const voicedBlocks = story.blocks.flatMap(block => block.type === 'question' || block.type === 'metaphorical-resonances' || !block.media.voice ? [] : [{ id: block.id, voice: block.media.voice }])
+  assert.deepEqual(voicedBlocks, [
+    { id: 'prologue', voice: 'Voc1.mp3' },
+    { id: 'act-01', voice: 'Voc2.mp3' },
+    { id: 'act-02', voice: 'Voc3.mp3' },
+    { id: 'act-03', voice: 'Voc4.mp3' },
+    { id: 'act-04', voice: 'Voc5.mp3' },
+    { id: 'act-05', voice: 'Voc6.mp3' },
+    { id: 'epilogue', voice: 'Voc7.mp3' },
+  ])
+  assert.ok(story.blocks.filter(block => block.type === 'question').flatMap(block => block.choices).every(choice => !choice.resonance.media.voice))
+})
+
+test('story loading bypasses stale cached voice mappings', async () => {
+  const originalFetch = globalThis.fetch
+  let requestedUrl: string | URL | Request | undefined
+  let requestedOptions: RequestInit | undefined
+  globalThis.fetch = async (url, options) => {
+    requestedUrl = url
+    requestedOptions = options
+    return new Response(JSON.stringify(story), { status: 200 })
+  }
+
+  try {
+    await loadStory()
+    assert.equal(requestedUrl, '/story/story.json?audio=Voc7')
+    assert.equal(requestedOptions?.cache, 'no-store')
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('voice URLs bypass cached missing audio responses', () => {
+  assert.equal(storyVoiceUrl('Voc7.mp3'), '/story/Voc7.mp3?audio=Voc7')
 })
 
 

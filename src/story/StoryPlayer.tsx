@@ -3,7 +3,8 @@ import { StoryMediaPlayer } from '../components/StoryMediaPlayer'
 import { ParticleOverlay } from '../effects/ParticleOverlay'
 import { ViewTransition } from '../effects/ViewTransition'
 import { loopAudioPlayer } from '../engine/LoopAudioPlayer'
-import { getNextMedia, loadStory, preloadNextStoryMedia, storyMediaUrl, type StoryChoice, type StoryDocument, type StoryMediaBlock } from './storyData'
+import { narrationAudioPlayer } from '../engine/NarrationAudioPlayer'
+import { getNextMedia, loadStory, preloadNextStoryMedia, storyMediaUrl, storyVoiceUrl, type StoryChoice, type StoryDocument, type StoryMediaBlock } from './storyData'
 
 const STORAGE_KEY = 'nao-souci:audiovisual-progress:v4'
 const BACKGROUND_MUSIC = storyMediaUrl('Fond2.mp3')
@@ -37,6 +38,7 @@ export function StoryPlayer() {
     setState(current => ({ ...current, currentBlockIndex: 0, currentBreathIndex: 0, activeResonanceId: undefined }))
   }, [state.currentBlockIndex, story])
   useEffect(() => { loopAudioPlayer.setMuted(state.isMuted) }, [state.isMuted])
+  useEffect(() => { narrationAudioPlayer.setMuted(state.isMuted) }, [state.isMuted])
   useEffect(() => {
     if (!story || completedOnLoad.current) return
     void loopAudioPlayer.load(BACKGROUND_MUSIC)
@@ -51,6 +53,9 @@ export function StoryPlayer() {
     if (block?.type !== 'question' || !state.activeResonanceId) return undefined
     return block.choices.find(choice => choice.resonance.id === state.activeResonanceId)?.resonance
   }, [block, state.activeResonanceId])
+  const voiceSource = started && !state.completed && block && block.type !== 'question' && block.type !== 'metaphorical-resonances' && block.type !== 'resonance' && block.media.voice ? storyVoiceUrl(block.media.voice) : undefined
+  useEffect(() => { void narrationAudioPlayer.play(voiceSource) }, [voiceSource])
+  useEffect(() => () => { void narrationAudioPlayer.stop() }, [])
   useEffect(() => story ? preloadNextStoryMedia(getNextMedia(story.blocks, state.currentBlockIndex)) : undefined, [story, state.currentBlockIndex])
 
   const setBreath = useCallback((currentBreathIndex: number) => setState(current => ({ ...current, currentBreathIndex })), [])
@@ -67,7 +72,10 @@ export function StoryPlayer() {
   const toggleMuted = () => {
     setState(current => { const isMuted = !current.isMuted; loopAudioPlayer.setMuted(isMuted); return { ...current, isMuted } })
   }
-  const start = () => { void loopAudioPlayer.unlock().then(() => loopAudioPlayer.resume()); setStarted(true) }
+  const start = () => {
+    void loopAudioPlayer.unlock().then(() => loopAudioPlayer.resume())
+    void narrationAudioPlayer.unlock().finally(() => setStarted(true))
+  }
   const restart = () => { setState(initialSaved); setStarted(false); void loopAudioPlayer.load(BACKGROUND_MUSIC) }
   const goToPart = (index: number) => {
     if (!story || index < 0 || index >= story.blocks.length) return
