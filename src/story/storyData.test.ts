@@ -35,6 +35,8 @@ test('available voices are assigned only to their narrated chapters', () => {
     { id: 'act-01', voice: 'Voc2.mp3' },
     { id: 'act-02', voice: 'Voc3.mp3' },
     { id: 'act-03', voice: 'Voc4.mp3' },
+    { id: 'act-04', voice: 'Voc5.mp3' },
+    { id: 'act-05', voice: 'Voc6.mp3' },
   ])
   assert.ok(story.blocks.filter(block => block.type === 'question').flatMap(block => block.choices).every(choice => !choice.resonance.media.voice))
 })
