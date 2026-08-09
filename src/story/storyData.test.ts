@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
-import { getNextMedia, type StoryDocument } from './storyData.ts'
+import { getNextMedia, loadStory, storyVoiceUrl, type StoryDocument } from './storyData.ts'
 
 const story = JSON.parse(await readFile(new URL('../../public/story/story.json', import.meta.url), 'utf8')) as StoryDocument
 
@@ -39,6 +39,29 @@ test('available voices are assigned only to their narrated chapters', () => {
     { id: 'act-05', voice: 'Voc6.mp3' },
   ])
   assert.ok(story.blocks.filter(block => block.type === 'question').flatMap(block => block.choices).every(choice => !choice.resonance.media.voice))
+})
+
+test('story loading bypasses stale cached voice mappings', async () => {
+  const originalFetch = globalThis.fetch
+  let requestedUrl: string | URL | Request | undefined
+  let requestedOptions: RequestInit | undefined
+  globalThis.fetch = async (url, options) => {
+    requestedUrl = url
+    requestedOptions = options
+    return new Response(JSON.stringify(story), { status: 200 })
+  }
+
+  try {
+    await loadStory()
+    assert.equal(requestedUrl, '/story/story.json?audio=Voc6')
+    assert.equal(requestedOptions?.cache, 'no-store')
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('voice URLs bypass cached missing audio responses', () => {
+  assert.equal(storyVoiceUrl('Voc6.mp3'), '/story/Voc6.mp3?audio=Voc6')
 })
 
 

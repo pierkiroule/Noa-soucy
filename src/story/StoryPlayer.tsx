@@ -3,7 +3,7 @@ import { StoryMediaPlayer } from '../components/StoryMediaPlayer'
 import { ParticleOverlay } from '../effects/ParticleOverlay'
 import { ViewTransition } from '../effects/ViewTransition'
 import { loopAudioPlayer } from '../engine/LoopAudioPlayer'
-import { getNextMedia, loadStory, preloadNextStoryMedia, storyMediaUrl, type StoryChoice, type StoryDocument, type StoryMediaBlock } from './storyData'
+import { getNextMedia, loadStory, preloadNextStoryMedia, storyMediaUrl, storyVoiceUrl, type StoryChoice, type StoryDocument, type StoryMediaBlock } from './storyData'
 
 const STORAGE_KEY = 'nao-souci:audiovisual-progress:v4'
 const BACKGROUND_MUSIC = storyMediaUrl('Fond2.mp3')
@@ -93,7 +93,7 @@ export function StoryPlayer() {
     <button className="sound-toggle" aria-pressed={state.isMuted} onClick={toggleMuted}>{state.isMuted ? 'Son coupé' : 'Son activé'}</button>
     <div className="journey-progress" role="progressbar" aria-label="Progression" aria-valuenow={state.currentBlockIndex + 1} aria-valuemin={1} aria-valuemax={story.blocks.length}><i style={{ width: `${((state.currentBlockIndex + 1) / story.blocks.length) * 100}%` }}/></div>
     <JourneyNavigation story={story} currentIndex={state.currentBlockIndex} isOpen={navigationOpen} onToggle={() => setNavigationOpen(open => !open)} onGoTo={goToPart} onRestart={restartStory} />
-    {mediaBlock && <StoryMediaPlayer key={mediaBlock.id} title={mediaBlock.title} text={mediaBlock.text} videoSrc={storyMediaUrl(mediaBlock.media.video)} voiceSrc={mediaBlock.type === 'resonance' || !mediaBlock.media.voice ? undefined : storyMediaUrl(mediaBlock.media.voice)} variant={mediaBlock.type} isMuted={state.isMuted} breathIndex={state.currentBreathIndex} onBreathChange={setBreath} onComplete={completeMedia}/>}
+    {mediaBlock && <StoryMediaPlayer key={mediaBlock.id} title={mediaBlock.title} text={mediaBlock.text} videoSrc={storyMediaUrl(mediaBlock.media.video)} voiceSrc={mediaBlock.type === 'resonance' || !mediaBlock.media.voice ? undefined : storyVoiceUrl(mediaBlock.media.voice)} variant={mediaBlock.type} isMuted={state.isMuted} breathIndex={state.currentBreathIndex} onBreathChange={setBreath} onComplete={completeMedia}/>}
     {block?.type === 'question' && !activeResonance && <QuestionScreen title={block.title} text={block.text} choices={block.choices} selected={state.selectedChoices[block.id]} onSelect={selectChoice}/>}
   </main>
 }
