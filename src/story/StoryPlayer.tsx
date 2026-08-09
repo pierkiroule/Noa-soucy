@@ -3,6 +3,7 @@ import { StoryMediaPlayer } from '../components/StoryMediaPlayer'
 import { ParticleOverlay } from '../effects/ParticleOverlay'
 import { ViewTransition } from '../effects/ViewTransition'
 import { loopAudioPlayer } from '../engine/LoopAudioPlayer'
+import { narrationAudioPlayer } from '../engine/NarrationAudioPlayer'
 import { getNextMedia, loadStory, preloadNextStoryMedia, storyMediaUrl, storyVoiceUrl, type StoryChoice, type StoryDocument, type StoryMediaBlock } from './storyData'
 
 const STORAGE_KEY = 'nao-souci:audiovisual-progress:v4'
@@ -37,6 +38,7 @@ export function StoryPlayer() {
     setState(current => ({ ...current, currentBlockIndex: 0, currentBreathIndex: 0, activeResonanceId: undefined }))
   }, [state.currentBlockIndex, story])
   useEffect(() => { loopAudioPlayer.setMuted(state.isMuted) }, [state.isMuted])
+  useEffect(() => { narrationAudioPlayer.setMuted(state.isMuted) }, [state.isMuted])
   useEffect(() => {
     if (!story || completedOnLoad.current) return
     void loopAudioPlayer.load(BACKGROUND_MUSIC)
@@ -51,6 +53,9 @@ export function StoryPlayer() {
     if (block?.type !== 'question' || !state.activeResonanceId) return undefined
     return block.choices.find(choice => choice.resonance.id === state.activeResonanceId)?.resonance
   }, [block, state.activeResonanceId])
+  const voiceSource = started && !state.completed && block && block.type !== 'question' && block.type !== 'metaphorical-resonances' && block.type !== 'resonance' && block.media.voice ? storyVoiceUrl(block.media.voice) : undefined
+  useEffect(() => { void narrationAudioPlayer.play(voiceSource) }, [voiceSource])
+  useEffect(() => () => { void narrationAudioPlayer.stop() }, [])
   useEffect(() => story ? preloadNextStoryMedia(getNextMedia(story.blocks, state.currentBlockIndex)) : undefined, [story, state.currentBlockIndex])
 
   const setBreath = useCallback((currentBreathIndex: number) => setState(current => ({ ...current, currentBreathIndex })), [])
@@ -67,7 +72,10 @@ export function StoryPlayer() {
   const toggleMuted = () => {
     setState(current => { const isMuted = !current.isMuted; loopAudioPlayer.setMuted(isMuted); return { ...current, isMuted } })
   }
-  const start = () => { void loopAudioPlayer.unlock().then(() => loopAudioPlayer.resume()); setStarted(true) }
+  const start = () => {
+    void loopAudioPlayer.unlock().then(() => loopAudioPlayer.resume())
+    void narrationAudioPlayer.unlock().finally(() => setStarted(true))
+  }
   const restart = () => { setState(initialSaved); setStarted(false); void loopAudioPlayer.load(BACKGROUND_MUSIC) }
   const goToPart = (index: number) => {
     if (!story || index < 0 || index >= story.blocks.length) return
@@ -93,7 +101,7 @@ export function StoryPlayer() {
     <button className="sound-toggle" aria-pressed={state.isMuted} onClick={toggleMuted}>{state.isMuted ? 'Son coupé' : 'Son activé'}</button>
     <div className="journey-progress" role="progressbar" aria-label="Progression" aria-valuenow={state.currentBlockIndex + 1} aria-valuemin={1} aria-valuemax={story.blocks.length}><i style={{ width: `${((state.currentBlockIndex + 1) / story.blocks.length) * 100}%` }}/></div>
     <JourneyNavigation story={story} currentIndex={state.currentBlockIndex} isOpen={navigationOpen} onToggle={() => setNavigationOpen(open => !open)} onGoTo={goToPart} onRestart={restartStory} />
-    {mediaBlock && <StoryMediaPlayer key={mediaBlock.id} title={mediaBlock.title} text={mediaBlock.text} videoSrc={storyMediaUrl(mediaBlock.media.video)} voiceSrc={mediaBlock.type === 'resonance' || !mediaBlock.media.voice ? undefined : storyVoiceUrl(mediaBlock.media.voice)} variant={mediaBlock.type} isMuted={state.isMuted} breathIndex={state.currentBreathIndex} onBreathChange={setBreath} onComplete={completeMedia}/>}
+    {mediaBlock && <StoryMediaPlayer key={mediaBlock.id} title={mediaBlock.title} text={mediaBlock.text} videoSrc={storyMediaUrl(mediaBlock.media.video)} variant={mediaBlock.type} breathIndex={state.currentBreathIndex} onBreathChange={setBreath} onComplete={completeMedia}/>}
     {block?.type === 'question' && !activeResonance && <QuestionScreen title={block.title} text={block.text} choices={block.choices} selected={state.selectedChoices[block.id]} onSelect={selectChoice}/>}
   </main>
 }
