@@ -16,6 +16,7 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
   const [videoReady, setVideoReady] = useState(false)
   const [ripples, setRipples] = useState<Ripple[]>([])
   const [reachedEnd, setReachedEnd] = useState(false)
+  const [textVisible, setTextVisible] = useState(true)
   const videoRef = useRef<HTMLVideoElement>(null)
   const scrollerRef = useRef<HTMLDivElement>(null)
   const rippleId = useRef(0)
@@ -53,7 +54,10 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
   return <section className={`media-player media-player--${variant}${isResonance ? ' media-player--resonance-bubble' : ''}`}>
     <div className="media-player__wash" aria-hidden="true" />
     <header className="media-player__title">{title}</header>
-    <div ref={scrollerRef} className="media-player__text-scroll" onScroll={handleScroll} onPointerDown={addRipple} aria-label={`${title}, texte à faire défiler verticalement`}>
+    <button className="media-player__text-toggle" type="button" aria-pressed={textVisible} aria-controls="story-text" onClick={() => setTextVisible(visible => !visible)}>
+      {textVisible ? 'Masquer le texte' : 'Afficher le texte'}
+    </button>
+    <div id="story-text" ref={scrollerRef} className={`media-player__text-scroll${textVisible ? '' : ' is-hidden'}`} onScroll={handleScroll} onPointerDown={addRipple} aria-label={`${title}, texte à faire défiler verticalement`} aria-hidden={!textVisible} inert={!textVisible}>
       <div className="media-player__breath">
         <p>{text}</p>
         {finished && <button className="media-player__continue media-player__continue--inline" onClick={onComplete}>{isResonance ? 'Reprendre la traversée' : variant === 'epilogue' ? 'Terminer' : 'Continuer'} <span aria-hidden="true">→</span></button>}
