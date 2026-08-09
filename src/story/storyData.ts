@@ -1,11 +1,11 @@
 export type StoryMediaVariant = 'prologue' | 'act' | 'resonance' | 'epilogue'
-export interface MetaphoricalResonancesStoryboardBlock { id:string; type:'metaphorical-resonances'; module:'metaphorical-resonances-main'; title:string; enabled:boolean; optional:boolean }
+export interface ResonanceSeedsStoryboardBlock { id:string; type:'resonance-seeds'; module:'resonance-seeds-main'; title:string; enabled:boolean; optional:boolean }
 export interface StoryMedia { video:string; music:string }
 export interface StoryMediaBlock { id:string; type:StoryMediaVariant; title:string; text:string; media:StoryMedia }
 export interface StoryChoice { id:string; label:string; resonance:StoryMediaBlock }
 export interface StoryQuestion { id:string; type:'question'; title:string; text:string; choices:StoryChoice[] }
-export type StoryBlock = StoryMediaBlock | StoryQuestion | MetaphoricalResonancesStoryboardBlock
-export interface StoryDocument { version:number; id:string; title:string; subtitle:string; blocks:StoryBlock[]; metaphoricalResonances?:Record<string,{ id:string; title:string; enabled:boolean; optional:boolean }> }
+export type StoryBlock = StoryMediaBlock | StoryQuestion | ResonanceSeedsStoryboardBlock
+export interface StoryDocument { version:number; id:string; title:string; subtitle:string; blocks:StoryBlock[] }
 
 export const storyMediaUrl = (file: string) => `/story/${file}`
 
@@ -27,5 +27,5 @@ export function preloadNextStoryMedia(media?: StoryMedia) {
 
 export function getNextMedia(blocks: StoryBlock[], index: number): StoryMedia | undefined {
   const next = blocks[index + 1]
-  return !next || next.type === 'question' || next.type === 'metaphorical-resonances' ? undefined : next.media
+  return !next || next.type === 'question' || next.type === 'resonance-seeds' ? undefined : next.media
 }

@@ -225,20 +225,12 @@
       }
     },
     {
-      "id": "metaphorical-resonances-main",
-      "type": "metaphorical-resonances",
-      "module": "metaphorical-resonances-main",
-      "title": "Boussole métaphorique",
+      "id": "resonance-seeds-main",
+      "type": "resonance-seeds",
+      "module": "resonance-seeds-main",
+      "title": "Graines de résonance",
       "enabled": true,
       "optional": true
     }
-  ],
-  "metaphoricalResonances": {
-    "metaphorical-resonances-main": {
-      "id": "metaphorical-resonances-main",
-      "title": "Boussole métaphorique",
-      "enabled": true,
-      "optional": true
-    }
-  }
+  ]
 }

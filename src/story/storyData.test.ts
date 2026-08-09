@@ -13,7 +13,7 @@ test('story.json is the single complete narrative source', () => {
 })
 
 test('story video follows the fixed 1 to 14 mapping with one continuous soundtrack', () => {
-  const media = story.blocks.flatMap(block => block.type === 'question' ? block.choices.map(choice => choice.resonance.media) : block.type === 'metaphorical-resonances' ? [] : [block.media])
+  const media = story.blocks.flatMap(block => block.type === 'question' ? block.choices.map(choice => choice.resonance.media) : block.type === 'resonance-seeds' ? [] : [block.media])
   const numbers = new Set(media.map(item => Number(item.video.replace('.mp4', ''))))
   assert.deepEqual([...numbers].sort((a, b) => a - b), Array.from({ length: 14 }, (_, index) => index + 1))
   assert.ok(media.every(item => item.music === 'Fond2.mp3'))
@@ -29,22 +29,21 @@ test('prologue and epilogue reuse the requested act media', () => {
 })
 
 
-test('story keeps metaphorical resonances optional after the epilogue', () => {
+test('story opens Graines de résonance directly after the epilogue', () => {
   const epilogueIndex = story.blocks.findIndex(block => block.type === 'epilogue')
   assert.ok(epilogueIndex >= 0)
   assert.deepEqual(story.blocks[epilogueIndex + 1], {
-    id: 'metaphorical-resonances-main',
-    type: 'metaphorical-resonances',
-    module: 'metaphorical-resonances-main',
-    title: 'Boussole métaphorique',
+    id: 'resonance-seeds-main',
+    type: 'resonance-seeds',
+    module: 'resonance-seeds-main',
+    title: 'Graines de résonance',
     enabled: true,
     optional: true
   })
-  assert.equal(story.metaphoricalResonances?.['metaphorical-resonances-main']?.optional, true)
 })
 
 
-test('metaphorical resonances block is optional and ignored for media preloading', () => {
+test('resonance seeds block is ignored for media preloading', () => {
   const epilogueIndex = story.blocks.findIndex(block => block.type === 'epilogue')
   assert.equal(getNextMedia(story.blocks, epilogueIndex), undefined)
 })
