@@ -27,12 +27,12 @@
 .media-player--resonance-bubble .media-player__wash{display:none}
 .media-player--resonance-bubble .media-player__visual{top:max(92px,calc(env(safe-area-inset-top) + 72px));right:auto;bottom:auto;left:50%;width:clamp(260px,48vmin,440px);height:clamp(260px,48vmin,440px);border:1px solid rgba(255,255,255,.9);border-radius:50%;background:#dfe8df;box-shadow:0 22px 55px rgba(42,68,61,.2),inset 0 0 0 7px rgba(255,255,255,.2);transform:translateX(-50%)}
 .media-player--resonance-bubble .media-player__visual .media-player__video{border-radius:inherit}
-.media-player--resonance-bubble .media-player__text-scroll{top:calc(max(92px,calc(env(safe-area-inset-top) + 72px)) + clamp(260px,48vmin,440px) + 22px);bottom:max(132px,calc(env(safe-area-inset-bottom) + 112px));height:auto;padding:0 7vw;overflow:hidden;mask-image:none;-webkit-mask-image:none;pointer-events:none}
-.media-player--resonance-bubble .media-player__breath{display:flex;min-height:0;height:100%;padding:0;align-items:flex-start;justify-content:center}
+.media-player--resonance-bubble .media-player__text-scroll{top:calc(max(92px,calc(env(safe-area-inset-top) + 72px)) + clamp(260px,48vmin,440px) + 22px);bottom:max(82px,calc(env(safe-area-inset-bottom) + 70px));height:auto;padding:0 7vw max(18px,env(safe-area-inset-bottom));overflow-x:hidden;overflow-y:auto;mask-image:none;-webkit-mask-image:none;overscroll-behavior-y:contain}
+.media-player--resonance-bubble .media-player__breath{display:flex;min-height:100%;height:auto;padding:0;align-items:center;justify-content:flex-start}
 .media-player--resonance-bubble .media-player__breath p{width:min(86vw,720px);color:#29423d;font:300 clamp(1rem,2.2vw,1.35rem)/1.4 Newsreader,serif;text-shadow:none}
 .media-player--resonance-bubble .media-player__swipe-hint,.media-player--resonance-bubble .media-player__counter{display:none}
 
-@media(max-width:600px){.media-player--resonance-bubble .media-player__visual{top:max(82px,calc(env(safe-area-inset-top) + 64px));width:clamp(220px,68vw,300px);height:clamp(220px,68vw,300px)}.media-player--resonance-bubble .media-player__text-scroll{top:calc(max(82px,calc(env(safe-area-inset-top) + 64px)) + clamp(220px,68vw,300px) + 16px);bottom:max(130px,calc(env(safe-area-inset-bottom) + 110px));padding:0 5vw}.media-player--resonance-bubble .media-player__breath p{width:90vw;font-size:clamp(.88rem,3.8vw,1.08rem);line-height:1.3}}
+@media(max-width:600px){.media-player--resonance-bubble .media-player__visual{top:max(82px,calc(env(safe-area-inset-top) + 64px));width:clamp(220px,68vw,300px);height:clamp(220px,68vw,300px)}.media-player--resonance-bubble .media-player__text-scroll{top:calc(max(82px,calc(env(safe-area-inset-top) + 64px)) + clamp(220px,68vw,300px) + 16px);bottom:max(72px,calc(env(safe-area-inset-bottom) + 60px));padding:0 5vw max(16px,env(safe-area-inset-bottom))}.media-player--resonance-bubble .media-player__breath p{width:90vw;font-size:clamp(.88rem,3.8vw,1.08rem);line-height:1.3}}
 
 .chapter-nav{position:fixed;z-index:30;right:50%;bottom:max(18px,calc(env(safe-area-inset-bottom) + 10px));display:grid;width:min(94vw,660px);grid-template-columns:auto minmax(0,1fr) auto;align-items:stretch;border:1px solid rgba(255,255,255,.72);border-radius:18px;background:rgba(246,240,229,.9);box-shadow:0 10px 35px rgba(24,47,42,.18);transform:translateX(50%);backdrop-filter:blur(14px)}
 .chapter-nav button{display:flex;min-width:102px;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border:0;background:transparent;color:var(--ink);font-size:.72rem;cursor:pointer}.chapter-nav button:disabled{opacity:.3;cursor:default}.chapter-nav__index{min-width:0!important;flex-direction:column;border-right:1px solid rgba(50,76,70,.16)!important;border-left:1px solid rgba(50,76,70,.16)!important}.chapter-nav__index small{font-size:.58rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase}.chapter-nav__index strong{max-width:100%;overflow:hidden;font:400 .88rem/1.15 Newsreader,serif;text-overflow:ellipsis;white-space:nowrap}
@@ -307,3 +307,14 @@
 .public-home p:not(.eyebrow){max-width:570px;margin:5px auto;color:#506762;font:300 clamp(1.1rem,2.4vw,1.4rem)/1.45 Newsreader,serif}
 .public-home .eyebrow{margin:0}
 .public-home__open-story{margin-top:26px;text-decoration:none}
+
+/* A short, generous invitation keeps the compass introduction easy to read. */
+.compass-intro p{max-width:590px;margin-bottom:14px;font-size:clamp(1.2rem,3vw,1.55rem);line-height:1.38}
+.compass-intro .compass-actions{margin-top:26px}
+
+/* Direction sheets favor comfortable reading and remain scrollable on short screens. */
+.resonance-panel{scrollbar-gutter:stable;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}
+.resonance-panel blockquote{max-width:680px;font-size:clamp(1.12rem,2.6vw,1.32rem);line-height:1.45}
+.resonance-panel__meaning{font-size:clamp(1.12rem,2.8vw,1.3rem);line-height:1.55}
+.resonance-panel__question{font-size:clamp(1.4rem,4.8vw,1.9rem);line-height:1.28}
+.resonance-panel__helper{max-width:620px;font-size:clamp(1rem,2.4vw,1.12rem);line-height:1.5}

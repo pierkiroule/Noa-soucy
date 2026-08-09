@@ -5,10 +5,8 @@ export function ResonanceIntro({ onOpen, onFinish }: { onOpen:()=>void; onFinish
       <span className="eyebrow">Prolonger la traversée</span>
       <h1 id="compass-intro-title">Boussole métaphorique</h1>
       <p>Certaines images continuent de résonner après la fin d’un conte.</p>
-      <p>Cette boussole vous propose huit directions pour prolonger la traversée.</p>
-      <p>Touchez simplement la direction qui vous appelle aujourd’hui.</p>
+      <p>Choisissez simplement la direction qui vous appelle aujourd’hui.</p>
       <p>Il n’y a rien à réussir.</p>
-      <p>Vous pouvez explorer une seule direction, plusieurs, ou revenir plus tard.</p>
       <div className="compass-actions"><button className="primary" onClick={onOpen}>Ouvrir la boussole</button><button className="quiet" onClick={onFinish}>Terminer ici</button></div>
     </section>
   </main>
