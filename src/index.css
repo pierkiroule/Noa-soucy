@@ -307,3 +307,7 @@
 .public-home p:not(.eyebrow){max-width:570px;margin:5px auto;color:#506762;font:300 clamp(1.1rem,2.4vw,1.4rem)/1.45 Newsreader,serif}
 .public-home .eyebrow{margin:0}
 .public-home__open-story{margin-top:26px;text-decoration:none}
+
+/* A short, generous invitation keeps the compass introduction easy to read. */
+.compass-intro p{max-width:590px;margin-bottom:14px;font-size:clamp(1.2rem,3vw,1.55rem);line-height:1.38}
+.compass-intro .compass-actions{margin-top:26px}
