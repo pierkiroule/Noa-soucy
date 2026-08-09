@@ -5,6 +5,7 @@ export class NarrationAudioPlayer {
   private source?: string
   private muted = false
   private request = 0
+  private endedListeners = new Set<() => void>()
 
   async unlock() {
     const audio = this.getAudio()
@@ -39,11 +40,17 @@ export class NarrationAudioPlayer {
     else if (this.source && !audio.ended) void audio.play().catch(() => console.warn(`Lecture de la voix en attente : ${this.source}`))
   }
 
+  onEnded(listener: () => void) {
+    this.endedListeners.add(listener)
+    return () => { this.endedListeners.delete(listener) }
+  }
+
   stop() { this.request++; this.source = undefined; return this.fadeOut(650) }
 
   private getAudio() {
     if (!this.audio) {
       this.audio = new Audio()
+      this.audio.addEventListener('ended', () => this.endedListeners.forEach(listener => listener()))
       this.audio.addEventListener('error', () => console.warn(`Voix indisponible : ${this.source ?? 'source inconnue'}`))
     }
     return this.audio
