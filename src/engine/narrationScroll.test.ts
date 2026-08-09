@@ -17,7 +17,6 @@ test('fails safely until usable audio metadata is available', () => {
   assert.equal(narrationScrollProgress(Number.NaN, 100), 0)
 })
 
-
 test('follows narration smoothly without pulling a reader backward', () => {
   assert.equal(nextAutoScrollTop(600, 400, 16), 600)
   const next = nextAutoScrollTop(400, 600, 16)

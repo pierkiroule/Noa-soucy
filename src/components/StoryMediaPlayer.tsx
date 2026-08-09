@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react'
 import { narrationAudioPlayer } from '../engine/NarrationAudioPlayer'
 import { narrationScrollProgress, nextAutoScrollTop } from '../engine/narrationScroll'
 import { splitTextIntoBreaths } from '../engine/storyText'
@@ -24,6 +24,7 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
   const scrollerRef = useRef<HTMLDivElement>(null)
   const rippleId = useRef(0)
   const userScrollPausedUntil = useRef(0)
+  const durationSample = useRef({ source: '', value: 0, stableSince: 0 })
   const safeIndex = Math.min(breathIndex, Math.max(0, breaths.length - 1))
   const initialIndex = useRef(safeIndex)
   const isResonance = variant === 'resonance'
@@ -46,8 +47,20 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
     const followNarration = (now: number) => {
       const audio = narrationAudioPlayer.getProgress(narrationSource)
       const scrollableHeight = scroller.scrollHeight - scroller.clientHeight
-      if (audio?.playing && scrollableHeight > 0 && now >= userScrollPausedUntil.current) {
-        const target = narrationScrollProgress(audio.currentTime, audio.duration) * scrollableHeight
+      const sample = durationSample.current
+      if (sample.source !== narrationSource) {
+        durationSample.current = { source: narrationSource, value: 0, stableSince: now }
+      }
+      const activeSample = durationSample.current
+      if (audio && Math.abs(audio.duration - activeSample.value) > Math.max(.25, activeSample.value * .005)) {
+        activeSample.value = audio.duration
+        activeSample.stableSince = now
+      }
+      // Some browsers briefly expose a partial MP3 duration. Waiting for a
+      // stable sample prevents an early race to the bottom followed by a stall.
+      const hasStableDuration = activeSample.value > 0 && now - activeSample.stableSince >= 1000
+      if (audio?.playing && hasStableDuration && scrollableHeight > 0 && now >= userScrollPausedUntil.current) {
+        const target = narrationScrollProgress(audio.currentTime, activeSample.value) * scrollableHeight
         // Never pull backward when the reader has moved ahead manually. The
         // narration catches up first, then resumes smooth forward following.
         scroller.scrollTop = nextAutoScrollTop(scroller.scrollTop, target, now - lastFrame)
@@ -63,6 +76,10 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
     // A deliberate gesture always wins. Following resumes gently after the
     // reader has been inactive for a few seconds.
     userScrollPausedUntil.current = performance.now() + 6000
+  }
+
+  const pauseForScrollKey = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) pauseAutoScroll()
   }
 
   const handleScroll = () => {
@@ -89,7 +106,7 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
     <button className="media-player__text-toggle" type="button" aria-pressed={textVisible} aria-controls="story-text" onClick={() => setTextVisible(visible => !visible)}>
       {textVisible ? 'Masquer le texte' : 'Afficher le texte'}
     </button>
-    <div id="story-text" ref={scrollerRef} className={`media-player__text-scroll${textVisible ? '' : ' is-hidden'}`} onScroll={handleScroll} onWheel={pauseAutoScroll} onTouchStart={pauseAutoScroll} onTouchMove={pauseAutoScroll} onKeyDown={pauseAutoScroll} onPointerDown={event => { pauseAutoScroll(); addRipple(event) }} aria-label={`${title}, texte à faire défiler verticalement`} aria-hidden={!textVisible} inert={!textVisible}>
+    <div id="story-text" ref={scrollerRef} className={`media-player__text-scroll${textVisible ? '' : ' is-hidden'}`} onScroll={handleScroll} onWheel={pauseAutoScroll} onTouchMove={pauseAutoScroll} onKeyDown={pauseForScrollKey} onPointerDown={addRipple} onPointerMove={event => { if (event.buttons) pauseAutoScroll() }} aria-label={`${title}, texte à faire défiler verticalement`} aria-hidden={!textVisible} inert={!textVisible}>
       <div className="media-player__breath">
         <p>{text}</p>
         {finished && !narrationEnded && <button className="media-player__continue media-player__continue--inline" onClick={onComplete}>{isResonance ? 'Reprendre la traversée' : variant === 'epilogue' ? 'Terminer' : 'Continuer'} <span aria-hidden="true">→</span></button>}
