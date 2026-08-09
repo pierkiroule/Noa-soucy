@@ -25,7 +25,7 @@ test('prologue and epilogue reuse the requested act media', () => {
   assert.ok(prologue?.type === 'prologue')
   assert.ok(epilogue?.type === 'epilogue')
   assert.deepEqual(prologue.media, { video: '1.mp4', music: 'Fond2.mp3', voice: 'Voc1.mp3' })
-  assert.deepEqual(epilogue.media, { video: '14.mp4', music: 'Fond2.mp3' })
+  assert.deepEqual(epilogue.media, { video: '14.mp4', music: 'Fond2.mp3', voice: 'Voc7.mp3' })
 })
 
 test('available voices are assigned only to their narrated chapters', () => {
@@ -37,6 +37,7 @@ test('available voices are assigned only to their narrated chapters', () => {
     { id: 'act-03', voice: 'Voc4.mp3' },
     { id: 'act-04', voice: 'Voc5.mp3' },
     { id: 'act-05', voice: 'Voc6.mp3' },
+    { id: 'epilogue', voice: 'Voc7.mp3' },
   ])
   assert.ok(story.blocks.filter(block => block.type === 'question').flatMap(block => block.choices).every(choice => !choice.resonance.media.voice))
 })
@@ -53,7 +54,7 @@ test('story loading bypasses stale cached voice mappings', async () => {
 
   try {
     await loadStory()
-    assert.equal(requestedUrl, '/story/story.json?audio=Voc6')
+    assert.equal(requestedUrl, '/story/story.json?audio=Voc7')
     assert.equal(requestedOptions?.cache, 'no-store')
   } finally {
     globalThis.fetch = originalFetch
@@ -61,7 +62,7 @@ test('story loading bypasses stale cached voice mappings', async () => {
 })
 
 test('voice URLs bypass cached missing audio responses', () => {
-  assert.equal(storyVoiceUrl('Voc6.mp3'), '/story/Voc6.mp3?audio=Voc6')
+  assert.equal(storyVoiceUrl('Voc7.mp3'), '/story/Voc7.mp3?audio=Voc7')
 })
 
 

@@ -8,8 +8,8 @@ export type StoryBlock = StoryMediaBlock | StoryQuestion | MetaphoricalResonance
 export interface StoryDocument { version:number; id:string; title:string; subtitle:string; blocks:StoryBlock[]; metaphoricalResonances?:Record<string,{ id:string; title:string; enabled:boolean; optional:boolean }> }
 
 export const storyMediaUrl = (file: string) => `/story/${file}`
-export const storyVoiceUrl = (file: string) => `${storyMediaUrl(file)}?audio=Voc6`
-const STORY_DOCUMENT_URL = '/story/story.json?audio=Voc6'
+export const storyVoiceUrl = (file: string) => `${storyMediaUrl(file)}?audio=Voc7`
+const STORY_DOCUMENT_URL = '/story/story.json?audio=Voc7'
 
 export async function loadStory(): Promise<StoryDocument> {
   // The query version and no-store policy prevent a previously cached story.json
