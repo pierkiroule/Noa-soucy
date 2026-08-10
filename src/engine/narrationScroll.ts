@@ -1,19 +1,19 @@
+/** Approximate French narration speed, including spaces and punctuation. */
+export const NARRATION_CHARACTERS_PER_SECOND = 12.5
+
 /**
- * Maps narration time to reading-surface progress.
- *
- * A short lead-in keeps the opening still while the listener settles in, and a
- * short tail makes the last lines arrive before the voice ends. Between those
- * anchors the mapping stays linear: it is predictable even without word-level
- * timestamps and naturally adapts to every recording duration.
+ * Estimates reading progress from elapsed time and text length. This deliberately
+ * avoids HTMLAudioElement.duration, which is unreliable for progressively loaded
+ * MP3 files on some mobile browsers.
  */
-export function narrationScrollProgress(currentTime: number, duration: number) {
-  if (!Number.isFinite(currentTime) || !Number.isFinite(duration) || duration <= 0) return 0
-  const audioProgress = Math.max(0, Math.min(1, currentTime / duration))
+export function narrationScrollProgress(currentTime: number, characterCount: number) {
+  if (!Number.isFinite(currentTime) || !Number.isFinite(characterCount) || characterCount <= 0) return 0
+  const estimatedDuration = characterCount / NARRATION_CHARACTERS_PER_SECOND
+  const elapsedProgress = Math.max(0, Math.min(1, currentTime / estimatedDuration))
   const leadIn = 0.04
   const tail = 0.08
-  return Math.max(0, Math.min(1, (audioProgress - leadIn) / (1 - leadIn - tail)))
+  return Math.max(0, Math.min(1, (elapsedProgress - leadIn) / (1 - leadIn - tail)))
 }
-
 
 /** Smoothly converges on the narration target in either direction. */
 export function nextAutoScrollTop(current: number, target: number, elapsed: number) {

@@ -12,8 +12,7 @@
       "media": {
         "video": "1.mp4",
         "music": "Fond2.mp3",
-        "voice": "Voc1.mp3",
-        "voiceDurationSeconds": 40.54
+        "voice": "Voc1.mp3"
       }
     },
     {
@@ -24,8 +23,7 @@
       "media": {
         "video": "1.mp4",
         "music": "Fond2.mp3",
-        "voice": "Voc2.mp3",
-        "voiceDurationSeconds": 102.58
+        "voice": "Voc2.mp3"
       }
     },
     {
@@ -36,8 +34,7 @@
       "media": {
         "video": "2.mp4",
         "music": "Fond2.mp3",
-        "voice": "Voc3.mp3",
-        "voiceDurationSeconds": 94.12
+        "voice": "Voc3.mp3"
       }
     },
     {
@@ -98,8 +95,7 @@
       "media": {
         "video": "6.mp4",
         "music": "Fond2.mp3",
-        "voice": "Voc4.mp3",
-        "voiceDurationSeconds": 99.58
+        "voice": "Voc4.mp3"
       }
     },
     {
@@ -160,8 +156,7 @@
       "media": {
         "video": "10.mp4",
         "music": "Fond2.mp3",
-        "voice": "Voc5.mp3",
-        "voiceDurationSeconds": 92.53
+        "voice": "Voc5.mp3"
       }
     },
     {
@@ -222,8 +217,7 @@
       "media": {
         "video": "14.mp4",
         "music": "Fond2.mp3",
-        "voice": "Voc6.mp3",
-        "voiceDurationSeconds": 111.41
+        "voice": "Voc6.mp3"
       }
     },
     {
@@ -234,8 +228,7 @@
       "media": {
         "video": "14.mp4",
         "music": "Fond2.mp3",
-        "voice": "Voc7.mp3",
-        "voiceDurationSeconds": 43.22
+        "voice": "Voc7.mp3"
       }
     },
     {
