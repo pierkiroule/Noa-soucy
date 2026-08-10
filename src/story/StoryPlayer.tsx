@@ -100,7 +100,9 @@ export function StoryPlayer() {
   return <main className="story">
     <ViewTransition key={`${block?.id}-${activeResonance?.id ?? 'main'}`} variant={activeResonance || block?.type === 'question' ? 'seeds' : 'petals'} />
     <Brand />
-    <button className="sound-toggle" aria-pressed={state.isMuted} onClick={toggleMuted}>{state.isMuted ? 'Son coupé' : 'Son activé'}</button>
+    <button className="sound-toggle" type="button" aria-label={state.isMuted ? 'Activer le son' : 'Couper le son'} aria-pressed={!state.isMuted} title={state.isMuted ? 'Activer le son' : 'Couper le son'} onClick={toggleMuted}>
+      <SoundIcon muted={state.isMuted} />
+    </button>
     <div className="journey-progress" role="progressbar" aria-label="Progression" aria-valuenow={state.currentBlockIndex + 1} aria-valuemin={1} aria-valuemax={story.blocks.length}><i style={{ width: `${((state.currentBlockIndex + 1) / story.blocks.length) * 100}%` }}/></div>
     <JourneyNavigation story={story} currentIndex={state.currentBlockIndex} isOpen={navigationOpen} onToggle={() => setNavigationOpen(open => !open)} onGoTo={goToPart} onRestart={restartStory} />
     {mediaBlock && <StoryMediaPlayer key={mediaBlock.id} title={mediaBlock.title} text={mediaBlock.text} videoSrc={storyMediaUrl(mediaBlock.media.video)} variant={mediaBlock.type} breathIndex={state.currentBreathIndex} narrationEnded={Boolean(voiceSource && narrationEnded)} narrationSource={voiceSource} narrationDurationSeconds={mediaBlock.media.voiceDurationSeconds} onBreathChange={setBreath} onComplete={completeMedia}/>}
@@ -131,6 +133,15 @@ function QuestionScreen({ title, text, choices, selected, onSelect }: { title:st
 }
 
 function Brand() { return <div className="story__brand"><span aria-hidden="true">◌</span> NAO SOUCI</div> }
+
+function SoundIcon({ muted }: { muted:boolean }) {
+  return <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M4 9v6h4l5 4V5L8 9H4Z" />
+    {muted
+      ? <><path d="m17 9 4 6"/><path d="m21 9-4 6"/></>
+      : <><path d="M16 9.5a4 4 0 0 1 0 5"/><path d="M18.5 7a7 7 0 0 1 0 10"/></>}
+  </svg>
+}
 
 function LoadingExperience({ label }: { label:string }) {
   return <main className="loading" aria-live="polite"><span className="loading__orb" aria-hidden="true"/><p>{label}</p></main>
