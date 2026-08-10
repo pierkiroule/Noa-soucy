@@ -1,6 +1,6 @@
 export type StoryMediaVariant = 'prologue' | 'act' | 'resonance' | 'epilogue'
 export interface MetaphoricalResonancesStoryboardBlock { id:string; type:'metaphorical-resonances'; module:'metaphorical-resonances-main'; title:string; enabled:boolean; optional:boolean }
-export interface StoryMedia { video:string; music:string; voice?:string }
+export interface StoryMedia { video:string; music:string; voice?:string; voiceDurationSeconds?:number }
 export interface StoryMediaBlock { id:string; type:StoryMediaVariant; title:string; text:string; media:StoryMedia }
 export interface StoryChoice { id:string; label:string; resonance:StoryMediaBlock }
 export interface StoryQuestion { id:string; type:'question'; title:string; text:string; choices:StoryChoice[] }

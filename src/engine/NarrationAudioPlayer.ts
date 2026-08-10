@@ -45,7 +45,7 @@ export class NarrationAudioPlayer {
   getProgress(expectedSource?: string) {
     const audio = this.audio
     if (!audio || (expectedSource && expectedSource !== this.source)) return undefined
-    return { currentTime: audio.currentTime, playing: !audio.paused && !audio.ended }
+    return { currentTime: audio.currentTime, duration: audio.duration, playing: !audio.paused && !audio.ended }
   }
 
   onEnded(listener: () => void) {
