@@ -22,6 +22,16 @@ export function markVisitedState(state: MetaphoricalResonanceState, id: Resonanc
   return { ...state, answers: { ...state.answers, [id]: { petalId: id, text: current?.text ?? '', visited: true, updatedAt: current?.updatedAt ?? now } } }
 }
 
+export function saveResonanceNoteState(state: MetaphoricalResonanceState, id: ResonancePetalId, text: string, now = new Date().toISOString()): MetaphoricalResonanceState {
+  return { ...state, answers: { ...state.answers, [id]: { petalId: id, text: text.trim(), visited: true, updatedAt: now } } }
+}
+
+export function deleteResonanceNoteState(state: MetaphoricalResonanceState, id: ResonancePetalId, now = new Date().toISOString()): MetaphoricalResonanceState {
+  const current = state.answers[id]
+  if (!current) return state
+  return { ...state, answers: { ...state.answers, [id]: { ...current, text: '', updatedAt: now } } }
+}
+
 export function resetResonancesState(): MetaphoricalResonanceState {
   return initialMetaphoricalResonanceState
 }
@@ -46,10 +56,12 @@ export function useMetaphoricalResonances() {
   const openDirection = useCallback((id: ResonancePetalId) => setState(current => openDirectionState(current, id)), [])
   const closeDirection = useCallback(() => setState(closeDirectionState), [])
   const markVisited = useCallback((id: ResonancePetalId) => setState(current => markVisitedState(current, id)), [])
+  const saveNote = useCallback((id: ResonancePetalId, text: string) => setState(current => saveResonanceNoteState(current, id, text)), [])
+  const deleteNote = useCallback((id: ResonancePetalId) => setState(current => deleteResonanceNoteState(current, id)), [])
   const resetResonances = useCallback(() => { localStorage.removeItem(METAPHORICAL_RESONANCES_STORAGE_KEY); setState(resetResonancesState()) }, [])
   const completeForToday = useCallback(() => setState(current => ({ ...current, completed: true, activeDirectionId: null })), [])
   const returnToCompass = useCallback(() => setState(current => ({ ...current, opened: true, completed: false, activeDirectionId: null })), [])
   const visitedAnswers = useMemo(() => Object.values(state.answers).filter((answer): answer is ResonanceAnswer => Boolean(answer?.visited)), [state.answers])
 
-  return { state, visitedAnswers, openCompass, openDirection, closeDirection, markVisited, resetResonances, completeForToday, returnToCompass }
+  return { state, visitedAnswers, openCompass, openDirection, closeDirection, markVisited, saveNote, deleteNote, resetResonances, completeForToday, returnToCompass }
 }

@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { metaphoricalResonances } from '../data/metaphoricalResonances.ts'
-import { initialMetaphoricalResonanceState, markVisitedState, openDirectionState, closeDirectionState, readStoredResonances, resetResonancesState, toStoredResonances, METAPHORICAL_RESONANCES_STORAGE_KEY } from './useMetaphoricalResonances.ts'
+import { initialMetaphoricalResonanceState, markVisitedState, openDirectionState, closeDirectionState, saveResonanceNoteState, deleteResonanceNoteState, readStoredResonances, resetResonancesState, toStoredResonances, METAPHORICAL_RESONANCES_STORAGE_KEY } from './useMetaphoricalResonances.ts'
 
 const now = '2026-08-05T00:00:00.000Z'
 
@@ -24,6 +24,16 @@ test('revisits a direction without requiring notes', () => {
   assert.equal(second.answers.roots?.text, '')
   assert.equal(second.answers.roots?.updatedAt, now)
   assert.equal(second.answers.roots?.visited, true)
+})
+
+test('saves, modifies and deletes a resonance note while keeping the direction visited', () => {
+  const saved = saveResonanceNoteState(initialMetaphoricalResonanceState, 'roots', '  Une image de forêt  ', now)
+  assert.equal(saved.answers.roots?.text, 'Une image de forêt')
+  const modified = saveResonanceNoteState(saved, 'roots', 'Un arbre ancien', '2026-08-06T00:00:00.000Z')
+  assert.equal(modified.answers.roots?.text, 'Un arbre ancien')
+  const deleted = deleteResonanceNoteState(modified, 'roots', '2026-08-07T00:00:00.000Z')
+  assert.equal(deleted.answers.roots?.text, '')
+  assert.equal(deleted.answers.roots?.visited, true)
 })
 
 test('serializes summary data for visited directions only', () => {
