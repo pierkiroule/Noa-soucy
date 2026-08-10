@@ -19,8 +19,10 @@ export class NarrationAudioPlayer {
   async play(source?: string) {
     if (source === this.source) return
     const request = ++this.request
-    await this.fadeOut(650)
-    if (request !== this.request || !source) { this.source = undefined; return }
+    await this.fadeOut(650, request)
+    // A superseded request must never clear or pause the newer narration.
+    if (request !== this.request) return
+    if (!source) { this.source = undefined; return }
 
     const audio = this.getAudio()
     this.source = source
@@ -40,12 +42,18 @@ export class NarrationAudioPlayer {
     else if (this.source && !audio.ended) void audio.play().catch(() => console.warn(`Lecture de la voix en attente : ${this.source}`))
   }
 
+  getProgress(expectedSource?: string) {
+    const audio = this.audio
+    if (!audio || (expectedSource && expectedSource !== this.source)) return undefined
+    return { currentTime: audio.currentTime, playing: !audio.paused && !audio.ended }
+  }
+
   onEnded(listener: () => void) {
     this.endedListeners.add(listener)
     return () => { this.endedListeners.delete(listener) }
   }
 
-  stop() { this.request++; this.source = undefined; return this.fadeOut(650) }
+  stop() { const request = ++this.request; this.source = undefined; return this.fadeOut(650, request) }
 
   private getAudio() {
     if (!this.audio) {
@@ -56,13 +64,16 @@ export class NarrationAudioPlayer {
     return this.audio
   }
 
-  private async fadeOut(duration: number) {
+  private async fadeOut(duration: number, request = this.request) {
     const audio = this.audio
     if (!audio || audio.paused) return
     const initialVolume = audio.volume
     const startedAt = performance.now()
     await new Promise<void>(resolve => {
       const fade = (now: number) => {
+        // A newer play/stop owns the shared audio element now. Stale animation
+        // frames must not alter its volume or pause it.
+        if (request !== this.request) { resolve(); return }
         const progress = Math.min(1, (now - startedAt) / duration)
         audio.volume = Math.max(0, initialVolume * (1 - progress))
         if (progress < 1) requestAnimationFrame(fade)
