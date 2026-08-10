@@ -33,7 +33,14 @@ export function ResonancePanel({ direction, note, onSave, onDelete, onClose }: {
 
   return <div className="resonance-panel-backdrop" onClick={onClose}>
     <aside ref={panelRef} className="resonance-panel compass-petal-fx" role="dialog" aria-modal="true" aria-labelledby="resonance-panel-title" tabIndex={-1} onClick={event => event.stopPropagation()}>
-      <i className="resonance-panel__handle" aria-hidden="true" />
+      <div className="resonance-panel__header">
+        <i className="resonance-panel__handle" aria-hidden="true" />
+        <button type="button" className="resonance-panel__close" aria-label={`Fermer la direction ${direction.title}`} onClick={onClose}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
+      </div>
       <span className="resonance-panel__glyph" aria-hidden="true">{direction.glyph}</span>
       <h2 id="resonance-panel-title">{direction.title}</h2>
       <button type="button" className="resonance-panel__notebook-link" onClick={openNotebook}>Écrire dans mon carnet <span aria-hidden="true">↓</span></button>
