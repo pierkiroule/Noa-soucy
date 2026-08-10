@@ -2,16 +2,18 @@ import { useEffect, useRef, type CSSProperties } from 'react'
 import { audioReactivity } from '../engine/AudioReactivity'
 
 const petals = Array.from({ length: 8 }, (_, index) => ({
-  left: `${5 + (index * 83 % 91)}%`,
-  delay: `${index * 90}ms`,
-  flutterDelay: `${index * -54}ms`,
-  duration: `${4.6 + (index % 4) * .52}s`,
-  size: `${13 + (index * 7 % 10)}px`,
-  driftA: `${-16 + (index * 31 % 35)}vw`,
-  driftB: `${-12 + (index * 47 % 31)}vw`,
-  driftAEnd: `${(-16 + (index * 31 % 35)) * -.45}vw`,
-  driftBEnd: `${(-12 + (index * 47 % 31)) * -.65}vw`,
-  opacity: `${.34 + (index * 13 % 42) / 100}`,
+  left: `${4 + (index * 37 % 89)}%`,
+  top: `${13 + (index * 29 % 72)}%`,
+  delay: `${-3 - index * 2.7}s`,
+  flutterDelay: `${index * -.43}s`,
+  duration: `${19 + (index % 4) * 3.2}s`,
+  size: `${12 + (index * 7 % 9)}px`,
+  driftA: `${-5 + (index * 17 % 12)}vw`,
+  driftB: `${-4 + (index * 23 % 10)}vw`,
+  driftStart: `${(-5 + (index * 17 % 12)) * -.35}vw`,
+  driftEnd: `${(-4 + (index * 23 % 10)) * -.45}vw`,
+  liftA: `${-8 + (index * 11 % 16)}px`,
+  liftB: `${-6 + (index * 13 % 13)}px`,
   hue: `${index % 5}`,
 }))
 
@@ -25,7 +27,6 @@ const seeds = Array.from({ length: 28 }, (_, index) => {
 export function ViewTransition({ variant = 'petals' }: { variant?: 'petals' | 'seeds' }) {
   const rootRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    if (variant !== 'petals') return
     let frame = 0
     let phase = 0
     const breathe = () => {
@@ -48,11 +49,14 @@ export function ViewTransition({ variant = 'petals' }: { variant?: 'petals' | 's
     }
     frame = requestAnimationFrame(breathe)
     return () => cancelAnimationFrame(frame)
-  }, [variant])
+  }, [])
 
-  return <div ref={rootRef} className={`view-transition view-transition--${variant}`} aria-hidden="true">
-    <div className="view-transition__veil" />
-    <div className="view-transition__heart"><i /><i /><i /></div>
-    {variant === 'petals' ? petals.map((petal, index) => <i className="view-transition__particle" data-hue={petal.hue} key={index} style={{ '--fx-left': petal.left, '--fx-delay': petal.delay, '--fx-flutter-delay': petal.flutterDelay, '--fx-duration': petal.duration, '--fx-size': petal.size, '--fx-drift-a': petal.driftA, '--fx-drift-b': petal.driftB, '--fx-drift-a-end': petal.driftAEnd, '--fx-drift-b-end': petal.driftBEnd, '--fx-opacity': petal.opacity } as CSSProperties}><span /></i>) : seeds.map((seed, index) => <i className="view-transition__particle" data-hue={seed.hue} key={index} style={{ '--fx-x': seed.x, '--fx-y': seed.y, '--fx-delay': seed.delay, '--fx-size': seed.size } as CSSProperties} />)}
+  return <div ref={rootRef} className="view-transition view-transition--petals" aria-hidden="true">
+    {petals.map((petal, index) => <i className="view-transition__particle view-transition__particle--petal" data-hue={petal.hue} key={index} style={{ '--fx-left': petal.left, '--fx-top': petal.top, '--fx-delay': petal.delay, '--fx-flutter-delay': petal.flutterDelay, '--fx-duration': petal.duration, '--fx-size': petal.size, '--fx-drift-a': petal.driftA, '--fx-drift-b': petal.driftB, '--fx-drift-start': petal.driftStart, '--fx-drift-end': petal.driftEnd, '--fx-lift-a': petal.liftA, '--fx-lift-b': petal.liftB } as CSSProperties}><span /></i>)}
+    {variant === 'seeds' && <div className="view-transition__seeds">
+      <div className="view-transition__veil" />
+      <div className="view-transition__heart"><i /><i /><i /></div>
+      {seeds.map((seed, index) => <i className="view-transition__particle view-transition__particle--seed" data-hue={seed.hue} key={index} style={{ '--fx-x': seed.x, '--fx-y': seed.y, '--fx-delay': seed.delay, '--fx-size': seed.size } as CSSProperties} />)}
+    </div>}
   </div>
 }
