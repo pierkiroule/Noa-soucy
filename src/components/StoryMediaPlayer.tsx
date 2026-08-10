@@ -102,8 +102,8 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
   return <section className={`media-player media-player--${variant}${isResonance ? ' media-player--resonance-bubble' : ''}`}>
     <div className="media-player__wash" aria-hidden="true" />
     <header className="media-player__title">{title}</header>
-    <button className="media-player__text-toggle" type="button" aria-pressed={textVisible} aria-controls="story-text" onClick={() => setTextVisible(visible => !visible)}>
-      {textVisible ? 'Masquer le texte' : 'Afficher le texte'}
+    <button className="media-player__text-toggle" type="button" aria-label={textVisible ? 'Masquer le texte' : 'Afficher le texte'} title={textVisible ? 'Masquer le texte' : 'Afficher le texte'} aria-pressed={textVisible} aria-controls="story-text" onClick={() => setTextVisible(visible => !visible)}>
+      <TextVisibilityIcon visible={textVisible} />
     </button>
     <div id="story-text" ref={scrollerRef} className={`media-player__text-scroll${textVisible ? '' : ' is-hidden'}`} onScroll={handleScroll} onWheel={pauseAutoScroll} onTouchMove={pauseAutoScroll} onKeyDown={pauseForScrollKey} onPointerDown={addRipple} onPointerMove={event => { if (event.buttons) pauseAutoScroll() }} aria-label={`${title}, texte à faire défiler verticalement`} aria-hidden={!textVisible} inert={!textVisible}>
       <div className="media-player__breath">
@@ -118,4 +118,12 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
     </div>
     <div className="media-player__ripples" aria-hidden="true">{ripples.map(ripple => <i key={ripple.id} style={{ left: ripple.x, top: ripple.y }}/>)}</div>
   </section>
+}
+
+function TextVisibilityIcon({ visible }: { visible:boolean }) {
+  return <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M3 12s3.5-5 9-5 9 5 9 5-3.5 5-9 5-9-5-9-5Z" />
+    <circle cx="12" cy="12" r="2.5" />
+    {!visible && <path d="m4 4 16 16" />}
+  </svg>
 }
