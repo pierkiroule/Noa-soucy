@@ -6,14 +6,20 @@ const petals = Array.from({ length: 8 }, (_, index) => ({
   top: `${13 + (index * 29 % 72)}%`,
   delay: `${-3 - index * 2.7}s`,
   flutterDelay: `${index * -.43}s`,
-  duration: `${19 + (index % 4) * 3.2}s`,
+  duration: `${24 + (index % 4) * 3.6}s`,
   size: `${12 + (index * 7 % 9)}px`,
-  driftA: `${-5 + (index * 17 % 12)}vw`,
-  driftB: `${-4 + (index * 23 % 10)}vw`,
-  driftStart: `${(-5 + (index * 17 % 12)) * -.35}vw`,
-  driftEnd: `${(-4 + (index * 23 % 10)) * -.45}vw`,
-  liftA: `${-8 + (index * 11 % 16)}px`,
-  liftB: `${-6 + (index * 13 % 13)}px`,
+  driftA: `${-13 + (index * 17 % 27)}vw`,
+  driftB: `${-11 + (index * 23 % 25)}vw`,
+  driftStart: `${(-13 + (index * 17 % 27)) * -.45}vw`,
+  driftEnd: `${(-11 + (index * 23 % 25)) * -.55}vw`,
+  liftA: `${-14 + (index * 11 % 28)}px`,
+  liftB: `${-11 + (index * 13 % 24)}px`,
+  turbulence: {
+    phase: index * 1.73,
+    xFrequency: .57 + (index * 7 % 9) * .047,
+    yFrequency: .43 + (index * 5 % 7) * .041,
+    turnFrequency: .36 + (index * 11 % 8) * .039,
+  },
   hue: `${index % 5}`,
 }))
 
@@ -29,6 +35,7 @@ export function ViewTransition({ variant = 'petals' }: { variant?: 'petals' | 's
   useEffect(() => {
     let frame = 0
     let phase = 0
+    const petalNodes = rootRef.current?.querySelectorAll<HTMLElement>('.view-transition__particle--petal')
     const breathe = () => {
       const root = rootRef.current
       if (!root) return
@@ -45,6 +52,19 @@ export function ViewTransition({ variant = 'petals' }: { variant?: 'petals' | 's
       root.style.setProperty('--fx-voice-y', `${levels.voice * -8}px`)
       root.style.setProperty('--fx-music-turn', `${levels.music * 24}deg`)
       root.style.setProperty('--fx-audio-turn', `${levels.energy * 15}deg`)
+      petalNodes?.forEach((node, index) => {
+        const noise = petals[index].turbulence
+        const localPhase = phase + noise.phase
+        const amplitude = 4 + levels.energy * 7
+        // Three incommensurate waves make a continuous, unpredictable current
+        // without the sharp direction changes of frame-by-frame randomness.
+        const x = (Math.sin(localPhase * noise.xFrequency) + Math.sin(localPhase * 1.37 + noise.phase) * .48) * amplitude
+        const y = (Math.cos(localPhase * noise.yFrequency) + Math.sin(localPhase * 1.71) * .36) * (2.8 + levels.voice * 5)
+        const turn = (Math.sin(localPhase * noise.turnFrequency) + Math.cos(localPhase * 1.19) * .42) * (3 + levels.music * 5)
+        node.style.setProperty('--fx-chaos-x', `${x.toFixed(2)}px`)
+        node.style.setProperty('--fx-chaos-y', `${y.toFixed(2)}px`)
+        node.style.setProperty('--fx-chaos-turn', `${turn.toFixed(2)}deg`)
+      })
       frame = requestAnimationFrame(breathe)
     }
     frame = requestAnimationFrame(breathe)
