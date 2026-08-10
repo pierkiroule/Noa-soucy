@@ -1,5 +1,3 @@
-import { audioReactivity } from './AudioReactivity.ts'
-
 const SILENT_WAV = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAAAACA'
 
 export class NarrationAudioPlayer {
@@ -14,7 +12,7 @@ export class NarrationAudioPlayer {
     if (this.source) return true
     audio.src = SILENT_WAV
     audio.volume = 0
-    try { await audio.play(); audio.pause(); audio.removeAttribute('src'); audio.load(); await audioReactivity.resume(); return true }
+    try { await audio.play(); audio.pause(); audio.removeAttribute('src'); audio.load(); return true }
     catch { return false }
   }
 
@@ -60,7 +58,6 @@ export class NarrationAudioPlayer {
   private getAudio() {
     if (!this.audio) {
       this.audio = new Audio()
-      audioReactivity.attach(this.audio, 'voice')
       this.audio.addEventListener('ended', () => this.endedListeners.forEach(listener => listener()))
       this.audio.addEventListener('error', () => console.warn(`Voix indisponible : ${this.source ?? 'source inconnue'}`))
     }

@@ -1,26 +1,11 @@
-import { useEffect, useRef, type CSSProperties } from 'react'
-import { audioReactivity } from '../engine/AudioReactivity'
+import type { CSSProperties } from 'react'
 
-const pollen = Array.from({ length: 8 }, (_, index) => ({
-  left: `${4 + (index * 37 % 89)}%`,
-  top: `${13 + (index * 29 % 72)}%`,
-  delay: `${-3 - index * 2.7}s`,
-  flutterDelay: `${index * -.43}s`,
-  duration: `${24 + (index % 4) * 3.6}s`,
-  size: `${5 + (index * 7 % 5)}px`,
-  driftA: `${-13 + (index * 17 % 27)}vw`,
-  driftB: `${-11 + (index * 23 % 25)}vw`,
-  driftStart: `${(-13 + (index * 17 % 27)) * -.45}vw`,
-  driftEnd: `${(-11 + (index * 23 % 25)) * -.55}vw`,
-  liftA: `${-14 + (index * 11 % 28)}px`,
-  liftB: `${-11 + (index * 13 % 24)}px`,
-  turbulence: {
-    phase: index * 1.73,
-    xFrequency: .57 + (index * 7 % 9) * .047,
-    yFrequency: .43 + (index * 5 % 7) * .041,
-    turnFrequency: .36 + (index * 11 % 8) * .039,
-  },
-  hue: `${index % 5}`,
+const pollen = Array.from({ length: 14 }, (_, index) => ({
+  left: `${4 + index * 7}%`,
+  delay: `${[-2, -11, -6, -14, -3, -9, -16, -5, -12, -7, -15, -1, -10, -4][index]}s`,
+  duration: `${[15, 19, 15, 21, 15, 17, 15, 22, 15, 18, 15, 20, 15, 24][index]}s`,
+  size: index % 3 === 2 ? '5px' : '7px',
+  opacity: index % 3 === 2 ? '.17' : '.29',
 }))
 
 const seeds = Array.from({ length: 28 }, (_, index) => {
@@ -29,50 +14,12 @@ const seeds = Array.from({ length: 28 }, (_, index) => {
   return { x: `${Math.cos(angle) * distance}vmax`, y: `${Math.sin(angle) * distance}vmax`, delay: `${(index % 10) * 110}ms`, size: `${5 + (index % 5) * 2}px`, hue: `${index % 5}` }
 })
 
-/** Eight wind-borne pollen grains, or a short seed bloom, between narrative views. */
+/** The home-page drift, mirrored upward and rendered as translucent pollen. */
 export function ViewTransition({ variant = 'petals' }: { variant?: 'petals' | 'seeds' }) {
-  const rootRef = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    let frame = 0
-    let phase = 0
-    const pollenNodes = rootRef.current?.querySelectorAll<HTMLElement>('.view-transition__particle--pollen')
-    const breathe = () => {
-      const root = rootRef.current
-      if (!root) return
-      const levels = audioReactivity.sample()
-      phase += .012 + levels.energy * .018
-      root.style.setProperty('--fx-audio', levels.energy.toFixed(3))
-      root.style.setProperty('--fx-voice', levels.voice.toFixed(3))
-      root.style.setProperty('--fx-music', levels.music.toFixed(3))
-      root.style.setProperty('--fx-gust-x', `${Math.sin(phase) * 5}vw`)
-      root.style.setProperty('--fx-gust-px', `${Math.sin(phase) * 5}px`)
-      root.style.setProperty('--fx-gust-neg-px', `${Math.sin(phase) * -5}px`)
-      root.style.setProperty('--fx-audio-px', `${levels.energy * 6}px`)
-      root.style.setProperty('--fx-audio-neg-px', `${levels.energy * -6}px`)
-      root.style.setProperty('--fx-voice-y', `${levels.voice * -8}px`)
-      root.style.setProperty('--fx-music-turn', `${levels.music * 24}deg`)
-      root.style.setProperty('--fx-audio-turn', `${levels.energy * 15}deg`)
-      pollenNodes?.forEach((node, index) => {
-        const noise = pollen[index].turbulence
-        const localPhase = phase + noise.phase
-        const amplitude = 4 + levels.energy * 7
-        // Three incommensurate waves make a continuous, unpredictable current
-        // without the sharp direction changes of frame-by-frame randomness.
-        const x = (Math.sin(localPhase * noise.xFrequency) + Math.sin(localPhase * 1.37 + noise.phase) * .48) * amplitude
-        const y = (Math.cos(localPhase * noise.yFrequency) + Math.sin(localPhase * 1.71) * .36) * (2.8 + levels.voice * 5)
-        const turn = (Math.sin(localPhase * noise.turnFrequency) + Math.cos(localPhase * 1.19) * .42) * (3 + levels.music * 5)
-        node.style.setProperty('--fx-chaos-x', `${x.toFixed(2)}px`)
-        node.style.setProperty('--fx-chaos-y', `${y.toFixed(2)}px`)
-        node.style.setProperty('--fx-chaos-turn', `${turn.toFixed(2)}deg`)
-      })
-      frame = requestAnimationFrame(breathe)
-    }
-    frame = requestAnimationFrame(breathe)
-    return () => cancelAnimationFrame(frame)
-  }, [])
-
-  return <div ref={rootRef} className="view-transition view-transition--petals" aria-hidden="true">
-    {pollen.map((grain, index) => <i className="view-transition__particle view-transition__particle--pollen" data-hue={grain.hue} key={index} style={{ '--fx-left': grain.left, '--fx-top': grain.top, '--fx-delay': grain.delay, '--fx-flutter-delay': grain.flutterDelay, '--fx-duration': grain.duration, '--fx-size': grain.size, '--fx-drift-a': grain.driftA, '--fx-drift-b': grain.driftB, '--fx-drift-start': grain.driftStart, '--fx-drift-end': grain.driftEnd, '--fx-lift-a': grain.liftA, '--fx-lift-b': grain.liftB } as CSSProperties}><span /></i>)}
+  return <div className="view-transition view-transition--petals" aria-hidden="true">
+    <div className="view-transition__pollen">
+      {pollen.map((grain, index) => <i key={index} style={{ '--fx-left': grain.left, '--fx-delay': grain.delay, '--fx-duration': grain.duration, '--fx-size': grain.size, '--fx-opacity': grain.opacity } as CSSProperties}><span /></i>)}
+    </div>
     {variant === 'seeds' && <div className="view-transition__seeds">
       <div className="view-transition__veil" />
       <div className="view-transition__heart"><i /><i /><i /></div>
