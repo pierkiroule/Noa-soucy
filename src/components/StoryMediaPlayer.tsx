@@ -7,13 +7,13 @@ import type { StoryMediaVariant } from '../story/storyData'
 interface Props {
   title:string; text:string; videoSrc:string; variant:StoryMediaVariant
   breathIndex:number
-  narrationEnded:boolean; narrationSource?:string
+  narrationEnded:boolean; narrationSource?:string; narrationDuration?:number
   onBreathChange:(index:number)=>void; onComplete:()=>void
 }
 
 interface Ripple { id:number; x:number; y:number }
 
-export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, narrationEnded, narrationSource, onBreathChange, onComplete }: Props) {
+export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, narrationEnded, narrationSource, narrationDuration, onBreathChange, onComplete }: Props) {
   const breaths = useMemo(() => splitTextIntoBreaths(text), [text])
   const [videoFailed, setVideoFailed] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
@@ -44,7 +44,7 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
     let frame = 0
     let lastFrame = performance.now()
     const followNarration = (now: number) => {
-      const audio = narrationAudioPlayer.getProgress(narrationSource)
+      const audio = narrationAudioPlayer.getProgress(narrationSource, narrationDuration)
       const scrollableHeight = scroller.scrollHeight - scroller.clientHeight
       if (audio?.playing && scrollableHeight > 0 && now >= userScrollPausedUntil.current) {
         const target = narrationScrollProgress(audio.currentTime, audio.duration) * scrollableHeight
@@ -58,7 +58,7 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
     }
     frame = requestAnimationFrame(followNarration)
     return () => cancelAnimationFrame(frame)
-  }, [isResonance, narrationSource, textVisible])
+  }, [isResonance, narrationDuration, narrationSource, textVisible])
 
   const pauseAutoScroll = () => {
     // A deliberate gesture always wins. Following resumes gently after the

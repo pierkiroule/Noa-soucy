@@ -42,10 +42,12 @@ export class NarrationAudioPlayer {
     else if (this.source && !audio.ended) void audio.play().catch(() => console.warn(`Lecture de la voix en attente : ${this.source}`))
   }
 
-  getProgress(expectedSource?: string) {
+  getProgress(expectedSource?: string, knownDuration?: number) {
     const audio = this.audio
-    if (!audio || (expectedSource && expectedSource !== this.source) || !Number.isFinite(audio.duration) || audio.duration <= 0) return undefined
-    return { currentTime: audio.currentTime, duration: audio.duration, playing: !audio.paused && !audio.ended }
+    if (!audio || (expectedSource && expectedSource !== this.source)) return undefined
+    const duration = knownDuration && Number.isFinite(knownDuration) && knownDuration > 0 ? knownDuration : audio.duration
+    if (!Number.isFinite(duration) || duration <= 0) return undefined
+    return { currentTime: audio.currentTime, duration, playing: !audio.paused && !audio.ended }
   }
 
   onEnded(listener: () => void) {

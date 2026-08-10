@@ -24,8 +24,8 @@ test('prologue and epilogue reuse the requested act media', () => {
   const epilogue = story.blocks.find(block => block.type === 'epilogue')
   assert.ok(prologue?.type === 'prologue')
   assert.ok(epilogue?.type === 'epilogue')
-  assert.deepEqual(prologue.media, { video: '1.mp4', music: 'Fond2.mp3', voice: 'Voc1.mp3' })
-  assert.deepEqual(epilogue.media, { video: '14.mp4', music: 'Fond2.mp3', voice: 'Voc7.mp3' })
+  assert.deepEqual(prologue.media, { video: '1.mp4', music: 'Fond2.mp3', voice: 'Voc1.mp3', voiceDurationSeconds: 40.54 })
+  assert.deepEqual(epilogue.media, { video: '14.mp4', music: 'Fond2.mp3', voice: 'Voc7.mp3', voiceDurationSeconds: 43.22 })
 })
 
 test('available voices are assigned only to their narrated chapters', () => {
@@ -40,6 +40,7 @@ test('available voices are assigned only to their narrated chapters', () => {
     { id: 'epilogue', voice: 'Voc7.mp3' },
   ])
   assert.ok(story.blocks.filter(block => block.type === 'question').flatMap(block => block.choices).every(choice => !choice.resonance.media.voice))
+  assert.ok(story.blocks.flatMap(block => block.type === 'question' || block.type === 'metaphorical-resonances' || !block.media.voice ? [] : [block.media]).every(media => media.voiceDurationSeconds && media.voiceDurationSeconds > 0))
 })
 
 test('story loading bypasses stale cached voice mappings', async () => {

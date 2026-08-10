@@ -38,7 +38,7 @@ test('a stale fade cannot clear the source owned by a newer request', async () =
     }
     await stalePlay
 
-    assert.ok(player.getProgress('current.mp3'))
+    assert.equal(player.getProgress('current.mp3', 102.58)?.duration, 102.58)
     assert.equal(player.getProgress('stale.mp3'), undefined)
   } finally {
     globalThis.Audio = originalAudio
