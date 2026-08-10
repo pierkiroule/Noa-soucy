@@ -24,7 +24,6 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
   const scrollerRef = useRef<HTMLDivElement>(null)
   const rippleId = useRef(0)
   const userScrollPausedUntil = useRef(0)
-  const durationSample = useRef({ source: '', value: 0, stableSince: 0 })
   const safeIndex = Math.min(breathIndex, Math.max(0, breaths.length - 1))
   const initialIndex = useRef(safeIndex)
   const isResonance = variant === 'resonance'
@@ -47,22 +46,11 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
     const followNarration = (now: number) => {
       const audio = narrationAudioPlayer.getProgress(narrationSource)
       const scrollableHeight = scroller.scrollHeight - scroller.clientHeight
-      const sample = durationSample.current
-      if (sample.source !== narrationSource) {
-        durationSample.current = { source: narrationSource, value: 0, stableSince: now }
-      }
-      const activeSample = durationSample.current
-      if (audio && Math.abs(audio.duration - activeSample.value) > Math.max(.25, activeSample.value * .005)) {
-        activeSample.value = audio.duration
-        activeSample.stableSince = now
-      }
-      // Some browsers briefly expose a partial MP3 duration. Waiting for a
-      // stable sample prevents an early race to the bottom followed by a stall.
-      const hasStableDuration = activeSample.value > 0 && now - activeSample.stableSince >= 1000
-      if (audio?.playing && hasStableDuration && scrollableHeight > 0 && now >= userScrollPausedUntil.current) {
-        const target = narrationScrollProgress(audio.currentTime, activeSample.value) * scrollableHeight
-        // Never pull backward when the reader has moved ahead manually. The
-        // narration catches up first, then resumes smooth forward following.
+      if (audio?.playing && scrollableHeight > 0 && now >= userScrollPausedUntil.current) {
+        const target = narrationScrollProgress(audio.currentTime, audio.duration) * scrollableHeight
+        // Follow both forward and backward corrections. Refusing a backward
+        // correction made the scroller appear frozen whenever duration or
+        // viewport measurements changed while the MP3 was playing.
         scroller.scrollTop = nextAutoScrollTop(scroller.scrollTop, target, now - lastFrame)
       }
       lastFrame = now

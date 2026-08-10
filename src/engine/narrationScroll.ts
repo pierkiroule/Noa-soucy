@@ -15,9 +15,9 @@ export function narrationScrollProgress(currentTime: number, duration: number) {
 }
 
 
-/** Advances toward narration without ever pulling a reader who moved ahead backward. */
+/** Smoothly converges on the narration target in either direction. */
 export function nextAutoScrollTop(current: number, target: number, elapsed: number) {
-  if (!Number.isFinite(current) || !Number.isFinite(target) || target <= current) return current
+  if (!Number.isFinite(current) || !Number.isFinite(target)) return current
   const safeElapsed = Math.max(0, Math.min(64, elapsed))
   const easing = 1 - Math.exp(-safeElapsed / 420)
   return current + (target - current) * easing

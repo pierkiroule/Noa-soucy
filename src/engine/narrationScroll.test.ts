@@ -17,10 +17,11 @@ test('fails safely until usable audio metadata is available', () => {
   assert.equal(narrationScrollProgress(Number.NaN, 100), 0)
 })
 
-test('follows narration smoothly without pulling a reader backward', () => {
-  assert.equal(nextAutoScrollTop(600, 400, 16), 600)
-  const next = nextAutoScrollTop(400, 600, 16)
-  assert.ok(next > 400 && next < 600)
+test('converges smoothly in both directions when measurements change', () => {
+  const forward = nextAutoScrollTop(400, 600, 16)
+  const backward = nextAutoScrollTop(600, 400, 16)
+  assert.ok(forward > 400 && forward < 600)
+  assert.ok(backward > 400 && backward < 600)
 })
 
 test('caps long frame gaps so returning to the tab cannot cause a jump', () => {
