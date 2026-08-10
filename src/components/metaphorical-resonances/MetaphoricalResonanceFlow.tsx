@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { metaphoricalResonances } from '../../data/metaphoricalResonances'
 import { useMetaphoricalResonances } from '../../hooks/useMetaphoricalResonances'
 import { ViewTransition } from '../../effects/ViewTransition'
@@ -8,7 +8,7 @@ import { ResonancePanel } from './ResonancePanel'
 import { ResonanceSummary } from './ResonanceSummary'
 
 export function MetaphoricalResonanceFlow({ onFinish, onRestartStory }: { onFinish:()=>void; onRestartStory:()=>void }) {
-  const { state, visitedAnswers, openDirection, closeDirection, resetResonances, completeForToday, returnToCompass, openCompass } = useMetaphoricalResonances()
+  const { state, visitedAnswers, openDirection, closeDirection, saveNote, deleteNote, resetResonances, completeForToday, returnToCompass, openCompass } = useMetaphoricalResonances()
   const lastButtonRef = useRef<HTMLElement | null>(null)
   const activeDirection = metaphoricalResonances.find(petal => petal.id === state.activeDirectionId)
 
@@ -16,10 +16,10 @@ export function MetaphoricalResonanceFlow({ onFinish, onRestartStory }: { onFini
     lastButtonRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
     openDirection(id)
   }
-  const closeAndRestore = () => {
+  const closeAndRestore = useCallback(() => {
     closeDirection()
     window.setTimeout(() => lastButtonRef.current?.focus(), 0)
-  }
+  }, [closeDirection])
 
   useEffect(() => { document.body.classList.toggle('has-resonance-panel', Boolean(activeDirection)); return () => document.body.classList.remove('has-resonance-panel') }, [activeDirection])
 
@@ -28,6 +28,6 @@ export function MetaphoricalResonanceFlow({ onFinish, onRestartStory }: { onFini
     <ViewTransition key={state.completed ? 'summary' : 'compass'} variant={state.completed ? 'seeds' : 'petals'} />
     <div className="story__brand"><span aria-hidden="true">◌</span> NAO SOUCI</div>
     {state.completed ? <ResonanceSummary visitedAnswers={visitedAnswers} onBackToCompass={returnToCompass} onFinish={onFinish} onRestartStory={onRestartStory} /> : <ResonanceCompass state={state} onOpenDirection={openCompassDirection} onFinishToday={completeForToday} onReset={resetResonances} />}
-    {activeDirection && <ResonancePanel direction={activeDirection} onClose={closeAndRestore} />}
+    {activeDirection && <ResonancePanel direction={activeDirection} note={state.answers[activeDirection.id]?.text ?? ''} onSave={text => saveNote(activeDirection.id, text)} onDelete={() => deleteNote(activeDirection.id)} onClose={closeAndRestore} />}
   </main>
 }
