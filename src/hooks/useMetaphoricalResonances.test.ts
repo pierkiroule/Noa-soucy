@@ -39,13 +39,28 @@ test('saves, modifies and deletes a resonance note while keeping the direction v
 test('serializes summary data for visited directions only', () => {
   const state = markVisitedState(markVisitedState(initialMetaphoricalResonanceState, 'flower', now), 'storm', now)
   const stored = toStoredResonances(state, now)
-  assert.deepEqual(stored.visitedPetalIds.sort(), ['flower', 'storm'])
+  assert.deepEqual(Object.keys(stored.answers).sort(), ['flower', 'storm'])
   assert.equal(stored.completedAt, now)
 })
 
 test('handles invalid localStorage content', () => {
   const storage = { getItem: (key: string) => key === METAPHORICAL_RESONANCES_STORAGE_KEY ? '{bad json' : null }
   assert.deepEqual(readStoredResonances(storage), initialMetaphoricalResonanceState)
+})
+
+test('discards malformed and unknown answers from localStorage', () => {
+  const storage = { getItem: () => JSON.stringify({
+    answers: {
+      roots: { petalId: 'roots', text: 'Un arbre', visited: true, updatedAt: now },
+      storm: { petalId: 'storm', text: 42, visited: true, updatedAt: now },
+      unknown: { petalId: 'unknown', text: 'Intrus', visited: true, updatedAt: now },
+    },
+    completedAt: false,
+  }) }
+  const state = readStoredResonances(storage)
+  assert.deepEqual(Object.keys(state.answers), ['roots'])
+  assert.equal(state.completed, false)
+  assert.equal(state.opened, true)
 })
 
 test('resets resonance state', () => {

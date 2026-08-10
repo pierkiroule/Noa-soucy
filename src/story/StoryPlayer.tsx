@@ -5,18 +5,14 @@ import { ViewTransition } from '../effects/ViewTransition'
 import { loopAudioPlayer } from '../engine/LoopAudioPlayer'
 import { narrationAudioPlayer } from '../engine/NarrationAudioPlayer'
 import { getNextMedia, loadStory, preloadNextStoryMedia, storyMediaUrl, storyVoiceUrl, type StoryChoice, type StoryDocument, type StoryMediaBlock } from './storyData'
+import { initialStoryProgress, parseStoryProgress, type StoryProgress } from './storyProgress'
 
 const STORAGE_KEY = 'nao-souci:audiovisual-progress:v4'
 const BACKGROUND_MUSIC = storyMediaUrl('Fond2.mp3')
 const MetaphoricalResonanceFlow = lazy(() => import('../components/metaphorical-resonances/MetaphoricalResonanceFlow').then(module => ({ default: module.MetaphoricalResonanceFlow })))
-interface SavedState { version:number; currentBlockIndex:number; currentBreathIndex:number; isMuted:boolean; selectedChoices:Record<string,string>; activeResonanceId?:string; completed:boolean }
-
-const initialSaved: SavedState = { version: 4, currentBlockIndex: 0, currentBreathIndex: 0, isMuted: false, selectedChoices: {}, completed: false }
-function readSaved(): SavedState {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null') as SavedState | null
-    return saved?.version === 4 ? { ...initialSaved, ...saved } : initialSaved
-  } catch { return initialSaved }
+function readSaved(): StoryProgress {
+  try { return parseStoryProgress(localStorage.getItem(STORAGE_KEY)) }
+  catch { return initialStoryProgress }
 }
 
 export function StoryPlayer() {
@@ -25,7 +21,7 @@ export function StoryPlayer() {
   const [started, setStarted] = useState(false)
   const [navigationOpen, setNavigationOpen] = useState(false)
   const [narrationEnded, setNarrationEnded] = useState(false)
-  const [state, setState] = useState<SavedState>(readSaved)
+  const [state, setState] = useState<StoryProgress>(readSaved)
   const completedOnLoad = useRef(state.completed)
 
   useEffect(() => { void loadStory().then(setStory).catch(error => { console.error(error); setLoadError(true) }) }, [])
@@ -78,14 +74,14 @@ export function StoryPlayer() {
     void loopAudioPlayer.unlock().then(() => loopAudioPlayer.resume())
     void narrationAudioPlayer.unlock().finally(() => setStarted(true))
   }
-  const restart = () => { setState(initialSaved); setStarted(false); void loopAudioPlayer.load(BACKGROUND_MUSIC) }
+  const restart = () => { setState(initialStoryProgress); setStarted(false); void loopAudioPlayer.load(BACKGROUND_MUSIC) }
   const goToPart = (index: number) => {
     if (!story || index < 0 || index >= story.blocks.length) return
     setState(current => ({ ...current, currentBlockIndex: index, currentBreathIndex: 0, activeResonanceId: undefined, completed: false }))
     setNavigationOpen(false)
   }
   const restartStory = () => {
-    setState(initialSaved)
+    setState(initialStoryProgress)
     setNavigationOpen(false)
   }
 
