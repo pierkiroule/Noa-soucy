@@ -1,3 +1,5 @@
+import { audioReactivity } from './AudioReactivity.ts'
+
 const DEFAULT_VOLUME = .22
 const FADE_INTERVAL_MS = 50
 const SILENT_WAV = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAAAACA'
@@ -15,7 +17,7 @@ export class LoopAudioPlayer {
   async unlock() {
     const audio = new Audio(SILENT_WAV)
     audio.volume = 0
-    try { await audio.play(); audio.pause(); return true }
+    try { await audio.play(); audio.pause(); await audioReactivity.resume(); return true }
     catch { return false }
   }
 
@@ -24,6 +26,7 @@ export class LoopAudioPlayer {
     if (!source) return false
     const generation = ++this.generation
     const audio = new Audio(source)
+    audioReactivity.attach(audio, 'music')
     audio.loop = true
     audio.preload = 'auto'
     audio.volume = 0
