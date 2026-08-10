@@ -1,19 +1,19 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react'
 import { narrationAudioPlayer } from '../engine/NarrationAudioPlayer'
-import { narrationScrollProgress, nextAutoScrollTop } from '../engine/narrationScroll'
+import { narrationDuration, narrationScrollProgress, nextAutoScrollTop } from '../engine/narrationScroll'
 import { splitTextIntoBreaths } from '../engine/storyText'
 import type { StoryMediaVariant } from '../story/storyData'
 
 interface Props {
   title:string; text:string; videoSrc:string; variant:StoryMediaVariant
   breathIndex:number
-  narrationEnded:boolean; narrationSource?:string
+  narrationEnded:boolean; narrationSource?:string; narrationDurationSeconds?:number
   onBreathChange:(index:number)=>void; onComplete:()=>void
 }
 
 interface Ripple { id:number; x:number; y:number }
 
-export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, narrationEnded, narrationSource, onBreathChange, onComplete }: Props) {
+export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, narrationEnded, narrationSource, narrationDurationSeconds, onBreathChange, onComplete }: Props) {
   const breaths = useMemo(() => splitTextIntoBreaths(text), [text])
   const [videoFailed, setVideoFailed] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
@@ -47,7 +47,8 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
       const audio = narrationAudioPlayer.getProgress(narrationSource)
       const scrollableHeight = scroller.scrollHeight - scroller.clientHeight
       if (audio?.playing && scrollableHeight > 0 && now >= userScrollPausedUntil.current) {
-        const target = narrationScrollProgress(audio.currentTime, text.length) * scrollableHeight
+        const duration = narrationDuration(narrationDurationSeconds, audio.duration, text.length)
+        const target = narrationScrollProgress(audio.currentTime, duration) * scrollableHeight
         // Follow both forward and backward corrections. Refusing a backward
         // correction made the scroller appear frozen whenever duration or
         // viewport measurements changed while the MP3 was playing.
@@ -58,7 +59,7 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
     }
     frame = requestAnimationFrame(followNarration)
     return () => cancelAnimationFrame(frame)
-  }, [isResonance, narrationSource, text.length, textVisible])
+  }, [isResonance, narrationDurationSeconds, narrationSource, text.length, textVisible])
 
   const pauseAutoScroll = () => {
     // A deliberate gesture always wins. Following resumes gently after the
