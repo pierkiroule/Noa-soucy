@@ -41,6 +41,13 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
     const scroller = scrollerRef.current
     if (!scroller || !narrationSource || isResonance || !textVisible) return
 
+    // CSS smooth scrolling and an animation-frame driven scroll are mutually
+    // exclusive: every frame used to restart the browser's own animation. On
+    // long chapters that animation never caught its moving target and appeared
+    // to stop after the first lines. Our clock already provides the smoothing,
+    // so force synchronous writes for the lifetime of this follower.
+    const previousScrollBehavior = scroller.style.scrollBehavior
+    scroller.style.scrollBehavior = 'auto'
     let frame = 0
     let lastFrame = performance.now()
     const followNarration = (now: number) => {
@@ -58,7 +65,10 @@ export function StoryMediaPlayer({ title, text, videoSrc, variant, breathIndex, 
       frame = requestAnimationFrame(followNarration)
     }
     frame = requestAnimationFrame(followNarration)
-    return () => cancelAnimationFrame(frame)
+    return () => {
+      cancelAnimationFrame(frame)
+      scroller.style.scrollBehavior = previousScrollBehavior
+    }
   }, [isResonance, narrationDurationSeconds, narrationSource, text.length, textVisible])
 
   const pauseAutoScroll = () => {
