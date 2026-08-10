@@ -1,10 +1,21 @@
+import type { CSSProperties } from 'react'
 import { metaphoricalResonances, type ResonancePetalId } from '../../data/metaphoricalResonances'
 import type { MetaphoricalResonanceState } from '../../types/metaphoricalResonances'
 import { ResonanceCompassPoint } from './ResonanceCompassPoint'
 
+const pollen = Array.from({ length: 18 }, (_, index) => {
+  const drift = (index % 2 ? -1 : 1) * (12 + index % 5 * 4)
+  return {
+    left: `${5 + (index * 29) % 91}%`, top: `${8 + (index * 37) % 84}%`,
+    size: `${2 + index % 3}px`, drift: `${drift}px`, driftEnd: `${drift * -.4}px`,
+    delay: `${index * -730}ms`, duration: `${8.5 + index % 5 * 1.2}s`,
+  }
+})
+
 export function ResonanceCompass({ state, onOpenDirection, onFinishToday, onReset }: { state:MetaphoricalResonanceState; onOpenDirection:(id:ResonancePetalId)=>void; onFinishToday:()=>void; onReset:()=>void }) {
   const visitedCount = Object.values(state.answers).filter(answer => answer?.visited).length
   return <section className={`compass-stage${state.activeDirectionId ? ' has-active-direction' : ''}`} aria-labelledby="compass-title">
+    <div className="compass-pollen" aria-hidden="true">{pollen.map((particle, index) => <i key={index} style={{ '--pollen-left': particle.left, '--pollen-top': particle.top, '--pollen-size': particle.size, '--pollen-drift': particle.drift, '--pollen-drift-end': particle.driftEnd, '--pollen-delay': particle.delay, '--pollen-duration': particle.duration } as CSSProperties}/>)}</div>
     <div className="compass-heading">
       <span className="eyebrow">Boussole métaphorique</span>
       <h1 id="compass-title">La Boussole de Nao Souci</h1>
