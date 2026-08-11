@@ -10,6 +10,7 @@ test('long-form viewport layouts keep an explicit vertical scroll owner', () => 
   assert.match(css, /\.compass-summary\{[^}]*overflow-x:hidden;overflow-y:auto/)
   assert.match(css, /\.public-home\{[^}]*height:100dvh;overflow-x:hidden;overflow-y:auto/)
   assert.match(css, /\.intro,\.completion,\.question-screen\{overflow-x:hidden;overflow-y:auto\}/)
+  assert.match(css, /\.nao-screen\s*\{[^}]*height: 100dvh;[^}]*overflow-y: auto;[^}]*touch-action: pan-y;/)
 })
 
 test('compass direction content scrolls inside a fixed-height sheet', () => {
