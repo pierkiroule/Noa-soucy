@@ -36,7 +36,7 @@ Commandes disponibles :
 - `src/story` charge et orchestre le récit ;
 - `src/components/metaphorical-resonances` et `src/hooks/useMetaphoricalResonances.ts` portent le parcours facultatif final.
 
-Pour modifier un chapitre, un choix ou une association de média, mettre à jour `story.json` plutôt que d’ajouter une seconde définition dans le code. Le test `src/story/storyData.test.ts` vérifie que le document reste complet et que les associations de médias respectent le contrat attendu.
+Pour modifier un chapitre, un choix ou une association de média, mettre à jour `story.json` plutôt que d’ajouter une seconde définition dans le code. Le test `src/story/storyData.test.ts` vérifie que le document reste complet, que les associations de médias respectent le contrat attendu et qu’aucun média obsolète n’est encore déployé.
 
 ## Médias
 
