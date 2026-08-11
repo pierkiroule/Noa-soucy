@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/n",
+      "destination": "/"
+    },
+    {
       "source": "/n/:nutId",
       "destination": "/"
     },
