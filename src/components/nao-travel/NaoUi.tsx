@@ -25,6 +25,7 @@ export function Brand() {
         <h2 id={titleId}>Crédits</h2>
         <p><cite>La petite noix sur l’Océan des soucis</cite><br/>Une expérience narrative originale.</p>
         <p className="credits-modal__author"><span>Auteur</span>Pierre-Henri Garnier</p>
+        <a className="credits-modal__contact" href="https://www.linkedin.com/in/pierrehenrigarnier?utm_source=share_via&amp;utm_content=profile&amp;utm_medium=member_android" target="_blank" rel="noreferrer">Me contacter sur LinkedIn <span aria-hidden="true">↗</span></a>
         <p className="credits-modal__copyright">© 2026 NAO SOUCI<br/>Tous droits réservés.</p>
       </section>
     </div>}
