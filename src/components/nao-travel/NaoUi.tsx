@@ -1,7 +1,33 @@
-import type { ButtonHTMLAttributes, PropsWithChildren } from 'react'
+import { useEffect, useId, useRef, useState, type ButtonHTMLAttributes, type PropsWithChildren } from 'react'
 
 export function Brand() {
-  return <div className="story__brand"><span aria-hidden="true">◌</span> NAO SOUCI</div>
+  const [creditsOpen, setCreditsOpen] = useState(false)
+  const titleId = useId()
+  const closeButton = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!creditsOpen) return
+    closeButton.current?.focus()
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setCreditsOpen(false)
+    }
+    addEventListener('keydown', closeOnEscape)
+    return () => removeEventListener('keydown', closeOnEscape)
+  }, [creditsOpen])
+
+  return <>
+    <button className="story__brand" type="button" aria-label="Ouvrir les crédits" aria-haspopup="dialog" onClick={() => setCreditsOpen(true)}>•°○</button>
+    {creditsOpen && <div className="credits-backdrop" onPointerDown={() => setCreditsOpen(false)}>
+      <section className="credits-modal" role="dialog" aria-modal="true" aria-labelledby={titleId} onPointerDown={event => event.stopPropagation()}>
+        <button ref={closeButton} className="credits-modal__close" type="button" aria-label="Fermer les crédits" onClick={() => setCreditsOpen(false)}>×</button>
+        <span className="credits-modal__mark" aria-hidden="true">•°○</span>
+        <p className="eyebrow">NAO SOUCI</p>
+        <h2 id={titleId}>Crédits</h2>
+        <p><cite>La petite noix sur l’Océan des soucis</cite><br/>Une expérience narrative originale.</p>
+        <p className="credits-modal__copyright">© 2026 NAO SOUCI<br/>Tous droits réservés.</p>
+      </section>
+    </div>}
+  </>
 }
 
 export function NaoScreen({ children, className = '' }: PropsWithChildren<{ className?: string }>) {
