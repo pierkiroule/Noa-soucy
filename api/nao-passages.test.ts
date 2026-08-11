@@ -33,6 +33,13 @@ test('GET returns only public passer fields using a parameterized query', async 
   assert.deepEqual(calls[0]!.values, ['NAO0042'])
 })
 
+test('GET returns an empty grains array for a passer without a grain', async () => {
+  const sql = mockSql([{ id: 9, display_name: 'Sacha', location_label: null, created_at: '2026-08-11T08:00:00.000Z', grains: null }])
+  const response = await createNaoPassagesHandler(async () => sql)(new Request('https://example.test/api/nao-passages?nutId=NAO0042'))
+  assert.equal(response.status, 200)
+  assert.deepEqual(await response.json(), { nutId: 'NAO0042', passers: [{ id: 9, displayName: 'Sacha', locationLabel: null, createdAt: '2026-08-11T08:00:00.000Z', grains: [] }] })
+})
+
 test('POST trims, parameterizes and returns the inserted passer', async () => {
   const calls: SqlCall[] = []
   const sql = mockSql([{ id: 8, display_name: 'Luna', location_label: 'Nantes', created_at: new Date('2026-08-11T07:00:00.000Z'), grains: ['Vent froid', 'lueur'] }], calls)
@@ -44,14 +51,24 @@ test('POST trims, parameterizes and returns the inserted passer', async () => {
   assert.match(calls[0]!.text, /INSERT INTO nao_grains/)
 })
 
-test('POST refuses missing, empty, overlong or excessive grains before accessing Neon', async () => {
+test('POST accepts and atomically inserts a passage without grains', async () => {
+  const calls: SqlCall[] = []
+  const sql = mockSql([{ id: 9, display_name: 'Sacha', location_label: null, created_at: '2026-08-11T08:00:00.000Z', grains: [] }], calls)
+  const response = await createNaoPassagesHandler(async () => sql)(new Request('https://example.test/api/nao-passages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nutId: 'NAO0042', displayName: 'Sacha', grains: [] }) }))
+  assert.equal(response.status, 201)
+  assert.deepEqual(await response.json(), { passer: { id: 9, displayName: 'Sacha', locationLabel: null, createdAt: '2026-08-11T08:00:00.000Z', grains: [] } })
+  assert.deepEqual(calls[0]!.values, ['NAO0042', 'Sacha', null, []])
+  assert.match(calls[0]!.text, /LEFT JOIN inserted_grains/)
+})
+
+test('POST refuses missing, blank, overlong or excessive grains before accessing Neon', async () => {
   let databaseAccessed = false
   const request = (grains: unknown) => createNaoPassagesHandler(async () => {
     databaseAccessed = true
     return mockSql([])
   })(new Request('https://example.test/api/nao-passages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nutId: 'NAO0042', displayName: 'Luna', grains }) }))
 
-  for (const grains of [undefined, [], ['   '], ['a'.repeat(81)], ['un', 'deux', 'trois', 'quatre']]) {
+  for (const grains of [undefined, ['   '], ['a'.repeat(81)], ['un', 'deux', 'trois', 'quatre']]) {
     assert.equal((await request(grains)).status, 400)
   }
   assert.equal(databaseAccessed, false)
