@@ -475,6 +475,9 @@
 .custom-grain input:focus-visible { outline: 3px solid rgba(197, 137, 75, .34); outline-offset: 2px; border-color: var(--nao-gold); }
 
 .grains-experience, .grains-finale { padding: 0; background: none; }
+.grains-experience:not(.signature) .nao-screen__content { text-align: center; }
+.grains-experience:not(.signature) .grains-narrative { margin-right: auto; margin-left: auto; }
+.grains-experience:not(.signature) .grain-field { justify-content: center; }
 .grain-field, .collective-grains { justify-content: flex-start; gap: 10px 8px; }
 .nao-grain, .grain-field .nao-grain, .collective-grains .nao-grain {
   max-width: 100%;
