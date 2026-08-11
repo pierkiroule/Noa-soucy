@@ -23,6 +23,7 @@ function serializePasser(row: SqlRow) {
     displayName: row.display_name,
     locationLabel: row.location_label,
     createdAt: row.created_at instanceof Date ? row.created_at.toISOString() : row.created_at,
+    grains: Array.isArray(row.grains) ? row.grains : [],
   }
 }
 
@@ -77,13 +78,16 @@ export function createNaoPassagesHandler(getSql: GetSql = defaultSql) {
 
         const sql = await getSql()
         const rows = await sql`SELECT
-          id,
-          display_name,
-          location_label,
-          created_at
-        FROM nao_passages
-        WHERE nut_id = ${nutId}
-        ORDER BY created_at ASC, id ASC`
+          p.id,
+          p.display_name,
+          p.location_label,
+          p.created_at,
+          COALESCE(array_agg(g.grain_text ORDER BY g.id) FILTER (WHERE g.id IS NOT NULL), ARRAY[]::varchar[]) AS grains
+        FROM nao_passages p
+        LEFT JOIN nao_grains g ON g.passage_id = p.id
+        WHERE p.nut_id = ${nutId}
+        GROUP BY p.id
+        ORDER BY p.created_at ASC, p.id ASC`
         return json({ nutId, passers: rows.map(serializePasser) })
       }
 
@@ -103,15 +107,35 @@ export function createNaoPassagesHandler(getSql: GetSql = defaultSql) {
       }
 
       const displayName = input.displayName.trim()
-      const locationLabel = typeof input.locationLabel === 'string' ? input.locationLabel.trim() : null
+      const locationLabel = typeof input.locationLabel === 'string' ? input.locationLabel.trim() || null : null
       if (locationLabel !== null && locationLabel.length > 100) {
         return json({ error: 'Invalid locationLabel' }, 400)
       }
+      if (!Array.isArray(input.grains) || input.grains.length < 1 || input.grains.length > 3) {
+        return json({ error: 'Invalid grains' }, 400)
+      }
+      const grains = input.grains.map(grain => typeof grain === 'string' ? grain.trim().replace(/\s+/g, ' ') : '')
+      if (grains.some(grain => grain.length < 1 || grain.length > 80)) return json({ error: 'Invalid grains' }, 400)
 
       const sql = await getSql()
-      const rows = await sql`INSERT INTO nao_passages (nut_id, display_name, location_label)
-        VALUES (${input.nutId}, ${displayName}, ${locationLabel})
-        RETURNING id, display_name, location_label, created_at`
+      // One PostgreSQL statement is atomic: the passage cannot remain without its grains.
+      const rows = await sql`WITH passage AS (
+          INSERT INTO nao_passages (nut_id, display_name, location_label)
+          VALUES (${input.nutId}, ${displayName}, ${locationLabel})
+          RETURNING id, display_name, location_label, created_at
+        ), inserted_grains AS (
+          INSERT INTO nao_grains (passage_id, grain_text)
+          SELECT passage.id, grain.text
+          FROM passage
+          CROSS JOIN unnest(${grains}::text[]) WITH ORDINALITY AS grain(text, position)
+          ORDER BY grain.position
+          RETURNING passage_id, id, grain_text
+        )
+        SELECT passage.id, passage.display_name, passage.location_label, passage.created_at,
+          array_agg(inserted_grains.grain_text ORDER BY inserted_grains.id) AS grains
+        FROM passage
+        JOIN inserted_grains ON inserted_grains.passage_id = passage.id
+        GROUP BY passage.id, passage.display_name, passage.location_label, passage.created_at`
       return json({ passer: serializePasser(rows[0]!) }, 201)
     } catch (error) {
       console.error('Nao passages API error', error)

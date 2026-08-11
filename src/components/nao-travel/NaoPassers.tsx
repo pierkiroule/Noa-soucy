@@ -15,9 +15,17 @@ export function NaoPassers({ nutId, onBack }: { nutId: string; onBack: () => voi
     return () => { active = false }
   }, [nutId, attempt])
 
-  return <main className="travel-screen"><section className="travel-card passers-card"><button className="travel-back" onClick={onBack}>← Revenir à Nao</button><p className="eyebrow">Carnet de voyage</p><h1>Les passeurs de Nao</h1><p>Nao voyage de main en main.</p>
+  const frequencies = new Map<string, { text: string; count: number }>()
+  for (const passer of passers) for (const grain of passer.grains) {
+    const key = grain.trim().replace(/\s+/g, ' ').toLocaleLowerCase('fr')
+    const current = frequencies.get(key)
+    frequencies.set(key, { text: current?.text ?? grain, count: (current?.count ?? 0) + 1 })
+  }
+  const collective = [...frequencies.values()].sort((a, b) => b.count - a.count || a.text.localeCompare(b.text, 'fr'))
+
+  return <main className="travel-screen"><section className="travel-card passers-card"><button className="travel-back" onClick={onBack}>← Revenir à Nao</button><p className="eyebrow">NAO SOUCI</p><h1>Livre d’Or•°</h1><p>Ce que Nao a recueilli sur son passage.</p>
     {status === 'loading' && <p aria-live="polite">Le carnet s’ouvre doucement…</p>}
-    {status === 'error' && <div aria-live="assertive"><p>Le carnet de voyage de Nao est momentanément inaccessible.</p><button className="primary" onClick={() => setAttempt(value => value + 1)}>Réessayer</button></div>}
-    {status === 'ready' && <><strong className="passers-count">{passers.length} {passers.length === 1 ? 'passeur' : 'passeurs'}</strong><ol className="passers-list">{passers.map(passer => <li key={passer.id}><strong>{passer.displayName}</strong>{passer.locationLabel && <span>{passer.locationLabel}</span>}<time dateTime={passer.createdAt}>{dateFormatter.format(new Date(passer.createdAt))}</time></li>)}</ol></>}
+    {status === 'error' && <div aria-live="assertive"><p>Le Livre d’Or•° de Nao est momentanément inaccessible.</p><button className="primary" onClick={() => setAttempt(value => value + 1)}>Réessayer</button></div>}
+    {status === 'ready' && <><section className="golden-grains"><h2>Les grains qui résonnent</h2>{collective.length ? <div className="collective-grains">{collective.map(grain => <span key={grain.text} style={{ '--frequency': Math.min(grain.count, 4) } as React.CSSProperties}>{grain.text}</span>)}</div> : <p>Le premier grain attend encore d’être déposé.</p>}</section><section className="golden-passers"><h2>Les passeurs de Nao</h2><strong className="passers-count">{passers.length} {passers.length === 1 ? 'passeur' : 'passeurs'}</strong><ol className="passers-list">{passers.map(passer => <li key={passer.id}><strong>{passer.displayName}{passer.locationLabel && <> · {passer.locationLabel}</>}</strong><span className="passer-grains">{passer.grains.join(' · ')}</span><time dateTime={passer.createdAt}>{dateFormatter.format(new Date(passer.createdAt))}</time></li>)}</ol></section></>}
   </section></main>
 }

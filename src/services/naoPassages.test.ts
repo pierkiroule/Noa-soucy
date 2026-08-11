@@ -7,17 +7,17 @@ test('ajoute un passage, avec une localisation optionnelle', async t => {
   t.after(() => { globalThis.fetch = previousFetch })
   globalThis.fetch = async (_input, init) => {
     assert.equal(init?.method, 'POST')
-    assert.deepEqual(JSON.parse(String(init?.body)), { nutId: 'NAO0042', displayName: 'Luna' })
+    assert.deepEqual(JSON.parse(String(init?.body)), { nutId: 'NAO0042', displayName: 'Luna', grains: ['lueur'] })
     return new Response(JSON.stringify({ passer: { id: 12, displayName: 'Luna', locationLabel: null, createdAt: '2026-08-11T00:00:00Z' } }))
   }
-  assert.equal((await addNaoPasser({ nutId: 'NAO0042', displayName: 'Luna' })).id, 12)
+  assert.equal((await addNaoPasser({ nutId: 'NAO0042', displayName: 'Luna', grains: ['lueur'] })).id, 12)
 })
 
 test('propage une indisponibilité POST ou GET', async t => {
   const previousFetch = globalThis.fetch
   t.after(() => { globalThis.fetch = previousFetch })
   globalThis.fetch = async () => new Response('{}', { status: 503 })
-  await assert.rejects(addNaoPasser({ nutId: 'NAO0042', displayName: 'Luna' }))
+  await assert.rejects(addNaoPasser({ nutId: 'NAO0042', displayName: 'Luna', grains: ['lueur'] }))
   await assert.rejects(getNaoPassers('NAO0042'))
 })
 

@@ -1,5 +1,6 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { StoryMediaPlayer } from '../components/StoryMediaPlayer'
+import { NaoGrains } from '../components/nao-travel/NaoGrains'
 import { useNaoTravel } from '../components/nao-travel/NaoTravelContext'
 import { ParticleOverlay } from '../effects/ParticleOverlay'
 import { ViewTransition } from '../effects/ViewTransition'
@@ -10,14 +11,13 @@ import { initialStoryProgress, parseStoryProgress, type StoryProgress } from './
 
 const STORAGE_KEY = 'nao-souci:audiovisual-progress:v4'
 const BACKGROUND_MUSIC = storyMediaUrl('Fond2.mp3')
-const MetaphoricalResonanceFlow = lazy(() => import('../components/metaphorical-resonances/MetaphoricalResonanceFlow').then(module => ({ default: module.MetaphoricalResonanceFlow })))
 function readSaved(): StoryProgress {
   try { return parseStoryProgress(localStorage.getItem(STORAGE_KEY)) }
   catch { return initialStoryProgress }
 }
 
 export function StoryPlayer() {
-  const { isNfcJourney, showPassers } = useNaoTravel()
+  const { nutId, isNfcJourney, showPassers } = useNaoTravel()
   const [story, setStory] = useState<StoryDocument>()
   const [loadError, setLoadError] = useState(false)
   const [started, setStarted] = useState(false)
@@ -48,6 +48,9 @@ export function StoryPlayer() {
   }, [state.completed])
 
   const block = story?.blocks[state.currentBlockIndex]
+  useEffect(() => {
+    if (block?.type === 'metaphorical-resonances') setState(current => ({ ...current, completed: true }))
+  }, [block?.type])
   const activeResonance = useMemo(() => {
     if (block?.type !== 'question' || !state.activeResonanceId) return undefined
     return block.choices.find(choice => choice.resonance.id === state.activeResonanceId)?.resonance
@@ -62,7 +65,7 @@ export function StoryPlayer() {
   const completeMedia = () => {
     if (!story || !block) return
     if (activeResonance) setState(current => ({ ...current, activeResonanceId: undefined, currentBlockIndex: current.currentBlockIndex + 1, currentBreathIndex: 0 }))
-    else if (block.type === 'epilogue') setState(current => story.blocks[current.currentBlockIndex + 1]?.type === 'metaphorical-resonances' ? ({ ...current, currentBlockIndex: current.currentBlockIndex + 1, currentBreathIndex: 0 }) : ({ ...current, completed: true }))
+    else if (block.type === 'epilogue') setState(current => ({ ...current, completed: true }))
     else setState(current => ({ ...current, currentBlockIndex: current.currentBlockIndex + 1, currentBreathIndex: 0 }))
   }
   const selectChoice = (choice: StoryChoice) => {
@@ -89,19 +92,18 @@ export function StoryPlayer() {
 
   if (loadError) return <main className="loading"><h1>NAO SOUCI</h1><p>Le conte n’a pas pu être chargé.</p><button onClick={() => location.reload()}>Réessayer</button></main>
   if (!story) return <main className="loading" aria-live="polite">La mer retrouve son souffle…</main>
-  if (!started) return <main className="story intro-screen"><ViewTransition variant="petals"/><WelcomePetals/><Brand/><section className="intro"><div className="intro__halo" aria-hidden="true"/><div className="intro__content"><h1>NAO<span aria-hidden="true">•°</span> Souci</h1><p>La petite noix sur l’Océan des soucis.</p><div className="intro__flourish" aria-hidden="true"><i/><span>✦</span><i/></div><button className="primary" onClick={start}>{state.currentBlockIndex ? 'Reprendre la traversée' : 'Commencer le conte'} <span aria-hidden="true">→</span></button>{isNfcJourney && <button className="quiet intro__passers" onClick={showPassers}>Les passeurs de Nao</button>}<small>Vidéo, musique et texte · Son réglable à tout moment</small></div></section></main>
-  if (state.completed) return <main className="story completion"><ViewTransition variant="seeds"/><Brand/><span className="eyebrow">Fin de traversée</span><h1>Votre traversée s’arrête ici pour aujourd’hui.</h1><p>Les mots peuvent continuer de flotter.<br/>Sans réponse attendue.<br/>Sans chemin imposé.</p>{isNfcJourney && <aside className="travel-transmission"><strong>Nao peut maintenant poursuivre son voyage.</strong><span>Referme la noix et confie-la à quelqu’un.</span></aside>}<div className="completion__actions"><button className="quiet" onClick={() => { setState(current => ({ ...current, completed: false, currentBlockIndex: story.blocks.findIndex(part => part.type === 'metaphorical-resonances') })); setStarted(true) }}>Boussole métaphorique</button><button className="primary" onClick={restart}>Recommencer le conte</button><button className="quiet" onClick={() => setStarted(false)}>Revenir à l’accueil</button></div></main>
+  if (!started) return <main className="story intro-screen"><ViewTransition variant="petals"/><WelcomePetals/><Brand/><section className="intro"><div className="intro__halo" aria-hidden="true"/><div className="intro__content"><h1>NAO<span aria-hidden="true">•°</span> Souci</h1><p>La petite noix sur l’Océan des soucis.</p><div className="intro__flourish" aria-hidden="true"><i/><span>✦</span><i/></div><button className="primary" onClick={start}>{state.currentBlockIndex ? 'Reprendre la traversée' : 'Commencer le conte'} <span aria-hidden="true">→</span></button>{isNfcJourney && <button className="quiet intro__passers" onClick={showPassers}>Livre d’Or•°</button>}<small>Vidéo, musique et texte · Son réglable à tout moment</small></div></section></main>
+  if (state.completed && nutId) return <NaoGrains nutId={nutId} onShowBook={showPassers} onRestart={restart}/>
+  if (state.completed) return <main className="story completion"><ViewTransition variant="seeds"/><Brand/><span className="eyebrow">Fin de traversée</span><h1>Votre traversée s’arrête ici pour aujourd’hui.</h1><p>Les mots peuvent continuer de flotter.<br/>Sans réponse attendue.<br/>Sans chemin imposé.</p><div className="completion__actions"><button className="primary" onClick={restart}>Recommencer le conte</button><button className="quiet" onClick={() => setStarted(false)}>Revenir à l’accueil</button></div></main>
 
-  if (block?.type === 'metaphorical-resonances') return <><ViewTransition variant="petals"/><Suspense fallback={<LoadingExperience label="La boussole se dessine…"/>}><MetaphoricalResonanceFlow onFinish={() => setState(current => ({ ...current, completed: true }))} onRestartStory={restartStory} /></Suspense></>
-
-  const mediaBlock: StoryMediaBlock | undefined = activeResonance ?? (block && block.type !== 'question' ? block : undefined)
+  const mediaBlock: StoryMediaBlock | undefined = activeResonance ?? (block && block.type !== 'question' && block.type !== 'metaphorical-resonances' ? block : undefined)
   return <main className="story">
     <ViewTransition key={`${block?.id}-${activeResonance?.id ?? 'main'}`} variant={activeResonance || block?.type === 'question' ? 'seeds' : 'petals'} />
     <Brand />
     <button className="sound-toggle" type="button" aria-label={state.isMuted ? 'Activer le son' : 'Couper le son'} aria-pressed={!state.isMuted} title={state.isMuted ? 'Activer le son' : 'Couper le son'} onClick={toggleMuted}>
       <SoundIcon muted={state.isMuted} />
     </button>
-    <div className="journey-progress" role="progressbar" aria-label="Progression" aria-valuenow={state.currentBlockIndex + 1} aria-valuemin={1} aria-valuemax={story.blocks.length}><i style={{ width: `${((state.currentBlockIndex + 1) / story.blocks.length) * 100}%` }}/></div>
+    <div className="journey-progress" role="progressbar" aria-label="Progression" aria-valuenow={state.currentBlockIndex + 1} aria-valuemin={1} aria-valuemax={story.blocks.filter(part => part.type !== 'metaphorical-resonances').length}><i style={{ width: `${((state.currentBlockIndex + 1) / story.blocks.filter(part => part.type !== 'metaphorical-resonances').length) * 100}%` }}/></div>
     <JourneyNavigation story={story} currentIndex={state.currentBlockIndex} isOpen={navigationOpen} onToggle={() => setNavigationOpen(open => !open)} onGoTo={goToPart} onRestart={restartStory} />
     {mediaBlock && <StoryMediaPlayer key={mediaBlock.id} title={mediaBlock.title} text={mediaBlock.text} videoSrc={storyMediaUrl(mediaBlock.media.video)} variant={mediaBlock.type} breathIndex={state.currentBreathIndex} narrationEnded={Boolean(voiceSource && narrationEnded)} narrationSource={voiceSource} narrationDurationSeconds={mediaBlock.media.voiceDurationSeconds} onBreathChange={setBreath} onComplete={completeMedia}/>}
     {block?.type === 'question' && !activeResonance && <QuestionScreen title={block.title} text={block.text} choices={block.choices} selected={state.selectedChoices[block.id]} onSelect={selectChoice}/>}
@@ -110,16 +112,17 @@ export function StoryPlayer() {
 
 function JourneyNavigation({ story, currentIndex, isOpen, onToggle, onGoTo, onRestart }: { story:StoryDocument; currentIndex:number; isOpen:boolean; onToggle:()=>void; onGoTo:(index:number)=>void; onRestart:()=>void }) {
   const current = story.blocks[currentIndex]
+  const visibleParts = story.blocks.map((part, index) => ({ part, index })).filter(({ part }) => part.type !== 'metaphorical-resonances')
   return <>
     <nav className="chapter-nav" aria-label="Navigation entre les parties du conte">
       <button onClick={() => onGoTo(currentIndex - 1)} disabled={currentIndex === 0} aria-label="Partie précédente"><span aria-hidden="true">←</span><span>Précédent</span></button>
-      <button className="chapter-nav__index" onClick={onToggle} aria-expanded={isOpen} aria-controls="story-contents"><small>Partie {currentIndex + 1} sur {story.blocks.length}</small><strong>{current?.title}</strong></button>
-      <button onClick={() => onGoTo(currentIndex + 1)} disabled={currentIndex === story.blocks.length - 1} aria-label="Partie suivante"><span>Suivant</span><span aria-hidden="true">→</span></button>
+      <button className="chapter-nav__index" onClick={onToggle} aria-expanded={isOpen} aria-controls="story-contents"><small>Partie {currentIndex + 1} sur {visibleParts.length}</small><strong>{current?.title}</strong></button>
+      <button onClick={() => onGoTo(currentIndex + 1)} disabled={current?.type === 'epilogue'} aria-label="Partie suivante"><span>Suivant</span><span aria-hidden="true">→</span></button>
     </nav>
     {isOpen && <div className="chapter-menu__backdrop" onClick={onToggle}>
       <aside id="story-contents" className="chapter-menu" role="dialog" aria-modal="true" aria-label="Sommaire du conte" onClick={event => event.stopPropagation()}>
         <header><div><span className="eyebrow">Le fil du conte</span><h2>Choisir une partie</h2></div><button className="chapter-menu__close" onClick={onToggle} aria-label="Fermer le sommaire">×</button></header>
-        <ol>{story.blocks.map((part, index) => <li key={part.id}><button className={index === currentIndex ? 'is-current' : ''} aria-current={index === currentIndex ? 'step' : undefined} onClick={() => onGoTo(index)}><span>{String(index + 1).padStart(2, '0')}</span><strong>{part.title}</strong>{index === currentIndex && <i>En cours</i>}</button></li>)}</ol>
+        <ol>{visibleParts.map(({ part, index }, visibleIndex) => <li key={part.id}><button className={index === currentIndex ? 'is-current' : ''} aria-current={index === currentIndex ? 'step' : undefined} onClick={() => onGoTo(index)}><span>{String(visibleIndex + 1).padStart(2, '0')}</span><strong>{part.title}</strong>{index === currentIndex && <i>En cours</i>}</button></li>)}</ol>
         <button className="chapter-menu__restart" onClick={onRestart}><span aria-hidden="true">↺</span> Recommencer au début</button>
       </aside>
     </div>}
@@ -139,10 +142,6 @@ function SoundIcon({ muted }: { muted:boolean }) {
       ? <><path d="m17 9 4 6"/><path d="m21 9-4 6"/></>
       : <><path d="M16 9.5a4 4 0 0 1 0 5"/><path d="M18.5 7a7 7 0 0 1 0 10"/></>}
   </svg>
-}
-
-function LoadingExperience({ label }: { label:string }) {
-  return <main className="loading" aria-live="polite"><span className="loading__orb" aria-hidden="true"/><p>{label}</p></main>
 }
 
 const welcomePetals = Array.from({ length: 22 }, (_, index) => ({
