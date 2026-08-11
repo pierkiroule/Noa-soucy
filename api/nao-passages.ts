@@ -1,5 +1,7 @@
 type SqlRow = Record<string, unknown>
 type Sql = (strings: TemplateStringsArray, ...values: unknown[]) => Promise<SqlRow[]>
+type SqlOptions = { signal?: AbortSignal }
+type GetSql = (options?: SqlOptions) => Promise<Sql>
 
 const nutIdPattern = /^[A-Za-z0-9_-]{4,40}$/
 
@@ -24,22 +26,53 @@ function serializePasser(row: SqlRow) {
   }
 }
 
-async function defaultSql(): Promise<Sql> {
+async function defaultSql(options: SqlOptions = {}): Promise<Sql> {
   const databaseUrl = process.env.DATABASE_URL
   if (!databaseUrl) throw new Error('DATABASE_URL is not configured')
   const { neon } = await import('@neondatabase/serverless')
-  return neon(databaseUrl) as Sql
+  return neon(databaseUrl, { fetchOptions: { signal: options.signal } }) as Sql
 }
 
-export function createNaoPassagesHandler(getSql: () => Promise<Sql> = defaultSql) {
+export function createNaoPassagesHandler(getSql: GetSql = defaultSql) {
   return async function handler(request: Request): Promise<Response> {
     if (request.method !== 'GET' && request.method !== 'POST') {
       return json({ error: 'Method not allowed' }, 405)
     }
 
+    const searchParams = new URL(request.url).searchParams
+    if (request.method === 'GET' && searchParams.get('health') === '1') {
+      return json({ ok: true, databaseUrlConfigured: Boolean(process.env.DATABASE_URL) })
+    }
+
+    if (request.method === 'GET' && searchParams.get('dbhealth') === '1') {
+      const controller = new AbortController()
+      let timeout: ReturnType<typeof setTimeout> | undefined
+      const timedOut = new Promise<never>((_, reject) => {
+        timeout = setTimeout(() => {
+          controller.abort()
+          reject(new Error('Database health check timed out'))
+        }, 5_000)
+      })
+      try {
+        await Promise.race([
+          (async () => {
+            const sql = await getSql({ signal: controller.signal })
+            await sql`SELECT 1 AS ok`
+          })(),
+          timedOut,
+        ])
+        return json({ ok: true, database: true })
+      } catch (error) {
+        console.error('Nao passages database health check error', error)
+        return json({ ok: false, database: false }, 503)
+      } finally {
+        if (timeout !== undefined) clearTimeout(timeout)
+      }
+    }
+
     try {
       if (request.method === 'GET') {
-        const nutId = new URL(request.url).searchParams.get('nutId')
+        const nutId = searchParams.get('nutId')
         if (!isValidNutId(nutId)) return json({ error: 'Invalid nutId' }, 400)
 
         const sql = await getSql()
@@ -87,4 +120,10 @@ export function createNaoPassagesHandler(getSql: () => Promise<Sql> = defaultSql
   }
 }
 
-export default createNaoPassagesHandler()
+const naoPassagesHandler = createNaoPassagesHandler()
+
+export default {
+  fetch(request: Request) {
+    return naoPassagesHandler(request)
+  },
+}

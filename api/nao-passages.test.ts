@@ -45,10 +45,49 @@ test('POST trims, parameterizes and returns the inserted passer', async () => {
 test('returns a clean response when DATABASE_URL is absent', async () => {
   const previous = process.env.DATABASE_URL
   delete process.env.DATABASE_URL
-  const response = await handler(new Request('https://example.test/api/nao-passages?nutId=NAO0042'))
+  const response = await handler.fetch(new Request('https://example.test/api/nao-passages?nutId=NAO0042'))
   if (previous !== undefined) process.env.DATABASE_URL = previous
   assert.equal(response.status, 500)
   assert.deepEqual(await response.json(), { error: 'Service temporarily unavailable' })
+})
+
+test('health reports configuration without accessing Neon', async () => {
+  const previous = process.env.DATABASE_URL
+  process.env.DATABASE_URL = 'postgresql://must-not-be-returned'
+  let databaseAccessed = false
+  const response = await createNaoPassagesHandler(async () => {
+    databaseAccessed = true
+    return mockSql([])
+  })(new Request('https://example.test/api/nao-passages?health=1'))
+  if (previous === undefined) delete process.env.DATABASE_URL
+  else process.env.DATABASE_URL = previous
+
+  assert.equal(response.status, 200)
+  assert.deepEqual(await response.json(), { ok: true, databaseUrlConfigured: true })
+  assert.equal(databaseAccessed, false)
+})
+
+test('dbhealth runs only SELECT 1 AS ok with an abort signal', async () => {
+  const calls: SqlCall[] = []
+  let signal: AbortSignal | undefined
+  const response = await createNaoPassagesHandler(async (options) => {
+    signal = options?.signal
+    return mockSql([{ ok: 1 }], calls)
+  })(new Request('https://example.test/api/nao-passages?dbhealth=1'))
+
+  assert.equal(response.status, 200)
+  assert.deepEqual(await response.json(), { ok: true, database: true })
+  assert.equal(signal instanceof AbortSignal, true)
+  assert.deepEqual(calls, [{ text: 'SELECT 1 AS ok', values: [] }])
+})
+
+test('dbhealth returns 503 without exposing database errors', async () => {
+  const response = await createNaoPassagesHandler(async () => async () => {
+    throw new Error('secret database detail')
+  })(new Request('https://example.test/api/nao-passages?dbhealth=1'))
+
+  assert.equal(response.status, 503)
+  assert.deepEqual(await response.json(), { ok: false, database: false })
 })
 
 test('does not expose Neon errors', async () => {
