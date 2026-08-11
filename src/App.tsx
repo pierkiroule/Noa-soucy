@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { AppErrorBoundary } from './components/AppErrorBoundary'
 import { NaoPassers } from './components/nao-travel/NaoPassers'
 import { NaoTravelProvider } from './components/nao-travel/NaoTravelContext'
+import { NaoScreen } from './components/nao-travel/NaoUi'
 import { isStoryRoute, parseNaoTravelRoute } from './routing/storyRoute'
 import { StoryPlayer } from './story/StoryPlayer'
 
@@ -53,5 +54,5 @@ export default function App() {
 }
 
 function InvalidNao({ onHome }: { onHome: () => void }) {
-  return <main className="travel-screen travel-confirmation"><span aria-hidden="true">◌</span><h1>Cette Nao semble avoir perdu son chemin.</h1><button className="primary" onClick={onHome}>Revenir à l’accueil</button></main>
+  return <NaoScreen className="travel-confirmation"><span aria-hidden="true">◌</span><h1>Cette Nao semble avoir perdu son chemin.</h1><button className="primary" onClick={onHome}>Revenir à l’accueil</button></NaoScreen>
 }

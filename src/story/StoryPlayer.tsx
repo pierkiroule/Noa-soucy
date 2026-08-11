@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { StoryMediaPlayer } from '../components/StoryMediaPlayer'
 import { NaoGrains } from '../components/nao-travel/NaoGrains'
+import { Brand } from '../components/nao-travel/NaoUi'
 import { useNaoTravel } from '../components/nao-travel/NaoTravelContext'
 import { ParticleOverlay } from '../effects/ParticleOverlay'
 import { ViewTransition } from '../effects/ViewTransition'
@@ -133,7 +134,6 @@ function QuestionScreen({ title, text, choices, selected, onSelect }: { title:st
   return <section className="question-screen"><ParticleOverlay/><div className="question-screen__content"><span className="eyebrow">{title}</span><h1>{text}</h1><div className="question-screen__choices">{choices.map(choice => <button key={choice.id} className={selected === choice.id ? 'is-selected' : ''} onClick={() => onSelect(choice)}>{choice.label}<span aria-hidden="true">→</span></button>)}</div><small>Votre choix ouvre une résonance, sans interprétation.</small></div></section>
 }
 
-function Brand() { return <div className="story__brand"><span aria-hidden="true">◌</span> NAO SOUCI</div> }
 
 function SoundIcon({ muted }: { muted:boolean }) {
   return <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
