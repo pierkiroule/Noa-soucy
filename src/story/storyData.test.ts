@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import { getNextMedia, loadStory, storyVoiceUrl, type StoryDocument } from './storyData.ts'
 
 const story = JSON.parse(await readFile(new URL('../../public/story/story.json', import.meta.url), 'utf8')) as StoryDocument
@@ -17,6 +17,18 @@ test('story video follows the fixed 1 to 14 mapping with one continuous soundtra
   const numbers = new Set(media.map(item => Number(item.video.replace('.mp4', ''))))
   assert.deepEqual([...numbers].sort((a, b) => a - b), Array.from({ length: 14 }, (_, index) => index + 1))
   assert.ok(media.every(item => item.music === 'Fond2.mp3'))
+})
+
+test('story directory contains exactly the media referenced by story.json', async () => {
+  const referencedMedia = story.blocks.flatMap(block => {
+    if (block.type === 'question') return block.choices.flatMap(choice => Object.values(choice.resonance.media))
+    if (block.type === 'metaphorical-resonances') return []
+    return Object.values(block.media)
+  }).filter((value): value is string => typeof value === 'string')
+  const files = await readdir(new URL('../../public/story/', import.meta.url))
+  const deployedMedia = files.filter(file => /\.(?:mp3|mp4)$/.test(file))
+
+  assert.deepEqual(deployedMedia.sort(), [...new Set(referencedMedia)].sort())
 })
 
 test('prologue and epilogue reuse the requested act media', () => {
