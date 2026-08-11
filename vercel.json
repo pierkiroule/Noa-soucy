@@ -1,8 +1,12 @@
 {
   "rewrites": [
     {
-      "source": "/n",
-      "destination": "/index.html"
+      "source": "/n/:nutId",
+      "destination": "/"
+    },
+    {
+      "source": "/n/:nutId/passers",
+      "destination": "/"
     }
   ]
 }
