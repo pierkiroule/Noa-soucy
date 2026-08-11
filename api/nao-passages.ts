@@ -111,14 +111,14 @@ export function createNaoPassagesHandler(getSql: GetSql = defaultSql) {
       if (locationLabel !== null && locationLabel.length > 100) {
         return json({ error: 'Invalid locationLabel' }, 400)
       }
-      if (!Array.isArray(input.grains) || input.grains.length < 1 || input.grains.length > 3) {
+      if (!Array.isArray(input.grains) || input.grains.length > 3) {
         return json({ error: 'Invalid grains' }, 400)
       }
       const grains = input.grains.map(grain => typeof grain === 'string' ? grain.trim().replace(/\s+/g, ' ') : '')
       if (grains.some(grain => grain.length < 1 || grain.length > 80)) return json({ error: 'Invalid grains' }, 400)
 
       const sql = await getSql()
-      // One PostgreSQL statement is atomic: the passage cannot remain without its grains.
+      // One PostgreSQL statement atomically creates the passage and any optional grains.
       const rows = await sql`WITH passage AS (
           INSERT INTO nao_passages (nut_id, display_name, location_label)
           VALUES (${input.nutId}, ${displayName}, ${locationLabel})
@@ -132,9 +132,10 @@ export function createNaoPassagesHandler(getSql: GetSql = defaultSql) {
           RETURNING passage_id, id, grain_text
         )
         SELECT passage.id, passage.display_name, passage.location_label, passage.created_at,
-          array_agg(inserted_grains.grain_text ORDER BY inserted_grains.id) AS grains
+          COALESCE(array_agg(inserted_grains.grain_text ORDER BY inserted_grains.id)
+            FILTER (WHERE inserted_grains.id IS NOT NULL), ARRAY[]::varchar[]) AS grains
         FROM passage
-        JOIN inserted_grains ON inserted_grains.passage_id = passage.id
+        LEFT JOIN inserted_grains ON inserted_grains.passage_id = passage.id
         GROUP BY passage.id, passage.display_name, passage.location_label, passage.created_at`
       return json({ passer: serializePasser(rows[0]!) }, 201)
     } catch (error) {
