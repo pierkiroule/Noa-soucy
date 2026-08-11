@@ -30,12 +30,13 @@ function storageKey(nutId: string): string {
 }
 
 export function hasRegisteredNaoPassage(nutId: string): boolean {
-  return typeof localStorage !== 'undefined' && localStorage.getItem(storageKey(nutId)) !== null
+  try { return typeof localStorage !== 'undefined' && localStorage.getItem(storageKey(nutId)) !== null }
+  catch { return false }
 }
 
 export function saveRegisteredNaoPassage(nutId: string, passerId: number): void {
   if (typeof localStorage !== 'undefined') {
-    localStorage.setItem(storageKey(nutId), String(passerId))
+    try { localStorage.setItem(storageKey(nutId), String(passerId)) }
+    catch { /* The collective passage succeeded; private browsing must not block the story. */ }
   }
 }
-

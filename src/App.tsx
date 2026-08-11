@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { AppErrorBoundary } from './components/AppErrorBoundary'
-import { isStoryRoute } from './routing/storyRoute'
+import { NaoPasserOnboarding } from './components/nao-travel/NaoPasserOnboarding'
+import { NaoPassers } from './components/nao-travel/NaoPassers'
+import { NaoTravelProvider } from './components/nao-travel/NaoTravelContext'
+import { isStoryRoute, parseNaoTravelRoute } from './routing/storyRoute'
+import { hasRegisteredNaoPassage } from './services/naoPassages'
 import { StoryPlayer } from './story/StoryPlayer'
 
 function PublicHome() {
@@ -34,5 +38,27 @@ export default function App() {
     return () => removeEventListener('popstate', update)
   }, [])
 
-  return <AppErrorBoundary>{isStoryRoute(pathname) ? <StoryPlayer /> : <PublicHome />}</AppErrorBoundary>
+  const navigate = (nextPath: string) => {
+    history.pushState({}, '', nextPath)
+    setPathname(nextPath)
+  }
+  const travelRoute = parseNaoTravelRoute(pathname)
+
+  let content
+  if (travelRoute.kind === 'invalid') content = <InvalidNao onHome={() => navigate('/')} />
+  else if (travelRoute.kind === 'passers') content = <NaoPassers nutId={travelRoute.nutId} onBack={() => navigate(`/n/${travelRoute.nutId}`)} />
+  else if (travelRoute.kind === 'journey') content = <NaoJourney nutId={travelRoute.nutId} />
+  else content = isStoryRoute(pathname) ? <StoryPlayer /> : <PublicHome />
+
+  const nutId = travelRoute.kind === 'journey' || travelRoute.kind === 'passers' ? travelRoute.nutId : undefined
+  return <AppErrorBoundary><NaoTravelProvider nutId={nutId} onShowPassers={() => nutId && navigate(`/n/${nutId}/passers`)}>{content}</NaoTravelProvider></AppErrorBoundary>
+}
+
+function NaoJourney({ nutId }: { nutId: string }) {
+  const [canEnter, setCanEnter] = useState(() => hasRegisteredNaoPassage(nutId))
+  return canEnter ? <StoryPlayer /> : <NaoPasserOnboarding nutId={nutId} onContinue={() => setCanEnter(true)} />
+}
+
+function InvalidNao({ onHome }: { onHome: () => void }) {
+  return <main className="travel-screen travel-confirmation"><span aria-hidden="true">◌</span><h1>Cette Nao semble avoir perdu son chemin.</h1><button className="primary" onClick={onHome}>Revenir à l’accueil</button></main>
 }
