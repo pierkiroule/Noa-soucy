@@ -3,6 +3,7 @@ export interface NaoPasser {
   displayName: string
   locationLabel: string | null
   createdAt: string
+  grains: string[]
 }
 
 export interface NaoPassagesResponse {
@@ -14,5 +15,5 @@ export interface AddNaoPasserInput {
   nutId: string
   displayName: string
   locationLabel?: string
+  grains: string[]
 }
-
